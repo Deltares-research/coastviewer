@@ -1,4 +1,10 @@
+import itertools
+
 import netCDF4
+import pandas
+import numpy as np
+
+import utils
 
 DATASETS = {
     'transect': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/jarkus/profiles/transect.nc',
@@ -12,64 +18,58 @@ DATASETS = {
 }
 
 
-def kml_overview():
+def overview():
+    """generate a lod overview"""
+    # read relevant variables
     with netCDF4.Dataset(DATASETS['transect']) as ds:
-        id = ds.variables['id'][:]
-        lon0 = ds.variables['lon'][:, 0]
-        lat0 = ds.variables['lat'][:, 1]
-        lon1 = ds.variables['lon'][:, -1]
-        lat1 = ds.variables['lat'][:, -1]
-        rsp_lon = ds.variables['rsp_lon'][:]
-        rsp_lat = ds.variables['rsp_lat'][:]
+        variables = {
+            'id': {"var": 'id', "slice": np.s_[:]},
+            'lat_0': {"var": 'lat', "slice": np.s_[:, 0]},
+            'lat_1': {"var": 'lat', "slice": np.s_[:, -1]},
+            'lon_0': {"var": 'lon', "slice": np.s_[:, 0]},
+            'lon_1': {"var": 'lon', "slice": np.s_[:, -1]},
+            'rsp_lon': {"var": 'rsp_lon', "slice": np.s_[:]},
+            'rsp_lat': {"var": 'rsp_lat', "slice": np.s_[:]}
+        }
+        data = {}
+        for var, props in variables.items():
+            data[var] = ds.variables[props['var']][props['slice']]
+    # put in a table
+    df = pandas.DataFrame(data=data)
+    df['north'] = df['rsp_lat'] + 0.002
+    df['south'] = df['rsp_lat'] - 0.002
+    df['east'] = df['rsp_lon'] + .0025
+    df['west'] = df['rsp_lon'] - .0025
 
-    overview = {}
-    overview['lon0'] = lon0
-    overview['lon1'] = lon1
-    overview['lat0'] = lat0
-    overview['lat1'] = lat1
+    # transform for kml file
+    def line_coords(record):
+        return utils.textcoordinates(
+            x0=record.lon_0,
+            y0=record.lat_0,
+            x1=record.lon_1,
+            y1=record.lat_1
+        )
+    df['line_coords'] = df.apply(line_coords, axis=1)
 
-    # few
-    overview['north'] = rsp_lat + 0.002
-    overview['south'] = rsp_lat - 0.002
+    def point_coords(record):
+        return utils.textcoordinates(
+            x0=record.rsp_lat,
+            y0=record.rsp_lon
+        )
+    df['point_coords'] = df.apply(point_coords, axis=1)
 
-    # HACK: not circle safe...
-    overview['east'] = rsp_lon + .0025
-    overview['west'] = rsp_lon - .0025
-    overview['id'] = id
+    def bbox(record):
+        return {
+            'north': record.north,
+            'south': record.south,
+            'east': record.east,
+            'west': record.west
+        }
+    df['bbox'] = df.apply(bbox, axis=1)
 
-    result = {}
-    result['overview'] = overview
-    lines = []
-    # TODO: clean this up a bit...
-    for (id,
-         north,
-         south,
-         east,
-         west,
-         lat0,
-         lat1,
-         lon0,
-         lon1) in zip(overview['id'],
-                      overview['north'],
-                      overview['south'],
-                      overview['east'],
-                      overview['west'],
-                      overview['lat0'],
-                      overview['lat1'],
-                      overview['lon0'],
-                      overview['lon1']):
-        line = {}
-        bbox = {
-            'north': north,
-            'south': south,
-            'east': east,
-            'west': west
-            }
-        coordinates = helpers.textcoordinates(x0=lon0, y0=lat0, x1=lon1, y1=lat1)
-        line['coordinates'] = coordinates
-        line['point_coordinates'] = helpers.textcoordinates(x0=lon0, y0=lat0)
-        line['bbox'] = bbox
-        line['id'] = id
-        lines.append(line)
-    result['lines'] = lines
-    return result
+    n_pixels = itertools.islice(
+        itertools.cycle([64, 32, 64, 16, 64, 32, 64, 8]),
+        len(df)
+    )
+    df['min_lod_pixels'] = list(n_pixels)
+    return df
