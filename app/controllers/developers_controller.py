@@ -4,6 +4,8 @@ import connexion
 import geojson
 import flask
 
+import datasets.jarkus
+
 logger = logging.getLogger(__name__)
 
 def transect(id) -> object:
@@ -18,5 +20,4 @@ def transect_overview() -> list:
     return []
 
 def transect_overview_kml() -> str:
-    logger.info(flask.request)
-    return "<kml></kml>"
+    return datasets.jarkus.kml_overview()
