@@ -1,0 +1,134 @@
+---
+swagger: "2.0"
+info:
+  description: "This is the coastal-viewer api. It provides services to acquire data\
+    \ of coasts around the world"
+  version: "1.1.0"
+  title: "Coastal Viewer API"
+  contact:
+    email: "fedor.baart@deltares.nl"
+  license:
+    name: "GPLv3"
+    url: "https://www.gnu.org/licenses/gpl.html"
+host: "virtserver.swaggerhub.com"
+basePath: "/coastviewer/1.1.0"
+tags:
+- name: "admins"
+  description: "Secured Admin-only calls"
+- name: "developers"
+  description: "Operations available to regular developers"
+schemes:
+- "https"
+paths:
+  /transects:
+    get:
+      tags:
+      - "developers"
+      summary: "get transect overview"
+      description: "Get a list of all transects\n"
+      operationId: "controllers.developers_controller.transect_overview"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+      x-tags:
+      - tag: "developers"
+  /transects/kml:
+    get:
+      tags:
+      - "developers"
+      summary: "get transect overview in kml format"
+      description: "Get a list of all transects\n"
+      operationId: "controllers.developers_controller.transect_overview_kml"
+      produces:
+      - "application/vnd.google-earth.kml+xml"
+      parameters: []
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+      x-tags:
+      - tag: "developers"
+  /transects/{id}:
+    get:
+      tags:
+      - "developers"
+      summary: "get information about a specific transect"
+      description: "Get information about a specific transect\n"
+      operationId: "controllers.developers_controller.transect"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "identifcation for transect"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+        400:
+          description: "bad input parameter"
+      x-tags:
+      - tag: "developers"
+  /transects/{id}/kml:
+    get:
+      tags:
+      - "developers"
+      summary: "get information about a specific transect in kml format"
+      description: "Get information about a specific transect\n"
+      operationId: "controllers.developers_controller.transect_kml"
+      produces:
+      - "application/vnd.google-earth.kml+xml"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "identifcation for transect"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+        400:
+          description: "bad input parameter"
+      x-tags:
+      - tag: "developers"
+definitions:
+  Feature:
+    type: "object"
+    required:
+    - "geometry"
+    - "id"
+    - "properties"
+    - "type"
+    properties:
+      id:
+        type: "string"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      type:
+        type: "string"
+        example: "Feature"
+      geometry:
+        type: "object"
+        example:
+          type: "LineString"
+          coordinates: []
+        properties: {}
+      properties:
+        type: "object"
+        example:
+          measuredTime: "2016-02-02 03:00:11Z"
+        properties: {}
