@@ -7,15 +7,20 @@ import numpy as np
 import utils
 
 DATASETS = {
-    'transect': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/jarkus/profiles/transect.nc',
-    'BKL_TKL_TND': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/BKL_TKL_TND.nc',
-    'DF': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/DuneFoot/DF.nc',
-    'MKL': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/MKL.nc',
-    'strandbreedte': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/strandbreedte/strandbreedte.nc',
-    'strandlijnen': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/MHW_MLW/MHW_MLW.nc',
-    'suppleties': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/suppleties/suppleties.nc',
-    'faalkans': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/faalkans_PC-Ring/faalkans.nc',
+    'transect': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/jarkus/profiles/transect.nc',  # nopep8
+    'BKL_TKL_TND': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/BKL_TKL_TND.nc',  # nopep8
+    'DF': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/DuneFoot/DF.nc',  # nopep8
+    'mkl': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/MKL.nc',  # nopep8
+    'strandbreedte': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/strandbreedte/strandbreedte.nc',  # nopep8
+    'strandlijnen': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/MHW_MLW/MHW_MLW.nc',  # nopep8
+    'suppleties': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/suppleties/suppleties.nc',  # nopep8
+    'faalkans': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/faalkans_PC-Ring/faalkans.nc'  # nopep8
 }
+
+# global variables
+with netCDF4.Dataset(DATASETS['transect']) as ds:
+    # keep these global, for faster indexing
+    ids = ds.variables['id'][:]
 
 
 def overview():
@@ -73,3 +78,51 @@ def overview():
     )
     df['min_lod_pixels'] = list(n_pixels)
     return df
+
+
+def get_transect(id_):
+    """lookup information for transect"""
+
+    transect_idx = np.searchsorted(ids, id_)
+    variables = {
+        'lat': {"var": 'lat', "slice": np.s_[transect_idx, :]},
+        'lon': {"var": 'lon', "slice": np.s_[transect_idx, :]},
+        'z': {"var": 'altitude', "slice": np.s_[:, transect_idx, :]},
+        "t": {"var": 'time', "slice": np.s_[:]}
+
+    }
+    data = {}
+    with netCDF4.Dataset(DATASETS['transect']) as ds:
+        for var, props in variables.items():
+            data[var] = ds.variables[props['var']][props['slice']]
+        time_units = ds.variables['time'].units
+
+    # df = pandas.DataFrame(data=data)
+    years = []
+    for t, row in zip(data['t'], data['z']):
+        item = {}
+        coords = pandas.DataFrame(data=dict(
+            lon=data['lon'],
+            lat=data['lat'],
+            z=row
+        ))
+        item['coordinates'] = coords.dropna()
+        item['line_coordinates'] = utils.textcoordinates(
+            x0=item['coordinates']['lon'],
+            y0=item['coordinates']['lat'],
+            z0=item['coordinates']['z']
+        )
+        date = netCDF4.num2date(t, time_units)
+        item['properties'] = {
+            "t": date,
+        }
+        item['properties']['year'] = date.year
+        item['properties']['begin_date'] = date
+        item['properties']['end_date'] = date.replace(year=date.year+1)
+        years.append(item)
+    years = pandas.DataFrame.from_records(years)
+    transect = {
+        "years": years,
+        "id": id_
+    }
+    return transect

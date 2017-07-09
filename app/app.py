@@ -4,7 +4,7 @@ import logging
 
 import connexion
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 if __name__ == '__main__':
     app = connexion.App(__name__, specification_dir='./swagger/')

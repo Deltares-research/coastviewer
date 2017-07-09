@@ -10,7 +10,7 @@ info:
   license:
     name: "GPLv3"
     url: "https://www.gnu.org/licenses/gpl.html"
-host: "virtserver.swaggerhub.com"
+host: "localhost:8080"
 basePath: "/coastviewer/1.1.0"
 tags:
 - name: "admins"
@@ -95,7 +95,7 @@ paths:
         in: "path"
         description: "identifcation for transect"
         required: true
-        type: "string"
+        type: "integer"
       responses:
         200:
           description: "transect"
@@ -106,6 +106,45 @@ paths:
           description: "bad input parameter"
       x-tags:
       - tag: "developers"
+  /styles:
+    get:
+      tags:
+      - "developers"
+      summary: "get style content"
+      description: "Get dynamic style information.\n"
+      operationId: "controllers.developers_controller.styles"
+      produces:
+      - "application/vnd.google-earth.kml+xml"
+      parameters:
+      - in: query
+        name: poly_alpha
+        description: alpha for polygons
+        type: number
+        required: false
+        default: 0.5
+      - in: query
+        name: outline
+        description: outline for polygon
+        type: boolean
+        required: false
+        default: false
+      - in: query
+        name: colormap
+        description: colormap used for transects
+        type: string
+        required: false
+        default: "viridis"
+      responses:
+        200:
+          description: "style"
+          schema:
+            type: "object"
+            properties: {}
+        400:
+          description: "bad input parameter"
+      x-tags:
+      - tag: "developers"
+
 definitions:
   Feature:
     type: "object"

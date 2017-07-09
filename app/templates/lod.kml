@@ -81,7 +81,7 @@
         {# ensures the style KML is preloaded, so there's no delay when all transects load #}
         <Placemark id="style-preloader">
             <name>Style preloader</name>
-            <styleUrl>/transect/style</styleUrl>
+            <styleUrl>../styles#year2000</styleUrl>
             <LineString>
                 <coordinates>0,0,0 0.1,0.1,0.1</coordinates>
             </LineString>

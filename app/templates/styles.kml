@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+    <Document>
+        <name>Style</name>
+        {# style that gets applied to our stub preloader linestring #}
+        <Style id="preloader">
+            <LineStyle>
+                <color>ff000000</color>
+                <width>1</width>
+            </LineStyle>
+        </Style>
+        {# this the style for the upper line #}
+        {% for key, color in context.colors.items() %}
+        <Style id="{{ key }}">
+            <LineStyle>
+                <color>ff{{ color }}</color>
+                <width>2</width>
+            </LineStyle>
+            <PolyStyle>
+                <color>ff{{ color }}</color>
+                <outline>{{ outline }}</outline>
+                <fill>1</fill>
+            </PolyStyle>
+        </Style>
+        {% endfor %}
+    </Document>
+</kml>
