@@ -24,7 +24,6 @@ with netCDF4.Dataset(DATASETS['transect']) as ds:
     ids = ds.variables['id'][:]
 
 
-
 def overview():
     """generate a lod overview"""
     # read relevant variables
@@ -43,10 +42,11 @@ def overview():
             data[var] = ds.variables[props['var']][props['slice']]
     # put in a table
     df = pandas.DataFrame(data=data)
-    df['north'] = df['rsp_lat'] + 0.002
-    df['south'] = df['rsp_lat'] - 0.002
-    df['east'] = df['rsp_lon'] + .0025
-    df['west'] = df['rsp_lon'] - .0025
+    delta = 0.002
+    df['north'] = df['rsp_lat'] + delta
+    df['south'] = df['rsp_lat'] - delta
+    df['east'] = df['rsp_lon'] + delta
+    df['west'] = df['rsp_lon'] - delta
 
     # transform for kml file
     def line_coords(record):

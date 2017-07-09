@@ -70,8 +70,10 @@
                 </LineString>
                 <description>
                     <![CDATA[
+                    <iframe src="{{ line.id }}/info" style="border:0; height: 600px;width:400px;"></iframe>
+
                     <div>
-                        <a href="/transect/{{ line.id }}/info" data-dynamic-info="true">info</a>
+                        <a href="{{ line.id }}/info" data-dynamic-info="true">info</a>
                     </div>
                     ]]>
                 </description>

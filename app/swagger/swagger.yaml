@@ -130,6 +130,31 @@ paths:
           description: "bad input parameter"
       x-tags:
       - tag: "developers"
+  /transects/{id}/info:
+    get:
+      tags:
+      - "developers"
+      summary: "get information about a specific transect in html format"
+      description: "Get information about a specific transect\n"
+      operationId: "controllers.developers_controller.transect_info"
+      produces:
+      - "text/html"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "identifcation for transect"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+        400:
+          description: "bad input parameter"
+      x-tags:
+      - tag: "developers"
   /styles:
     get:
       tags:
