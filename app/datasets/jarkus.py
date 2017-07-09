@@ -3,6 +3,7 @@ import itertools
 import netCDF4
 import pandas
 import numpy as np
+import pyproj
 
 import utils
 
@@ -21,6 +22,7 @@ DATASETS = {
 with netCDF4.Dataset(DATASETS['transect']) as ds:
     # keep these global, for faster indexing
     ids = ds.variables['id'][:]
+
 
 
 def overview():
@@ -80,7 +82,36 @@ def overview():
     return df
 
 
-def get_transect(id_):
+def move_by(lon, lat, distance):
+    """
+    Move the x,y coordinates by distance, perpendicular, assuming that they are lat,lon and that we can move in EPSG:28992
+    >>> lon = array([4.0])
+    >>> lat = array([51.0])
+    >>> x,y = move_by(lat, lon, 1000)
+    >>> x, y  # doctest:+ELLIPSIS
+    (array([ 3.999...]), array([ 51.0089...]))
+    """
+    # project from wgs84 to rd, assuming x,y are lon, lat
+    # compute the angle from the transect coordinates
+    rd = pyproj.Proj('+init=epsg:28992')
+
+    x, y = rd(lon, lat)
+
+    dx = x[-1] - x[0]
+    dy = y[-1] - y[0]
+
+    # rotate by 90 degrees
+    angle = np.arctan2(dy, dx) + np.pi * 0.5
+
+    x += distance * np.cos(angle)
+    y += distance * np.sin(angle)
+
+    lon, lat = rd(x, y, inverse=True)
+
+    return lon, lat
+
+
+def get_transect(id_, exaggeration=1.0, lift=0.0, move=0.0):
     """lookup information for transect"""
 
     transect_idx = np.searchsorted(ids, id_)
@@ -99,12 +130,14 @@ def get_transect(id_):
 
     # df = pandas.DataFrame(data=data)
     years = []
-    for t, row in zip(data['t'], data['z']):
+    for i, (t, row) in enumerate(zip(data['t'], data['z'])):
         item = {}
+
+        lon, lat = move_by(data['lon'], data['lat'], distance=i*move)
         coords = pandas.DataFrame(data=dict(
-            lon=data['lon'],
-            lat=data['lat'],
-            z=row
+            lon=lon,
+            lat=lat,
+            z=row * exaggeration + lift
         ))
         item['coordinates'] = coords.dropna()
         item['line_coordinates'] = utils.textcoordinates(

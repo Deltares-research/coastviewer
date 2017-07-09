@@ -96,6 +96,30 @@ paths:
         description: "identifcation for transect"
         required: true
         type: "integer"
+      - in: query
+        name: extrude
+        description: extrude polygon
+        type: boolean
+        required: false
+        default: true
+      - in: query
+        name: exaggeration
+        description: z values are multiplied with this value
+        type: number
+        required: false
+        default: 1.0
+      - in: query
+        name: lift
+        description: z values are lifted with this value
+        type: number
+        required: false
+        default: 0.0
+      - in: query
+        name: move
+        description: move transects by factor move, multiplied by years since year
+        type: number
+        required: false
+        default: 0.0
       responses:
         200:
           description: "transect"

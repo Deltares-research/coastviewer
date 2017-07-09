@@ -16,14 +16,6 @@ def transect(id) -> object:
     return {}
 
 
-def transect_kml(id: int) -> str:
-    """create a kml for a specific transect"""
-    # only available on runtime
-    flask.current_app.jinja_env.filters['kmldate'] = utils.kmldate
-    transect = datasets.jarkus.get_transect(int(id))
-    return flask.render_template("transect.kml", transect=transect)
-
-
 def transect_overview() -> list:
     logger.info(flask.request)
     return []
@@ -33,6 +25,14 @@ def transect_overview_kml() -> str:
     """create an overview of all transects"""
     lines = datasets.jarkus.overview()
     return flask.render_template('lod.kml', lines=lines)
+
+
+def transect_kml(id: int, extrude: bool, exaggeration: float, lift: float, move: float) -> str:
+    """create a kml for a specific transect"""
+    # only available on runtime
+    flask.current_app.jinja_env.filters['kmldate'] = utils.kmldate
+    transect = datasets.jarkus.get_transect(int(id), exaggeration, lift, move)
+    return flask.render_template("transect.kml", transect=transect, extrude=int(extrude))
 
 
 def styles(poly_alpha: float, outline: int, colormap: str) -> str:

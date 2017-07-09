@@ -58,7 +58,7 @@
                     Replace these query parameters in the url tag... (or extend url to match these parameters)
                     Don't forget to escape &.
                     #}
-                    <href>{{line.id}}/kml</href>
+                    <href>{{line.id}}/kml?lift=50&amp;move=1.0&amp;exaggeration=5.0</href>
                     <viewRefreshMode>onRegion</viewRefreshMode>
                 </Link>
             </NetworkLink>
