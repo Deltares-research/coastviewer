@@ -1,4 +1,6 @@
 import itertools
+import logging
+import pathlib
 
 import netCDF4
 import pandas
@@ -6,6 +8,13 @@ import numpy as np
 import pyproj
 
 import utils
+
+logger = logging.getLogger(__name__)
+
+# allow to use a local dataset
+local = True
+
+
 
 DATASETS = {
     'transect': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/jarkus/profiles/transect.nc',  # nopep8
@@ -17,6 +26,9 @@ DATASETS = {
     'suppleties': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/suppleties/suppleties.nc',  # nopep8
     'faalkans': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/faalkans_PC-Ring/faalkans.nc'  # nopep8
 }
+
+if local:
+    DATASETS['transect'] = str(pathlib.Path('data/transect.nc'))
 
 # global variables
 with netCDF4.Dataset(DATASETS['transect']) as ds:
