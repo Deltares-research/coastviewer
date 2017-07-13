@@ -6,7 +6,6 @@ Coast viewer server side. Serves several sources as KML and geojson.
 ``` shell
 cd data
 make
-
 ```
 
 # Install dependencies (docker)
@@ -40,3 +39,7 @@ docker run openearth/coastviewer
 ``` shell
 python app/app.py
 ```
+
+
+# Use
+Load the link [http://localhost:8080/coastviewer/1.1.0/transects/kml](transects/kml) in Google Earth (add network link).
