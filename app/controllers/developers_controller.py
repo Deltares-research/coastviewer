@@ -34,6 +34,7 @@ def transect_kml(id: int, extrude: bool, exaggeration: float, lift: float, move:
     transect = datasets.jarkus.get_transect(int(id), exaggeration, lift, move)
     return flask.render_template("transect.kml", transect=transect, extrude=int(extrude))
 
+
 def transect_info(id: int) -> str:
     return flask.render_template("info.html")
 
