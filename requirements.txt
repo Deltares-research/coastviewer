@@ -1,1 +1,7 @@
 connexion
+flask
+matplotlib
+netCDF4
+numpy
+pandas
+pyproj
