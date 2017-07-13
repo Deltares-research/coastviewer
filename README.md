@@ -43,3 +43,6 @@ python app/app.py
 
 # Use
 Load the link [http://localhost:8080/coastviewer/1.1.0/transects/kml](transects/kml) in Google Earth (add network link).
+
+# Test
+Load the [http://localhost:8080/coastviewer/1.1.0/ui](test ui) in your browser.
