@@ -1,5 +1,6 @@
 import logging
 import datetime
+import io
 
 import flask
 import matplotlib.cm
@@ -7,6 +8,7 @@ import matplotlib.colors
 
 import datasets.jarkus
 import utils
+import plots
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +45,13 @@ def transect_kml(
 
 def transect_info(id: int) -> str:
     return flask.render_template("info.html")
+
+def time_map(id):
+    data = datasets.jarkus.get_transect_data(int(id))
+    fig, ax = plots.time_map(data)
+    stream = io.BytesIO()
+    fig.savefig(stream)
+    return stream.getvalue()
 
 
 def styles(poly_alpha: float, outline: int, colormap: str) -> str:
