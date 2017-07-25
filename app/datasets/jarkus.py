@@ -9,6 +9,14 @@ import pyproj
 
 import utils
 
+import matplotlib.pyplot as plt
+import matplotlib.cm
+import cmocean
+import colorcet
+import scipy.interpolate
+
+import coastviewer.extra_cm
+
 logger = logging.getLogger(__name__)
 
 # allow to use a local dataset
@@ -171,3 +179,54 @@ def get_transect(id_, exaggeration=1.0, lift=0.0, move=0.0):
         "id": id_
     }
     return transect
+
+def get_transect_data(id_=7003900):
+    transect_idx = np.searchsorted(ids, id_)
+    variables = {
+        'lat': {"var": 'lat', "slice": np.s_[transect_idx, :]},
+        'lon': {"var": 'lon', "slice": np.s_[transect_idx, :]},
+        'z': {"var": 'altitude', "slice": np.s_[:, transect_idx, :]},
+        "t": {"var": 'time', "slice": np.s_[:]},
+        "cross_shore": {"var": "cross_shore", "slice": np.s_[:]},
+        'mean_high_water': {"var": 'mean_high_water', "slice": np.s_[transect_idx]},
+        'mean_low_water': {"var": 'mean_low_water', "slice": np.s_[transect_idx]},
+
+
+    }
+    data = {}
+    with netCDF4.Dataset(DATASETS['transect']) as ds:
+        for var, props in variables.items():
+            data[var] = ds.variables[props['var']][props['slice']]
+        time_units = ds.variables['time'].units
+    data['time'] = netCDF4.num2date(data['t'], time_units)
+    data['filled_z'] = fill(data['z'])
+    data['time_num'] = matplotlib.dates.date2num(data['time'])
+    return data
+
+def fill(z):
+    """fill z by space and then time"""
+    def fill_space(z):
+        """fill space"""
+        x = np.arange(z.shape[0])
+        F = scipy.interpolate.interp1d(x[~z.mask], z[~z.mask], bounds_error=False)
+        z_interp = F(x)
+        z_filled = np.ma.masked_invalid(z_interp)
+        return z_filled
+    def fill_time(z):
+        """fill time"""
+        z_filled = np.ma.masked_all_like(z)
+        for i in range(z.shape[1]):
+            arr = z[:, i]
+            # if there's no data, continue
+            if arr.mask.all():
+                continue
+            # interpolate in time
+            xp = np.arange(len(arr))
+            z_filled[:, i] = scipy.interp(xp, xp[~arr.mask], arr[~arr.mask])
+        return z_filled
+
+    filled_z = np.ma.apply_along_axis(fill_space, 1, z)
+    filled_z = fill_time(filled_z)
+    return filled_z
+
+    
