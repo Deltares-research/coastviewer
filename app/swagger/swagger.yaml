@@ -155,13 +155,38 @@ paths:
           description: "bad input parameter"
       x-tags:
       - tag: "developers"
-  /transects/{id}/plot/timemap:
+  /Transects/{id}/plot/timemap:
     get:
       tags:
       - "developers"
       summary: "get plot of profile in time and contour lines"
       description: "Get plot of profile in time and contour lines\n"
       operationId: "controllers.developers_controller.time_map"
+      produces:
+      - "image/png"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "identifcation for transect"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+        400:
+          description: "bad input parameter"
+      x-tags:
+      - tag: "developers"
+  /Transects/{id}/plot/eeg:
+    get:
+      tags:
+      - "developers"
+      summary: "get profile stacked in time"
+      description: "Get profile stacked in time\n"
+      operationId: "controllers.developers_controller.eeg"
       produces:
       - "image/png"
       parameters:

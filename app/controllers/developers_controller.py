@@ -53,6 +53,12 @@ def time_map(id):
     fig.savefig(stream)
     return stream.getvalue()
 
+def eeg(id):
+    data = datasets.jarkus.get_transect_data(int(id))
+    fig, ax = plots.eeg(data)
+    stream = io.BytesIO()
+    fig.savefig(stream)
+    return stream.getvalue()
 
 def styles(poly_alpha: float, outline: int, colormap: str) -> str:
     """return style information"""
