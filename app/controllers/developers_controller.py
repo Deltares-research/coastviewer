@@ -27,7 +27,13 @@ def transect_overview_kml() -> str:
     return flask.render_template('lod.kml', lines=lines)
 
 
-def transect_kml(id: int, extrude: bool, exaggeration: float, lift: float, move: float) -> str:
+def transect_kml(
+        id: int,
+        extrude: bool,
+        exaggeration: float,
+        lift: float,
+        move: float
+) -> str:
     """create a kml for a specific transect"""
     # only available on runtime
     flask.current_app.jinja_env.filters['kmldate'] = utils.kmldate
