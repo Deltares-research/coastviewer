@@ -6,22 +6,15 @@ import netCDF4
 import pandas
 import numpy as np
 import pyproj
-
-import utils
-
-import matplotlib.pyplot as plt
 import matplotlib.cm
-import cmocean
-import colorcet
 import scipy.interpolate
 
-import coastviewer.extra_cm
+from . import utils
 
 logger = logging.getLogger(__name__)
 
 # allow to use a local dataset
 local = True
-
 
 
 DATASETS = {
@@ -228,5 +221,3 @@ def fill(z):
     filled_z = np.ma.apply_along_axis(fill_space, 1, z)
     filled_z = fill_time(filled_z)
     return filled_z
-
-    

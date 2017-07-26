@@ -10,7 +10,7 @@ info:
   license:
     name: "GPLv3"
     url: "https://www.gnu.org/licenses/gpl.html"
-host: "localhost:8080"
+host: "localhost:5000"
 basePath: "/coastviewer/1.1.0"
 tags:
 - name: "admins"
@@ -26,7 +26,7 @@ paths:
       - "developers"
       summary: "get transect overview"
       description: "Get a list of all transects\n"
-      operationId: "controllers.developers_controller.transect_overview"
+      operationId: "coastviewer.controllers.transect_overview"
       produces:
       - "application/json"
       parameters: []
@@ -44,7 +44,7 @@ paths:
       - "developers"
       summary: "get transect overview in kml format"
       description: "Get a list of all transects\n"
-      operationId: "controllers.developers_controller.transect_overview_kml"
+      operationId: "coastviewer.controllers.transect_overview_kml"
       produces:
       - "application/vnd.google-earth.kml+xml"
       parameters: []
@@ -62,7 +62,7 @@ paths:
       - "developers"
       summary: "get information about a specific transect"
       description: "Get information about a specific transect\n"
-      operationId: "controllers.developers_controller.transect"
+      operationId: "coastviewer.controllers.transect"
       produces:
       - "application/json"
       parameters:
@@ -87,7 +87,7 @@ paths:
       - "developers"
       summary: "get information about a specific transect in kml format"
       description: "Get information about a specific transect\n"
-      operationId: "controllers.developers_controller.transect_kml"
+      operationId: "coastviewer.controllers.transect_kml"
       produces:
       - "application/vnd.google-earth.kml+xml"
       parameters:
@@ -136,7 +136,7 @@ paths:
       - "developers"
       summary: "get information about a specific transect in html format"
       description: "Get information about a specific transect\n"
-      operationId: "controllers.developers_controller.transect_info"
+      operationId: "coastviewer.controllers.transect_info"
       produces:
       - "text/html"
       parameters:
@@ -161,7 +161,7 @@ paths:
       - "developers"
       summary: "get plot of profile in time and contour lines"
       description: "Get plot of profile in time and contour lines\n"
-      operationId: "controllers.developers_controller.time_map"
+      operationId: "coastviewer.controllers.time_map"
       produces:
       - "image/png"
       parameters:
@@ -186,7 +186,7 @@ paths:
       - "developers"
       summary: "get profile stacked in time"
       description: "Get profile stacked in time\n"
-      operationId: "controllers.developers_controller.eeg"
+      operationId: "coastviewer.controllers.eeg"
       produces:
       - "image/png"
       parameters:
@@ -211,7 +211,7 @@ paths:
       - "developers"
       summary: "get style content"
       description: "Get dynamic style information.\n"
-      operationId: "controllers.developers_controller.styles"
+      operationId: "coastviewer.controllers.styles"
       produces:
       - "application/vnd.google-earth.kml+xml"
       parameters:

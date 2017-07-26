@@ -6,11 +6,16 @@ import flask
 import matplotlib.cm
 import matplotlib.colors
 
-import datasets.jarkus
-import utils
-import plots
+from . import datasets
+from . import utils
+from . import plots
 
 logger = logging.getLogger(__name__)
+
+
+def index(api: object) -> str:
+    # can't name this index (already taken by conexxion)
+    return flask.render_template("main.html", api=api)
 
 
 def transect(id) -> object:
@@ -25,7 +30,7 @@ def transect_overview() -> list:
 
 def transect_overview_kml() -> str:
     """create an overview of all transects"""
-    lines = datasets.jarkus.overview()
+    lines = datasets.overview()
     return flask.render_template('lod.kml', lines=lines)
 
 
@@ -39,26 +44,29 @@ def transect_kml(
     """create a kml for a specific transect"""
     # only available on runtime
     flask.current_app.jinja_env.filters['kmldate'] = utils.kmldate
-    transect = datasets.jarkus.get_transect(int(id), exaggeration, lift, move)
+    transect = datasets.get_transect(int(id), exaggeration, lift, move)
     return flask.render_template("transect.kml", transect=transect, extrude=int(extrude))
 
 
 def transect_info(id: int) -> str:
     return flask.render_template("info.html")
 
-def time_map(id):
-    data = datasets.jarkus.get_transect_data(int(id))
+
+def time_map(id: int) -> str:
+    data = datasets.get_transect_data(int(id))
     fig, ax = plots.time_map(data)
     stream = io.BytesIO()
     fig.savefig(stream)
     return stream.getvalue()
 
-def eeg(id):
-    data = datasets.jarkus.get_transect_data(int(id))
+
+def eeg(id: int) -> str:
+    data = datasets.get_transect_data(int(id))
     fig, ax = plots.eeg(data)
     stream = io.BytesIO()
     fig.savefig(stream)
     return stream.getvalue()
+
 
 def styles(poly_alpha: float, outline: int, colormap: str) -> str:
     """return style information"""

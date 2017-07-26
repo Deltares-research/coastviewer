@@ -2,15 +2,52 @@
 
 """Console script for coastviewer."""
 
+import logging
+import functools
+
 import click
+import connexion
+
+from . import controllers
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+
+def make_app():
+    """create the main application"""
+    app = connexion.App(__name__, specification_dir='./swagger/')
+    title = """
+    This is the coastal-viewer api.
+    It provides services to acquire data of coasts around the world.
+    """
+    api = app.add_api(
+        'swagger.yaml',
+        arguments={
+            'title': title
+        }
+    )
+    logger.debug(api)
+
+    # make sure the function keeps the __name__ 'index' and __docs__
+    index = functools.wraps(controllers.index)(
+        # already fill in the api parameter
+        functools.partial(controllers.index, api=api)
+    )
+    app.add_url_rule('/', 'index', index)
+
+    return app
 
 
 @click.command()
-def main(args=None):
+@click.option('--debug/--no-debug', default=False, help='Start application in debugger mode.')
+def main(debug, args=None):
     """Console script for coastviewer."""
-    click.echo("Replace this message by putting your code into "
-               "coastviewer.cli.main")
-    click.echo("See click documentation at http://click.pocoo.org/")
+    # configure logging
+    logging.basicConfig()
+
+    app = make_app()
+    app.run(debug=debug)
 
 
 if __name__ == "__main__":
