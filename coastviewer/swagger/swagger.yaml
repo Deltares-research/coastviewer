@@ -155,7 +155,7 @@ paths:
           description: "bad input parameter"
       x-tags:
       - tag: "developers"
-  /Transects/{id}/plot/timemap:
+  /transects/{id}/plot/timemap:
     get:
       tags:
       - "developers"
@@ -180,7 +180,7 @@ paths:
           description: "bad input parameter"
       x-tags:
       - tag: "developers"
-  /Transects/{id}/plot/eeg:
+  /transects/{id}/plot/eeg:
     get:
       tags:
       - "developers"
