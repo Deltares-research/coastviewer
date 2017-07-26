@@ -44,7 +44,10 @@ def make_app():
 def main(debug, args=None):
     """Console script for coastviewer."""
     # configure logging
-    logging.basicConfig()
+    level = logging.INFO
+    if debug:
+        level = logging.DEBUG
+    logging.basicConfig(level=level)
 
     app = make_app()
     app.run(debug=debug)
