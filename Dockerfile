@@ -11,8 +11,9 @@ RUN \
 # switch to python 3.5 (no gdal in 3.6)
 RUN conda create -y -n py35 python=3.5 libgdal gdal jpeg=8d netcdf4 matplotlib pandas pyproj
 COPY ./ app/
-RUN cd data && make
-ENV PATH /opt/conda/bin:$PATH
+RUN cd app/data && make
+ENV PATH /opt/conda/envs/py35/bin:$PATH
+RUN cd app && pip install -e .
 # not sure what this is
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "coastviewer" ]
