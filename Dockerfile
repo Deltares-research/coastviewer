@@ -11,7 +11,7 @@ RUN \
 # switch to python 3.5 (no gdal in 3.6)
 RUN conda create -y -n py35 python=3.5 libgdal gdal jpeg=8d netcdf4 matplotlib pandas pyproj
 COPY ./ app/
-RUN cd app/data && make
+RUN cd data && make
 ENV PATH /opt/conda/bin:$PATH
 # not sure what this is
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
