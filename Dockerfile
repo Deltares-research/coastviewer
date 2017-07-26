@@ -15,4 +15,4 @@ RUN cd app/data && make
 ENV PATH /opt/conda/bin:$PATH
 # not sure what this is
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
-CMD [ "python" "app/app/app.py" ]
+CMD [ "coastviewer" ]
