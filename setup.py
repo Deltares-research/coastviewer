@@ -29,7 +29,7 @@ test_requirements = [
 setup(
     name='coastviewer',
     version='0.1.2',
-    description="Coastt Viewer, the backend for the coast viewer. A tool to visualize coastal data.",
+    description="Coast Viewer, the backend for the coast viewer. A tool to visualize coastal data.",
     long_description=readme + '\n\n' + history,
     author="Fedor Baart",
     author_email='fedor.baart@deltares.nl',
