@@ -16,5 +16,6 @@ ENV PATH /opt/conda/envs/py35/bin:$PATH
 RUN cd app && pip install -r requirements.txt && pip install -e .
 # not sure what this is
 WORKDIR app
+EXPOSE 5000
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "coastviewer" ]
