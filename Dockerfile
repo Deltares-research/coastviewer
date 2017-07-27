@@ -13,7 +13,8 @@ RUN conda create -y -n py35 python=3.5 libgdal gdal jpeg=8d netcdf4 matplotlib p
 COPY ./ app/
 RUN cd app/data && make
 ENV PATH /opt/conda/envs/py35/bin:$PATH
-RUN cd app && pip install -e .
+RUN cd app && pip install -r requirements.txt && pip install -e .
 # not sure what this is
+WORKDIR app
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "coastviewer" ]
