@@ -71,6 +71,18 @@ def eeg(id: int) -> str:
     return stream.getvalue()
 
 
+def indicators(id: int) -> str:
+    data = datasets.get_transect_data(int(id))
+    data_mkl = datasets.get_mkl_df(int(id))
+    data_mean_water = datasets.get_mean_water_df(int(id))
+    data_dune_foot = datasets.get_dune_foot_df(int(id))
+    data_nourishment_grid = datasets.get_nourishment_grid_df(int(id))
+    fig, ax = plots.indicators(transect=data,mkl=data_mkl,mean_water=data_mean_water,dune_foot=data_dune_foot,nourishment=data_nourishment_grid)
+    stream = io.BytesIO()
+    fig.savefig(stream)
+    return stream.getvalue()
+
+
 def styles(poly_alpha: float, outline: int, colormap: str) -> str:
     """return style information"""
 

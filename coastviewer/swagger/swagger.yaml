@@ -68,7 +68,7 @@ paths:
       parameters:
       - name: "id"
         in: "path"
-        description: "identifcation for transect"
+        description: "identification for transect"
         required: true
         type: "string"
       responses:
@@ -93,7 +93,7 @@ paths:
       parameters:
       - name: "id"
         in: "path"
-        description: "identifcation for transect"
+        description: "identification for transect"
         required: true
         type: "integer"
       - in: query
@@ -167,7 +167,7 @@ paths:
       parameters:
       - name: "id"
         in: "path"
-        description: "identifcation for transect"
+        description: "identification for transect"
         required: true
         type: "integer"
       responses:
@@ -192,7 +192,32 @@ paths:
       parameters:
       - name: "id"
         in: "path"
-        description: "identifcation for transect"
+        description: "identification for transect"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+        400:
+          description: "bad input parameter"
+      x-tags:
+      - tag: "developers"
+  /transects/{id}/plot/indicators:
+    get:
+      tags:
+      - "developers"
+      summary: "get indicators in time"
+      description: "Get indicators in time\n"
+      operationId: "coastviewer.controllers.indicators"
+      produces:
+      - "image/png"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "identification for transect"
         required: true
         type: "integer"
       responses:

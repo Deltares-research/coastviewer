@@ -75,3 +75,61 @@ def eeg(data):
     date_formatter = matplotlib.dates.AutoDateFormatter(date_locator)
     ax.yaxis.set_major_formatter(date_formatter)
     return fig, ax
+
+
+def indicators(transect,mkl,mean_water,dune_foot,nourishment):
+    mw_t = mean_water['time']
+    mhw_y = mean_water_df['mean_high_water_cross']
+    mlw_y = mean_water_df['mean_low_water_cross']
+    df_t = dune_foot['time']
+    df3_y = dune_foot['dune_foot_threeNAP_cross']
+    dfu_y = dune_foot['dune_foot_upperMKL_cross']
+    n_t = nourishment['time']
+    n_y = nourishment.drop('time', axis=1) 
+
+    fig, ax = plt.subplots(3, figsize=(13, 13), sharex=True)
+    #ax[0].set_title('Coastal Indicators')
+    ax[0].plot(mw_t, mhw_y,'o',alpha=0.7,label='Mean High Water')
+    ax[0].hold(True)
+    ax[0].grid(True)
+    ax[0].plot(mw_t, mlw_y,'o',alpha=0.7,label='Mean Low Water')
+    ax[1].plot(df_t, df3_y,'o',alpha=0.7, label='Dune Foot 3NAP')
+    ax[1].hold(True)
+    ax[1].plot(df_t, dfu_y,'o',alpha=0.7, label='Dune Foot MKL')
+    ax[1].grid(True)
+    ax[2].grid(True)
+    color=['yellow','blue','orange','red']
+    lab=['beach', 'shoreface','dune','other']
+    boxes = [[],[],[],[]]
+    ii=-150 # distance if overlapping
+    for cc,ll,box in zip(color, lab, boxes):
+        ii = ii+50; 
+        for tt, yy in zip(n_t.reset_index()['time'], n_y.reset_index()[str('volume_'+ll)]):
+            startTime = tt.to_pydatetime()
+            start = matplotlib.dates.date2num(startTime)
+            r=matplotlib.patches.Rectangle((start+ii,0),width=365,height=yy,facecolor=cc, edgecolor='black', alpha=0.5,label=ll)
+            box.append(r) # durationnnnnnnn of one year
+            pc = matplotlib.collections.PatchCollection(box,facecolor=cc, edgecolor='black', alpha=0.5)
+        ax[2].add_collection(pc)
+
+    # set the x,y axis
+    ax[0].set_xlim(np.min(mw_t), np.max(mw_t))
+    ax[1].set_xlim(np.min(mw_t), np.max(mw_t))
+    ax[2].set_xlim(np.min(mw_t), np.max(mw_t))
+    ax[2].set_ylim(0, np.max(np.max(n_y))+50)
+
+    # set axis labels
+    ax[0].set_ylabel('Cross shore distance [m]')
+    ax[1].set_ylabel('Cross shore distance [m]')
+    ax[2].set_ylabel('Nourishments [$m^3/m$]')
+    ax[2].set_xlabel('Measurement time [y]')
+
+    # set legend
+    ax[0].legend(loc='upper left')
+    ax[1].legend(loc='upper left')
+    ax[2].legend(tuple([bb[0] for bb in boxes]),tuple(lab),loc='upper left')
+
+    date_locator = matplotlib.dates.AutoDateLocator()
+    date_formatter = matplotlib.dates.AutoDateFormatter(date_locator)
+    return fig, ax
+

@@ -227,3 +227,161 @@ def fill(z):
     filled_z = np.ma.apply_along_axis(fill_space, 1, z)
     filled_z = fill_time(filled_z)
     return filled_z
+
+def get_mean_water_df(id_=7003900):
+    transect_idx = np.searchsorted(ids, id_)
+
+    variables = {
+        'mean_high_water_cross': {"var": 'mean_high_water_cross', "slice": np.s_[:, transect_idx]},
+        'mean_low_water_cross': {"var": 'mean_low_water_cross', "slice": np.s_[:, transect_idx]},
+        "t": {"var": 'time', "slice": np.s_[:]}
+    }
+    data = {}
+    with netCDF4.Dataset(DATASETS['mhw_mlw']) as ds:
+        for var, props in variables.items():
+            data[var] = ds.variables[props['var']][props['slice']]
+        time_units = ds.variables['time'].units
+    data['time'] = netCDF4.num2date(data['t'], time_units)
+
+    shoreline_df = pd.DataFrame(data)
+    return shoreline_df
+
+def get_dune_foot_df(id_=7003900):
+    transect_idx = np.searchsorted(ids, id_)
+
+    variables = {
+        'dune_foot_upperMKL_cross': {"var": 'dune_foot_upperMKL_cross', "slice": np.s_[:, transect_idx]},
+        'dune_foot_threeNAP_cross': {"var": 'dune_foot_threeNAP_cross', "slice": np.s_[:, transect_idx]},
+        "t": {"var": 'time', "slice": np.s_[:]}
+    }
+    data = {}
+    with netCDF4.Dataset(DATASETS['DF']) as ds:
+        for var, props in variables.items():
+            data[var] = ds.variables[props['var']][props['slice']]
+        time_units = ds.variables['time'].units
+    data['time'] = netCDF4.num2date(data['t'], time_units)
+
+    shoreline_df = pd.DataFrame(data)
+    return shoreline_df
+
+
+def get_nourishment_grid_df(id_=7003900):
+    transect_idx = np.searchsorted(ids, id_)
+    variables = {
+        'type': {"var": 'type', "slice": np.s_[:]},
+        "volume": {"var": "volume", "slice": np.s_[transect_idx,:,:]},
+        "time_num_start": {"var": "time_start", "slice": np.s_[transect_idx,:,:]},
+        "time_num_end": {"var": "time_end", "slice": np.s_[transect_idx,:,:]},
+        "t": {"var": 'time', "slice": np.s_[:]}
+    }
+
+    data = {}
+    with netCDF4.Dataset(DATASETS['nourishments']) as ds:
+        for var, props in variables.items():
+            data[var] = ds.variables[props['var']][props['slice']]
+        time_units = ds.variables['time'].units
+        time_start_units = ds.variables['time_start'].units
+        time_end_units = ds.variables['time_start'].units # time_end had a bug
+    data["time_start"] = netCDF4.num2date(data["time_num_start"], time_start_units)
+    data["time_end"] = netCDF4.num2date(data["time_num_end"], time_end_units)
+    data['time'] = netCDF4.num2date(data['t'], time_units)
+
+    short_description = {
+            1: "beach",
+            2: "shoreface",
+            3: "dune",
+            4: "other"
+        }
+
+    cols_vol = ['volume_'+ityp for ityp in list(short_description.values())]
+    cols_tstart = ['time_start_'+ityp for ityp in list(short_description.values())]
+    cols_tend = ['time_end_'+ityp for ityp in list(short_description.values())]
+    del data["type"]
+    nourishment_grid_df = pd.DataFrame(np.c_[np.array(data['volume']),
+                                             np.array(data['time_start']),
+                                             np.array(data['time_end']),
+                                             np.array(data['time'])
+                                            ],columns=np.r_[cols_vol,cols_tstart,cols_tend,['time']])
+    nourishment_grid_df['time'] = nourishment_grid_df['time'].apply(lambda x: pd.Timestamp(x)) # make it a pandas timestamp
+    nourishment_grid_df = nourishment_grid_df.dropna(
+        subset=['time_start_beach', 'time_start_shoreface', 'time_start_dune', 'time_start_other'], 
+        how='all')
+
+    return nourishment_grid_df
+
+def get_nourishment_df(id_=7003900):
+    transect_idx = np.searchsorted(ids, id_)
+    variables = {
+        'n_code': {"var": 'n_code', "slice": np.s_[:]},
+        "date": {"var": "date", "slice": np.s_[:]},
+        "stretch": {"var": "stretch", "slice": np.s_[:]},
+        "kustvak": {"var": "kustvak", "slice": np.s_[:]},
+        "location": {"var": "location", "slice": np.s_[:]},
+        "type_flag": {"var": "type_flag", "slice": np.s_[:]},
+        "authorizing_department": {"var": "authorizing_department", "slice": np.s_[:]},
+        "purpose": {"var": "purpose", "slice": np.s_[:]},
+        "coastal_defense": {"var": "coastal_defense", "slice": np.s_[:]},
+        "vol": {"var": "vol", "slice": np.s_[:]},
+        "vol_per_metre": {"var": "vol_per_metre", "slice": np.s_[:]}
+    }
+
+    data = {}
+    with netCDF4.Dataset(DATASETS['nourishments']) as ds:
+        for var, props in variables.items():
+            data[var] = ds.variables[props['var']][props['slice']]
+        date_units = ds.variables["date"].units
+    for key, val in data.items():
+        if val.dtype.kind in {'U', 'S'}:
+            data[key] = netCDF4.chartostring(val)
+    # split into 2 columns
+    data["date_start"] = netCDF4.num2date(data["date"][:, 0], date_units)
+    data["date_end"] = netCDF4.num2date(data["date"][:, 1], date_units)
+    del data["date"]
+    data["stretch_start"] = data["stretch"][:, 0]
+    data["stretch_end"] = data["stretch"][:, 1]
+    del data["stretch"]
+
+    data['type_flag']
+    long_description = {
+        1: "strandsuppletie, strandsuppletie banket, strandsuppletie+vooroever, banket, strand (zwakke sch.), strand-duinsuppletie, strandsuppletie+duinverzwaring", 
+        2: "onderwatersuppletie, vooroever, vooroeversuppletie, geulwand, geulwandsuppletie", 
+        3: "duin, duinverzwaring, landwaartse duinverzwaring, zeewaartse duinverzwaring, dijkverzwaring, duinverzwaring en strandsuppletie, zeewaartse duinverzwaring en strandsuppletie", 
+        4: "other"
+    }
+    short_description = {
+        1: "beach",
+        2: "shoreface",
+        3: "dune",
+        4: "other"
+    }
+    data['type'] = np.fromiter((short_description[x] for x in data["type_flag"]), dtype='S10')
+    nourishment_df = pd.DataFrame(data=data)
+    return nourishment_df
+
+
+def get_mkl_df(id_=7003900):
+
+    transect_idx = np.searchsorted(ids, id_)
+    variables = {
+        'momentary_coastline': {"var": 'momentary_coastline', "slice": np.s_[:, transect_idx]},
+        'time_num': {"var": 'time', "slice": np.s_[:]},
+        'time_MKL_num': {"var": 'time_MKL', "slice": np.s_[:, transect_idx]},
+        'high_boundary_MKL': {"var": 'high_boundary_MKL', "slice": np.s_[:, transect_idx]},
+        'low_boundary_MKL': {"var": 'low_boundary_MKL', "slice": np.s_[:, transect_idx]},
+        'seaward_boundary_MKL': {"var": 'seaward_boundary_MKL', "slice": np.s_[:, transect_idx]},
+        'landward_boundary_MKL': {"var": 'landward_boundary_MKL', "slice": np.s_[:, transect_idx]},
+        'volume_MKL': {"var": 'volume_MKL', "slice": np.s_[:, transect_idx]}
+    }
+    data = {}
+    with netCDF4.Dataset(DATASETS['mkl']) as ds:
+        for var, props in variables.items():
+            data[var] = ds.variables[props['var']][props['slice']]
+        date_units = ds.variables["time_MKL"].units
+
+    data['time'] = netCDF4.num2date(data['time_num'], date_units)
+
+    mkl_df = pd.DataFrame(data)
+    mkl_df = mkl_df.dropna()
+    mkl_df['time_MKL'] = netCDF4.num2date(mkl_df['time_MKL_num'].values, date_units)
+    return mkl_df
+
