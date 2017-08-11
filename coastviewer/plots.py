@@ -2,20 +2,26 @@ import pathlib
 import matplotlib.pyplot as plt
 import matplotlib.cm
 import numpy as np
-import netCDF4
 import cmocean
-import colorcet
 import scipy.interpolate
 
 
 import coastviewer.extra_cm
 
+
 def time_map(data):
     fig, ax = plt.subplots(figsize=(8, 3))
-    pc = ax.pcolorfast(data['cross_shore'], data['time_num'], data['filled_z'], vmin=-20, vmax=20, cmap=coastviewer.extra_cm.GMT_drywet_r)
-    cont = ax.contour(
-        data['cross_shore'], 
-        data['time_num'], 
+    pc = ax.pcolorfast(
+        data['cross_shore'],
+        data['time_num'],
+        data['filled_z'],
+        vmin=-20,
+        vmax=20,
+        cmap=coastviewer.extra_cm.GMT_drywet_r
+    )
+    ax.contour(
+        data['cross_shore'],
+        data['time_num'],
         data['z'],
         levels=[data['mean_low_water'], data['mean_high_water'], 3],
         cmap='PuBu'
@@ -34,6 +40,7 @@ def time_map(data):
     ax.yaxis.set_major_formatter(date_formatter)
     return fig, ax
 
+
 def eeg(data):
     t = data['time_num']
     x = data['cross_shore']
@@ -45,15 +52,16 @@ def eeg(data):
     segs = []
     ticklocs = []
     for i, row in enumerate(z):
-        # add a line, scale it by the y axis each plot has a range of the elevation divided by 7.5 (~2 years up and down)
+        # add a line, scale it by the y axis each plot has a range of the
+        # elevation divided by 7.5 (~2 years up and down)
         pts = np.c_[
             x[~z[i, :].mask],
-            z[i, ~z[i,:].mask].filled()*365.0/7.5
+            z[i, ~z[i, :].mask].filled()*365.0/7.5
         ]
 
         segs.append(pts)
 
-        ticklocs.append(t[i]) # use date for yloc
+        ticklocs.append(t[i])   # use date for yloc
     # create an offset for each line
     offsets = np.zeros((nrows, 2), dtype=float)
     offsets[:, 1] = ticklocs
@@ -77,7 +85,7 @@ def eeg(data):
     return fig, ax
 
 
-def indicators(transect,mkl,bkltkltnd,mean_water,dune_foot,nourishment):
+def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, nourishment):
     from matplotlib.patches import Rectangle
     mkl_t = mkl['time_MKL']
     mkl_y = mkl['momentary_coastline']
@@ -95,10 +103,10 @@ def indicators(transect,mkl,bkltkltnd,mean_water,dune_foot,nourishment):
 
     fig, ax = plt.subplots(3, figsize=(13, 13), sharex=True)
     #ax[0].set_title('Coastal Indicators')
-    ax[0].plot(bkltkltnd_t, bkl_y,'o',color='purple',alpha=0.7,label='Basal Coastline')
+    ax[0].plot(bkltkltnd_t, bkl_y, 'o', color='purple', alpha=0.7, label='Basal Coastline')
     ax[0].hold(True)
     ax[0].grid(True)
-    ax[0].plot(bkltkltnd_t, tkl_y,'o',color='green',alpha=0.7,label='Testing Coastline')
+    ax[0].plot(bkltkltnd_t, tkl_y, 'o',color='green',alpha=0.7,label='Testing Coastline')
     ax[0].plot(mkl_t, mkl_y,'o',color='blue',alpha=0.7, label='Momentary Coastline')
     ax[1].plot(mw_t, mhw_y,'ro',alpha=0.7,label='Mean High Water')
     ax[1].hold(True)
@@ -107,19 +115,19 @@ def indicators(transect,mkl,bkltkltnd,mean_water,dune_foot,nourishment):
     ax[1].plot(df_t, df3_y,'go',alpha=0.7, label='Dune Foot 3NAP')
     #ax[1].plot(df_t, dfu_y,'o',alpha=0.7, label='Dune Foot MKL')
     ax[2].grid(True)
-    color=['yellow','blue','orange','red']
-    lab=['beach', 'shoreface','dune','other']
-    boxes = [[],[],[],[]]
-    ii=-150 # distance if overlapping
-    for cc,ll,box in zip(color, lab, boxes):
-        ii = ii+50; 
+    color = ['yellow','blue', 'orange', 'red']
+    lab = ['beach', 'shoreface', 'dune','other']
+    boxes = [[], [], [], []]
+    ii = -150 # distance if overlapping
+    for cc, ll, box in zip(color, lab, boxes):
+        ii = ii + 50;
         for tt, yy in zip(n_t.reset_index()['time'], n_y.reset_index()[str('volume_'+ll)]):
             startTime = tt.to_pydatetime()
             start = matplotlib.dates.date2num(startTime)
-            r=Rectangle((start+ii,0),width=365,height=yy,facecolor=cc, edgecolor='black', alpha=0.5,label=ll)
-            box.append(r) # durationnnnnnnn of one year
-            pc = matplotlib.collections.PatchCollection(box,facecolor=cc, edgecolor='black', alpha=0.5)
-        ax[2].add_collection(pc)
+            r = Rectangle((start+ii,0),width=365,height=yy,facecolor=cc, edgecolor='black', alpha=0.5,label=ll)
+            box.append(r)       # durationnnnnnnn of one year
+            pc = matplotlib.collections.PatchCollection(box, facecolor=cc, edgecolor='black', alpha=0.5)
+            ax[2].add_collection(pc)
 
     # set the x,y axis
     ax[0].set_xlim(np.min(mw_t), np.max(mw_t))
@@ -136,7 +144,7 @@ def indicators(transect,mkl,bkltkltnd,mean_water,dune_foot,nourishment):
     # set legend
     ax[0].legend(loc='upper left')
     ax[1].legend(loc='upper left')
-    ax[2].legend(tuple([bb[0] for bb in boxes]),tuple(lab),loc='upper left')
+    # ax[2].legend(tuple([bb[0] for bb in boxes]), tuple(lab), loc='upper left')
 
     date_locator = matplotlib.dates.AutoDateLocator()
     date_formatter = matplotlib.dates.AutoDateFormatter(date_locator)
