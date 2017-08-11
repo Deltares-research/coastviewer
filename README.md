@@ -62,4 +62,6 @@ coastviewer
 Load the link [http://localhost:5000/coastviewer/1.1.0/transects/kml](transects/kml) in Google Earth (add network link).
 
 # Test
-Load the [http://localhost:5000/coastviewer/1.1.0/ui](test ui) in your browser.
+Load the [http://localhost:5000/coastviewer/1.1.0/ui](test ui) in your browser. for the integration tests.
+Run `make test` for the unit tests.
+Run `make lint` for code formatting checks.
