@@ -1,11 +1,11 @@
 
 connexion
-flask
+flask>=0.12
 matplotlib
 netCDF4
 numpy
 pandas
 pyproj
 cmocean
-scipy
+scipy>=0.19
 colorcet
