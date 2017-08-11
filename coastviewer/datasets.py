@@ -23,8 +23,8 @@ DATASETS = {
     'DF': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/DuneFoot/DF.nc',  # nopep8
     'mkl': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/MKL.nc',  # nopep8
     'strandbreedte': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/strandbreedte/strandbreedte.nc',  # nopep8
-    'strandlijnen': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/MHW_MLW/MHW_MLW.nc',  # nopep8
-    'suppleties': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/suppleties/suppleties.nc',  # nopep8
+    'mhw_mlw': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/MHW_MLW/MHW_MLW.nc',  # nopep8
+    'nourishments': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/suppleties/nourishments.nc',  # nopep8
     'faalkans': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/faalkans_PC-Ring/faalkans.nc'  # nopep8
 }
 
@@ -198,7 +198,7 @@ def get_transect_data(id_=7003900):
     data['time'] = netCDF4.num2date(data['t'], time_units)
     data['filled_z'] = fill(data['z'])
     data['time_num'] = matplotlib.dates.date2num(data['time'])
-    data['areaname'] = netCDF4.chartostring(data['areaname']).item().decode().strip()
+    data['areaname'] = netCDF4.chartostring(data['areaname']).item().strip()
     data['id'] = id_
     return data
 

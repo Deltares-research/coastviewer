@@ -79,8 +79,8 @@ def eeg(data):
 
 def indicators(transect,mkl,mean_water,dune_foot,nourishment):
     mw_t = mean_water['time']
-    mhw_y = mean_water_df['mean_high_water_cross']
-    mlw_y = mean_water_df['mean_low_water_cross']
+    mhw_y = mean_water['mean_high_water_cross']
+    mlw_y = mean_water['mean_low_water_cross']
     df_t = dune_foot['time']
     df3_y = dune_foot['dune_foot_threeNAP_cross']
     dfu_y = dune_foot['dune_foot_upperMKL_cross']
