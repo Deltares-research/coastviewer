@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
         <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+        <link rel ="stylesheet" href="{{url_for('static.static', filename='styles.css')}}">
     </head>
     <body>
         <!--[if lt IE 8]>
@@ -25,12 +26,29 @@
             <div class="mdl-tabs__panel is-active" id="info-panel">
               {% include 'info-table.html' %}
             </div>
+
             <div class="mdl-tabs__panel" id="timeseries-panel">
-              <p>Timeseries</p>
+              <p>Cross-shore profile of Transect {{transect['transect']['id']}} over time.</p>
+              <a href="{{'/coastviewer/1.1.0/transects/%s/plot/eeg' % transect['transect']['id']}}" target="_blank">
+                <img src="{{'/coastviewer/1.1.0/transects/%s/plot/eeg' % transect['transect']['id']}}"/>
+              </a>
+              <p>Topographic map and mean high/low waterlines contour of Transect {{transect['transect']['id']}} over time.</p>
+              <a href="{{'/coastviewer/1.1.0/transects/%s/plot/timemap' % transect['transect']['id']}}" target="_blank">
+                <img src="{{'/coastviewer/1.1.0/transects/%s/plot/timemap' % transect['transect']['id']}}"/>
+              </a>
             </div>
+
             <div class="mdl-tabs__panel" id="indicators-panel">
               <p>Indicators</p>
+              <a href="{{'/coastviewer/1.1.0/transects/%s/plot/indicators' % transect['transect']['id']}}" target="_blank">
+                <img src="{{'/coastviewer/1.1.0/transects/%s/plot/indicators' % transect['transect']['id']}}"/>
+              </a>
             </div>
+            <footer>
+              source: Rijkswaterstaat
+              <img src="http://publicwiki.deltares.nl/download/attachments/42401895/lozenges.png" align="right"/>
+              <img src="http://publicwiki.deltares.nl/download/attachments/131074/global.logo?version=1&modificationDate=1315800362000" align="right" width="87"/>
+            </footer>
         </div>
     </body>
 </html>

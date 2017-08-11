@@ -8,6 +8,7 @@ import functools
 import click
 import connexion
 
+import flask
 from . import controllers
 
 logger = logging.getLogger(__name__)
@@ -27,6 +28,7 @@ def make_app():
             'title': title
         }
     )
+
     logger.debug(api)
 
     # make sure the function keeps the __name__ 'index' and __docs__
@@ -35,7 +37,8 @@ def make_app():
         functools.partial(controllers.index, api=api)
     )
     app.add_url_rule('/', 'index', index)
-
+    static = flask.Blueprint('static', __name__, static_folder='static')
+    app.app.register_blueprint(static)
     return app
 
 

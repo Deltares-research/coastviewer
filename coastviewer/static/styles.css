@@ -1,28 +1,34 @@
-/** CSS Styles */
-
-#getting-started .intro {
-  display: flex;
-  justify-content: center;
-  margin: 4rem 0;
+#timeseries-panel.img #indicators-panel.img {
+  width: 100%;
 }
 
-#getting-started .card {
-  border-radius: 0;
-  margin-bottom: 5rem;
+footer.img {
+  width: "5";
 }
 
-#getting-started a {
-  color: inherit;
+footer {
+    display: block;
 }
 
-#getting-started .list {
-  margin: 0 2rem !important;
+.dataframe {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
 }
 
-#getting-started main {
-  text-align: center;
+.dataframe td, .dataframe th {
+    border: 1px solid #ddd;
+    padding: 8px;
 }
 
-#getting-started h2 {
-  text-align: center;
+.dataframe tr:nth-child(even){background-color: #f2f2f2;}
+
+.dataframe tr:hover {background-color: #ddd;}
+
+.dataframe th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
 }

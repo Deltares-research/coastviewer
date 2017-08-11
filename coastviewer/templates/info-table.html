@@ -1,2 +1,2 @@
 <h3>Transect {{ transect['transect']['id'] }}</h3>
-{{ transect.to_html() | safe }}
+{{transect['transect'][['id', 'areacode','areaname', 'mean_high_water', 'mean_low_water', 'rsp_lat', 'rsp_lon']].to_frame().to_html() | safe}}
