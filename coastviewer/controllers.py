@@ -18,7 +18,7 @@ def index(api: object) -> str:
     return flask.render_template("main.html", api=api)
 
 
-def transect(id) -> object:
+def transect(id: int) -> object:
     logger.info(flask.request)
     return {}
 
