@@ -31,9 +31,13 @@ On linux/ubuntu systems:
 - apt-get install python35
 
 On windows systems:
-Install GDAL, see tutorial from https://sandbox.idre.ucla.edu/sandbox/tutorials/installing-gdal-for-windows
-Install python 3.5 from https://www.python.org/downloads/release/python-350/
+Install GDAL, see tutorial from https://sandbox.idre.ucla.edu/sandbox/tutorials/installing-gdal-for-windows/.
 
+Install python 3.5 from https://www.python.org/downloads/release/python-350/.
+
+``` shell
+pip install -e .
+```
 Install the requirements: 
 
 ``` shell
