@@ -77,7 +77,13 @@ def eeg(data):
     return fig, ax
 
 
-def indicators(transect,mkl,mean_water,dune_foot,nourishment):
+def indicators(transect,mkl,bkltkltnd,mean_water,dune_foot,nourishment):
+    from matplotlib.patches import Rectangle
+    mkl_t = mkl['time_MKL']
+    mkl_y = mkl['momentary_coastline']
+    bkltkltnd_t = bkltkltnd['time']
+    bkl_y = bkltkltnd['basal_coastline']
+    tkl_y = bkltkltnd['testing_coastline']
     mw_t = mean_water['time']
     mhw_y = mean_water['mean_high_water_cross']
     mlw_y = mean_water['mean_low_water_cross']
@@ -85,18 +91,21 @@ def indicators(transect,mkl,mean_water,dune_foot,nourishment):
     df3_y = dune_foot['dune_foot_threeNAP_cross']
     dfu_y = dune_foot['dune_foot_upperMKL_cross']
     n_t = nourishment['time']
-    n_y = nourishment.drop('time', axis=1) 
+    n_y = nourishment.drop('time', axis=1)
 
     fig, ax = plt.subplots(3, figsize=(13, 13), sharex=True)
     #ax[0].set_title('Coastal Indicators')
-    ax[0].plot(mw_t, mhw_y,'o',alpha=0.7,label='Mean High Water')
+    ax[0].plot(bkltkltnd_t, bkl_y,'o',color='purple',alpha=0.7,label='Basal Coastline')
     ax[0].hold(True)
     ax[0].grid(True)
-    ax[0].plot(mw_t, mlw_y,'o',alpha=0.7,label='Mean Low Water')
-    ax[1].plot(df_t, df3_y,'o',alpha=0.7, label='Dune Foot 3NAP')
+    ax[0].plot(bkltkltnd_t, tkl_y,'o',color='green',alpha=0.7,label='Testing Coastline')
+    ax[0].plot(mkl_t, mkl_y,'o',color='blue',alpha=0.7, label='Momentary Coastline')
+    ax[1].plot(mw_t, mhw_y,'ro',alpha=0.7,label='Mean High Water')
     ax[1].hold(True)
-    ax[1].plot(df_t, dfu_y,'o',alpha=0.7, label='Dune Foot MKL')
     ax[1].grid(True)
+    ax[1].plot(mw_t, mlw_y,'bo',alpha=0.7,label='Mean Low Water')
+    ax[1].plot(df_t, df3_y,'go',alpha=0.7, label='Dune Foot 3NAP')
+    #ax[1].plot(df_t, dfu_y,'o',alpha=0.7, label='Dune Foot MKL')
     ax[2].grid(True)
     color=['yellow','blue','orange','red']
     lab=['beach', 'shoreface','dune','other']
@@ -107,7 +116,7 @@ def indicators(transect,mkl,mean_water,dune_foot,nourishment):
         for tt, yy in zip(n_t.reset_index()['time'], n_y.reset_index()[str('volume_'+ll)]):
             startTime = tt.to_pydatetime()
             start = matplotlib.dates.date2num(startTime)
-            r=matplotlib.patches.Rectangle((start+ii,0),width=365,height=yy,facecolor=cc, edgecolor='black', alpha=0.5,label=ll)
+            r=Rectangle((start+ii,0),width=365,height=yy,facecolor=cc, edgecolor='black', alpha=0.5,label=ll)
             box.append(r) # durationnnnnnnn of one year
             pc = matplotlib.collections.PatchCollection(box,facecolor=cc, edgecolor='black', alpha=0.5)
         ax[2].add_collection(pc)
@@ -132,4 +141,3 @@ def indicators(transect,mkl,mean_water,dune_foot,nourishment):
     date_locator = matplotlib.dates.AutoDateLocator()
     date_formatter = matplotlib.dates.AutoDateFormatter(date_locator)
     return fig, ax
-

@@ -385,3 +385,24 @@ def get_mkl_df(id_=7003900):
     mkl_df['time_MKL'] = netCDF4.num2date(mkl_df['time_MKL_num'].values, date_units)
     return mkl_df
 
+
+def get_bkltkltnd_df(id_=7003900):
+
+    transect_idx = np.searchsorted(ids, id_)
+    variables = {
+        'basal_coastline': {"var": 'basal_coastline', "slice": np.s_[:, transect_idx]},
+        'time_num': {"var": 'time', "slice": np.s_[:]},
+        'testing_coastline': {"var": 'testing_coastline', "slice": np.s_[:, transect_idx]},
+        'trend': {"var": 'trend', "slice": np.s_[:, transect_idx]}
+    }
+    data = {}
+    with netCDF4.Dataset(DATASETS['BKL_TKL_TND']) as ds:
+        for var, props in variables.items():
+            data[var] = ds.variables[props['var']][props['slice']]
+        date_units = ds.variables["time"].units
+    
+    data['time'] = netCDF4.num2date(data['time_num'], date_units)
+
+    bkltkltnd_df = pd.DataFrame(data)
+    bkltkltnd_df = bkltkltnd_df.dropna()
+    return bkltkltnd_df
