@@ -3,7 +3,7 @@ import logging
 import pathlib
 
 import netCDF4
-import pandas
+import pandas as pd
 import numpy as np
 import pyproj
 import matplotlib.cm
@@ -54,7 +54,7 @@ def overview():
         for var, props in variables.items():
             data[var] = ds.variables[props['var']][props['slice']]
     # put in a table
-    df = pandas.DataFrame(data=data)
+    df = pd.DataFrame(data=data)
     delta = 0.002
     df['north'] = df['rsp_lat'] + delta
     df['south'] = df['rsp_lat'] - delta
@@ -147,7 +147,7 @@ def get_transect(id_, exaggeration=1.0, lift=0.0, move=0.0):
         item = {}
 
         lon, lat = move_by(data['lon'], data['lat'], distance=i*move)
-        coords = pandas.DataFrame(data=dict(
+        coords = pd.DataFrame(data=dict(
             lon=lon,
             lat=lat,
             z=row * exaggeration + lift
@@ -166,7 +166,7 @@ def get_transect(id_, exaggeration=1.0, lift=0.0, move=0.0):
         item['properties']['begin_date'] = date
         item['properties']['end_date'] = date.replace(year=date.year+1)
         years.append(item)
-    years = pandas.DataFrame.from_records(years)
+    years = pd.DataFrame.from_records(years)
     transect = {
         "years": years,
         "id": id_
