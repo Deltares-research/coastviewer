@@ -17,35 +17,19 @@
             <![endif]-->
         <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
             <div class="mdl-tabs__tab-bar">
-                <a href="#starks-panel" class="mdl-tabs__tab is-active">Starks</a>
-                <a href="#lannisters-panel" class="mdl-tabs__tab">Lannisters</a>
-                <a href="#targaryens-panel" class="mdl-tabs__tab">Targaryens</a>
+                <a href="#info-panel" class="mdl-tabs__tab is-active">Info</a>
+                <a href="#timeseries-panel" class="mdl-tabs__tab">Timeseries</a>
+                <a href="#indicators-panel" class="mdl-tabs__tab">Indicators</a>
             </div>
 
-            <div class="mdl-tabs__panel is-active" id="starks-panel">
-                <ul>
-                    <li>Eddard</li>
-                    <li>Catelyn</li>
-                    <li>Robb</li>
-                    <li>Sansa</li>
-                    <li>Brandon</li>
-                    <li>Arya</li>
-                    <li>Rickon</li>
-                </ul>
+            <div class="mdl-tabs__panel is-active" id="info-panel">
+              {% include 'info-table.html' %}
             </div>
-            <div class="mdl-tabs__panel" id="lannisters-panel">
-                <ul>
-                    <li>Tywin</li>
-                    <li>Cersei</li>
-                    <li>Jamie</li>
-                    <li>Tyrion</li>
-                </ul>
+            <div class="mdl-tabs__panel" id="timeseries-panel">
+              <p>Timeseries</p>
             </div>
-            <div class="mdl-tabs__panel" id="targaryens-panel">
-                <ul>
-                    <li>Viserys</li>
-                    <li>Daenerys</li>
-                </ul>
+            <div class="mdl-tabs__panel" id="indicators-panel">
+              <p>Indicators</p>
             </div>
         </div>
     </body>

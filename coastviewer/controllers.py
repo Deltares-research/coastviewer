@@ -3,6 +3,7 @@ import datetime
 import io
 
 import flask
+import pandas as pd
 import matplotlib.cm
 import matplotlib.colors
 
@@ -49,7 +50,9 @@ def transect_kml(
 
 
 def transect_info(id: int) -> str:
-    return flask.render_template("info.html")
+    transect = datasets.get_transect_data(int(id))
+    transect_df = pd.Series(data=transect).to_frame('transect')
+    return flask.render_template("info.html", transect=transect_df)
 
 
 def time_map(id: int) -> str:

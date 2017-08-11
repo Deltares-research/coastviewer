@@ -179,12 +179,13 @@ def get_transect_data(id_=7003900):
         'lat': {"var": 'lat', "slice": np.s_[transect_idx, :]},
         'lon': {"var": 'lon', "slice": np.s_[transect_idx, :]},
         'z': {"var": 'altitude', "slice": np.s_[:, transect_idx, :]},
-        "t": {"var": 'time', "slice": np.s_[:]},
-        "cross_shore": {"var": "cross_shore", "slice": np.s_[:]},
+        't': {"var": 'time', "slice": np.s_[:]},
+        'cross_shore': {"var": "cross_shore", "slice": np.s_[:]},
         'mean_high_water': {"var": 'mean_high_water', "slice": np.s_[transect_idx]},
         'mean_low_water': {"var": 'mean_low_water', "slice": np.s_[transect_idx]},
-
-
+        'areacode': {"var": 'areacode', "slice": np.s_[transect_idx]},
+        'areaname': {"var": 'areaname', "slice": np.s_[transect_idx]},
+        'angle': {"var": 'angle', "slice": np.s_[transect_idx]},
     }
     data = {}
     with netCDF4.Dataset(DATASETS['transect']) as ds:
@@ -194,6 +195,8 @@ def get_transect_data(id_=7003900):
     data['time'] = netCDF4.num2date(data['t'], time_units)
     data['filled_z'] = fill(data['z'])
     data['time_num'] = matplotlib.dates.date2num(data['time'])
+    data['areaname'] = netCDF4.chartostring(data['areaname']).item().decode().strip()
+    data['id'] = id_
     return data
 
 def fill(z):

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Vuetify</title>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
+    <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet" type="text/css"></link>
+    <link href="styles.css" rel="stylesheet" type="text/css">
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
+  </head>
+  <body>
+    <div id="app">
+      <v-app>
+        <main>
+          <v-container fluid>
+            <page></page>
+          </v-container>
+        </main>
+      </v-app>
+    </div>
+
+    <script type="text/x-template" id="page">
+      <v-tabs dark fixed centered>
+        <v-tabs-bar slot="activators" class="cyan">
+          <v-tabs-slider class="yellow"></v-tabs-slider>
+          <v-tabs-item
+            v-for="i in items"
+            :key="i"
+            :href="'#tab-' + i"
+            >
+            {{ i }}
+          </v-tabs-item>
+        </v-tabs-bar>
+        <v-tabs-content
+          v-for="i in items"
+          :key="i"
+          :id="'tab-' + i"
+          >
+          <v-card flat>
+            <v-card-text>{{ text }}</v-card-text>
+          </v-card>
+        </v-tabs-content>
+      </v-tabs>
+
+    </script>
+
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
+    <script src="index.js">
+    </script>
+  </body>
+</html>
