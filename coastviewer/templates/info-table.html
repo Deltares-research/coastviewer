@@ -1,2 +1,6 @@
-<h3>Transect {{ transect['transect']['id'] }}</h3>
-{{transect['transect'][['id', 'areacode','areaname', 'mean_high_water', 'mean_low_water', 'rsp_lat', 'rsp_lon']].to_frame().to_html() | safe}}
+<div class="mdl-card mdl-shadow--2dp">
+  <div>
+  {{transect['transect'][['id', 'areacode','areaname', 'mean_high_water', 'mean_low_water', 'rsp_lat', 'rsp_lon']].to_frame().to_html(classes="mdl-data-table mdl-js-data-table mdl-shadow--2dp") | safe}}
+  </div>
+
+</div>

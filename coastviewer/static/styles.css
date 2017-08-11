@@ -1,34 +1,25 @@
-#timeseries-panel.img #indicators-panel.img {
+#timeseries-panel img, #indicators-panel img {
   width: 100%;
 }
 
-footer.img {
-  width: "5";
+body {
+    font-family: "Roboto", Arial, Helvetica, sans-serif;
 }
+/* .dataframe { */
+/*     font-family: "Roboto", Arial, Helvetica, sans-serif; */
+/*     border-collapse: collapse; */
+/*     width: 100%; */
+/* } */
 
-footer {
-    display: block;
-}
+/* .dataframe td, .dataframe th { */
+/*     border: 1px solid #ddd; */
+/*     padding: 8px; */
+/* } */
 
-.dataframe {
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-}
+/* .dataframe tr:nth-child(even){background-color: #f2f2f2;} */
 
-.dataframe td, .dataframe th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-.dataframe tr:nth-child(even){background-color: #f2f2f2;}
-
-.dataframe tr:hover {background-color: #ddd;}
+/* .dataframe tr:hover {background-color: #ddd;} */
 
 .dataframe th {
-    padding-top: 12px;
-    padding-bottom: 12px;
     text-align: left;
-    background-color: #4CAF50;
-    color: white;
 }
