@@ -173,6 +173,7 @@ def get_transect(id_, exaggeration=1.0, lift=0.0, move=0.0):
     }
     return transect
 
+
 def get_transect_data(id_=7003900):
     transect_idx = np.searchsorted(ids, id_)
     variables = {
@@ -186,6 +187,8 @@ def get_transect_data(id_=7003900):
         'areacode': {"var": 'areacode', "slice": np.s_[transect_idx]},
         'areaname': {"var": 'areaname', "slice": np.s_[transect_idx]},
         'angle': {"var": 'angle', "slice": np.s_[transect_idx]},
+        'rsp_lon': {"var": 'rsp_lon', "slice": np.s_[transect_idx]},
+        'rsp_lat': {"var": 'rsp_lat', "slice": np.s_[transect_idx]},
     }
     data = {}
     with netCDF4.Dataset(DATASETS['transect']) as ds:
