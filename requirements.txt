@@ -1,8 +1,7 @@
-
 connexion
 flask>=0.12
 matplotlib
-netCDF4
+netCDF4>=1.2
 numpy
 pandas
 pyproj
