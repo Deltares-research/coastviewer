@@ -1,55 +1,154 @@
-<!doctype html>
-<html class="no-js" lang="">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
-        <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-        <link rel ="stylesheet" href="{{url_for('static.static', filename='styles.css')}}">
-    </head>
-    <body>
-        <!--[if lt IE 8]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-            <![endif]-->
-        <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
-            <div class="mdl-tabs__tab-bar">
-                <a href="#info-panel" class="mdl-tabs__tab is-active">Info</a>
-                <a href="#timeseries-panel" class="mdl-tabs__tab">Timeseries</a>
-                <a href="#indicators-panel" class="mdl-tabs__tab">Indicators</a>
-            </div>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Vuetify</title>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
+    <!-- <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet" type="text/css"></link> -->
+    <link href="/static/node_modules/vuetify/dist/vuetify.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/styles.css" rel="stylesheet" type="text/css">
+    <script src="https://use.fontawesome.com/4ee6f65ee1.js"></script>
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
+  </head>
+  <body>
+    <div id="app">
+      <v-app>
+        <main>
+          <v-container fluid>
+            <info-page></info-page>
+          </v-container>
+        </main>
+        <v-footer>
+          <span><a href="https://www.rijkswaterstaat.nl/zakelijk/open-data">data</a> <a href="https://github.com/openearth/coastviewer">code</a> <a href="http://html5test.com">test</a></span> <span>@2017</span>
+        </v-footer>
+      </v-app>
+    </div>
 
-            <div class="mdl-tabs__panel is-active" id="info-panel">
-              {% include 'info-table.html' %}
-            </div>
+    <template id="info-page">
+      <v-layout column align-center>
+        <v-tabs light fixed centered>
+          <v-tabs-bar class="grey lighten-4" slot="activators">
+            <v-tabs-slider></v-tabs-slider>
+            <v-tabs-item href="#tab-info">Info</v-tabs-item>
+            <v-tabs-item href="#tab-timeseries">Timeseries</v-tabs-item>
+            <v-tabs-item href="#tab-nourishments">Nourishments</v-tabs-item>
+            <v-tabs-item href="#tab-simulations">Simulations</v-tabs-item>
+          </v-tabs-bar>
+          <v-tabs-content id="tab-info">
+            <v-layout>
+              <v-flex xs12 sm6 offset-sm3>
+                <v-card>
+                  <v-card-text>
+                    <v-card>
+                      <v-card-media src="{{ static_url }}" height="200px">
+                        <v-layout column class="media">
+                          <v-card-title>
+                            <v-spacer></v-spacer>
+                            <v-btn dark icon>
+                              <v-icon>more_vert</v-icon>
+                            </v-btn>
+                          </v-card-title>
+                          <v-spacer></v-spacer>
+                          <v-card-title class="white--text pl-5 pt-4">
+                            <div class="display-1 pl-5 pt-5">Transect {{ id }}</div>
+                          </v-card-title>
+                        </v-layout>
+                      </v-card-media>
 
-            <div class="mdl-tabs__panel" id="timeseries-panel">
-              <p>Cross-shore profile of Transect {{transect['transect']['id']}} over time.</p>
-              <a href="{{'/coastviewer/1.1.0/transects/%s/plot/eeg' % transect['transect']['id']}}" target="_blank">
-                <img src="{{'/coastviewer/1.1.0/transects/%s/plot/eeg' % transect['transect']['id']}}"/>
-              </a>
-              <p>Topographic map and mean high/low waterlines contour of Transect {{transect['transect']['id']}} over time.</p>
-              <a href="{{'/coastviewer/1.1.0/transects/%s/plot/timemap' % transect['transect']['id']}}" target="_blank">
-                <img src="{{'/coastviewer/1.1.0/transects/%s/plot/timemap' % transect['transect']['id']}}"/>
-              </a>
-            </div>
+                    </v-card>
+                    <v-list two-line>
+                      <v-list-tile>
+                        <v-list-tile-action>
+                          <v-icon class="indigo--text">fa-key</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                          <v-list-tile-title>Identification</v-list-tile-title>
+                          <v-list-tile-sub-title>Id: {{ id }}, alongshore: {{ "%.0f" % alongshore }} m in {{ areaname }} ({{ areacode }})</v-list-tile-sub-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                      <v-list-tile>
+                        <v-list-tile-action>
+                          <v-icon class="indigo--text">fa-globe</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                          <v-list-tile-title>Coordinates</v-list-tile-title>
+                          <v-list-tile-sub-title>{{ "%.3f" % rsp_lat }}&deg;N, {{ "%.3f" % rsp_lon }}&deg;E, {{ "%.0f" % (rsp_x, ) }} m E, {{ "%.0f" % (rsp_y, ) }} m N (EPSG:28992)</v-list-tile-sub-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                      <v-list-tile>
+                        <v-list-tile-action>
+                          <v-icon class="indigo--text">fa-ship</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                          <v-list-tile-title>Tide</v-list-tile-title>
+                          <v-list-tile-sub-title>Mean low water: {{ "%.3f" % mean_low_water }} m, mean high water {{ "%.3f" % mean_high_water }} m </v-list-tile-sub-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                    </v-list>
+                  </v-card-text>
+                </v-card>
 
-            <div class="mdl-tabs__panel" id="indicators-panel">
-              <p>Indicators</p>
-              <a href="{{'/coastviewer/1.1.0/transects/%s/plot/indicators' % transect['transect']['id']}}" target="_blank">
-                <img src="{{'/coastviewer/1.1.0/transects/%s/plot/indicators' % transect['transect']['id']}}"/>
-              </a>
-            </div>
-            <footer>
-              source: Rijkswaterstaat
-              <img src="http://publicwiki.deltares.nl/download/attachments/42401895/lozenges.png" align="right"/>
-              <img src="http://publicwiki.deltares.nl/download/attachments/131074/global.logo?version=1&modificationDate=1315800362000" align="right" width="87"/>
-            </footer>
-        </div>
-    </body>
+              </v-flex>
+            </v-layout>
+          </v-tabs-content>
+          <v-tabs-content id="tab-timeseries">
+            <v-layout>
+              <v-flex xs12 sm6 offset-sm3>
+                <v-card>
+                  <v-card-media src="{{url_for('.coastviewer_controllers_eeg', id=id)}}" height="200px">
+                  </v-card-media>
+                  <v-card-title primary-title>
+                    <div>
+                      <h3 class="headline mb-0">Kangaroo Valley Safari</h3>
+                      <div>Located two hours south of Sydney in the <br>Southern Highlands of New South Wales, ...</div>
+                    </div>
+                  </v-card-title>
+                  <v-card-actions>
+                    <v-btn flat class="orange--text">Share</v-btn>
+                    <v-btn flat class="orange--text">Explore</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-flex>
+            </v-layout>
+            <v-card flat>
+              <v-card-text>
+
+
+                <p>Cross-shore profile of Transect {{ id }} over time.</p>
+                <a href="{{url_for('.coastviewer_controllers_eeg', id=id)}}" target="_blank">
+                  <img src="{{url_for('.coastviewer_controllers_eeg', id=id)}}"/>
+                </a>
+                <p>Topographic map and mean high/low waterlines contour of Transect {{ id }} over time.</p>
+                <a href="{{url_for('.coastviewer_controllers_timestack', id=id)}}" target="_blank">
+                  <img src="{{url_for('.coastviewer_controllers_timestack', id=id)}}"/>
+                </a>
+
+
+              </v-card-text>
+            </v-card>
+          </v-tabs-content>
+          <v-tabs-content id="tab-nourishments">
+            <v-card flat>
+              <v-card-text>
+              </v-card-text>
+            </v-card>
+          </v-tabs-content>
+          <v-tabs-content id="tab-simulations">
+            <v-card flat>
+              <v-card-text>
+              </v-card-text>
+            </v-card>
+          </v-tabs-content>
+        </v-tabs>
+      </v-layout>
+    </template>
+
+    <script src="/static/node_modules/vue/dist/vue.min.js"></script>
+    <script src="/static/node_modules/vuetify/dist/vuetify.min.js"></script>
+    <!-- <script src="https://unpkg.com/vue/dist/vue.js"></script> -->
+    <!-- <script src="https://unpkg.com/vuetify/dist/vuetify.js"></script> -->
+    <script src="/static/info-page.js"></script>
+  </body>
 </html>

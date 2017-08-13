@@ -52,12 +52,27 @@ def transect_kml(
 def transect_info(id: int) -> str:
     transect = datasets.get_transect_data(int(id))
     transect_df = pd.Series(data=transect).to_frame('transect')
-    return flask.render_template("info.html", transect=transect_df)
+    point = 'geojson(%7B%22type%22%3A%22Point%22%2C%22coordinates%22%3A%5B{lon}%2C{lat}%5D%7D)'.format(
+        lon=transect['rsp_lon'],
+        lat=transect['rsp_lat']
+    )
+    static_url = 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/{lon},{lat},13.25,0,60/600x300?access_token=pk.eyJ1Ijoic2lnZ3lmIiwiYSI6ImNqNmFzMTN5YjEyYzYzMXMyc2JtcTdpdDQifQ.Cxyyltmdyy1K_lvPY2MTrQ'.format(
+        lon=transect['rsp_lon'],
+        lat=transect['rsp_lat']
+    )
+    return flask.render_template("info.html", transect=transect_df, static_url=static_url, dir=dir, **transect)
 
 
-def time_map(id: int) -> str:
+def transect_placemark(id: int) -> str:
+    transect = datasets.get_transect_data(int(id))
+    transect_df = pd.Series(data=transect).to_frame('transect')
+    transect_df['id'] = id
+    return flask.render_template("placemark.html", transect=transect_df, id=id)
+
+
+def timestack(id: int) -> str:
     data = datasets.get_transect_data(int(id))
-    fig, ax = plots.time_map(data)
+    fig, ax = plots.timestack(data)
     stream = io.BytesIO()
     fig.savefig(stream,bbox_inches='tight',dpi=300)
     return stream.getvalue()

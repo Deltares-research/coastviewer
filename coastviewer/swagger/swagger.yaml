@@ -155,13 +155,38 @@ paths:
           description: "bad input parameter"
       x-tags:
       - tag: "developers"
-  /transects/{id}/plot/timemap:
+  /transects/{id}/placemark:
+    get:
+      tags:
+      - "developers"
+      summary: "get information about a transect in simple html (no javascript, no html5) that can be used in a placemark format"
+      description: "Get information about a specific transect in old school html so it can be used in a placemark\n"
+      operationId: "coastviewer.controllers.transect_placemark"
+      produces:
+      - "text/html"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "identifcation for transect"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+        400:
+          description: "bad input parameter"
+      x-tags:
+      - tag: "developers"
+  /transects/{id}/plot/timestack:
     get:
       tags:
       - "developers"
       summary: "get plot of profile in time and contour lines"
       description: "Get plot of profile in time and contour lines\n"
-      operationId: "coastviewer.controllers.time_map"
+      operationId: "coastviewer.controllers.timestack"
       produces:
       - "image/png"
       parameters:

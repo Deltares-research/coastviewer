@@ -63,18 +63,14 @@
                 </Link>
             </NetworkLink>
             <Placemark id="{{ line.id }}">
-                <name>Transect {{ line.id }}</name>
+                <name></name>
                 <styleUrl>#whiteline</styleUrl>
                 <LineString>
                     <coordinates>{{ line.line_coords }}</coordinates>
                 </LineString>
                 <description>
                     <![CDATA[
-                    <iframe src="{{ line.id }}/info" style="border:0; height: 600px;width:400px;"></iframe>
-
-                    <div>
-                        <a href="{{ line.id }}/info" data-dynamic-info="true">info</a>
-                    </div>
+                    <iframe src="{{ line.id }}/placemark" style="border:0; height: 600px;width:400px;"></iframe>
                     ]]>
                 </description>
             </Placemark>

@@ -9,7 +9,7 @@ import scipy.interpolate
 import coastviewer.extra_cm
 
 
-def time_map(data):
+def timestack(data):
     fig, ax = plt.subplots(figsize=(8, 3))
     pc = ax.pcolorfast(
         data['cross_shore'],
@@ -104,12 +104,10 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, nourishment):
     fig, ax = plt.subplots(3, figsize=(13, 13), sharex=True)
     #ax[0].set_title('Coastal Indicators')
     ax[0].plot(bkltkltnd_t, bkl_y, 'o', color='purple', alpha=0.7, label='Basal Coastline')
-    ax[0].hold(True)
     ax[0].grid(True)
     ax[0].plot(bkltkltnd_t, tkl_y, 'o',color='green',alpha=0.7,label='Testing Coastline')
     ax[0].plot(mkl_t, mkl_y,'o',color='blue',alpha=0.7, label='Momentary Coastline')
     ax[1].plot(mw_t, mhw_y,'ro',alpha=0.7,label='Mean High Water')
-    ax[1].hold(True)
     ax[1].grid(True)
     ax[1].plot(mw_t, mlw_y,'bo',alpha=0.7,label='Mean Low Water')
     ax[1].plot(df_t, df3_y,'go',alpha=0.7, label='Dune Foot 3NAP')

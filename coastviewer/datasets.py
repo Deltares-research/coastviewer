@@ -18,21 +18,48 @@ local = True
 
 
 DATASETS = {
-    'transect': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/jarkus/profiles/transect.nc',  # nopep8
-    'BKL_TKL_TND': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/BKL_TKL_TND.nc',  # nopep8
-    'DF': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/DuneFoot/DF.nc',  # nopep8
-    'mkl': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/MKL.nc',  # nopep8
-    'strandbreedte': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/strandbreedte/strandbreedte.nc',  # nopep8
-    'mhw_mlw': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/MHW_MLW/MHW_MLW.nc',  # nopep8
-    'nourishments': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/suppleties/nourishments.nc',  # nopep8
-    'faalkans': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/faalkans_PC-Ring/faalkans.nc'  # nopep8
+    'transect': {
+        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/jarkus/profiles/transect.nc', # noqa E501
+        'local': pathlib.Path('data/transect.nc')
+    },
+    'BKL_TKL_TND': {
+        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/BKL_TKL_TND.nc', # noqa E501
+        'local': pathlib.Path('data/BKL_TKL_TND.nc')
+    },
+    'DF': {
+        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/DuneFoot/DF.nc', # noqa E501
+        'local': pathlib.Path('data/DF.nc')
+    },
+    'MKL': {
+        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/MKL.nc', # noqa E501
+        'local': pathlib.Path('data/MKL.nc')
+    },
+    'strandbreedte': {
+        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/strandbreedte/strandbreedte.nc', # noqa E501
+        'local': pathlib.Path('data/strandbreedte.nc')
+    },
+    'MHW_MLW': {
+        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/MHW_MLW/MHW_MLW.nc', # noqa E501
+        'local': pathlib.Path('data/MHW_MLW.nc')
+    },
+    'nourishments': {
+        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/suppleties/nourishments.nc', # noqa E501
+        'local': pathlib.Path('data/nourishments.nc')
+    },
+    'faalkans': {
+        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/faalkans_PC-Ring/faalkans.nc', # noqa E501
+        'local': pathlib.Path('data/faalkans.nc')
+    }
 }
 
-if local:
-    DATASETS['transect'] = str(pathlib.Path('data/transect.nc'))
+for dataset in DATASETS.values():
+    if dataset['local'].exists():
+        dataset['url'] = str(dataset['local'])
+    else:
+        dataset['url'] = dataset['remote']
 
 # global variables
-with netCDF4.Dataset(DATASETS['transect']) as ds:
+with netCDF4.Dataset(DATASETS['transect']['url']) as ds:
     # keep these global, for faster indexing
     ids = ds.variables['id'][:]
 
@@ -40,7 +67,7 @@ with netCDF4.Dataset(DATASETS['transect']) as ds:
 def overview():
     """generate a lod overview"""
     # read relevant variables
-    with netCDF4.Dataset(DATASETS['transect']) as ds:
+    with netCDF4.Dataset(DATASETS['transect']['url']) as ds:
         variables = {
             'id': {"var": 'id', "slice": np.s_[:]},
             'lat_0': {"var": 'lat', "slice": np.s_[:, 0]},
@@ -97,7 +124,8 @@ def overview():
 
 def move_by(lon, lat, distance):
     """
-    Move the x,y coordinates by distance, perpendicular, assuming that they are lat,lon and that we can move in EPSG:28992
+    Move the x,y coordinates by distance, perpendicular, assuming that they
+    are lat,lon and that we can move in EPSG:28992
     >>> lon = array([4.0])
     >>> lat = array([51.0])
     >>> x,y = move_by(lat, lon, 1000)
@@ -136,7 +164,7 @@ def get_transect(id_, exaggeration=1.0, lift=0.0, move=0.0):
 
     }
     data = {}
-    with netCDF4.Dataset(DATASETS['transect']) as ds:
+    with netCDF4.Dataset(DATASETS['transect']['url']) as ds:
         for var, props in variables.items():
             data[var] = ds.variables[props['var']][props['slice']]
         time_units = ds.variables['time'].units
@@ -182,16 +210,25 @@ def get_transect_data(id_=7003900):
         'z': {"var": 'altitude', "slice": np.s_[:, transect_idx, :]},
         't': {"var": 'time', "slice": np.s_[:]},
         'cross_shore': {"var": "cross_shore", "slice": np.s_[:]},
-        'mean_high_water': {"var": 'mean_high_water', "slice": np.s_[transect_idx]},
-        'mean_low_water': {"var": 'mean_low_water', "slice": np.s_[transect_idx]},
+        'alongshore': {"var": "alongshore", "slice": np.s_[transect_idx]},
+        'mean_high_water': {
+            "var": 'mean_high_water',
+            "slice": np.s_[transect_idx]
+        },
+        'mean_low_water': {
+            "var": 'mean_low_water',
+            "slice": np.s_[transect_idx]
+        },
         'areacode': {"var": 'areacode', "slice": np.s_[transect_idx]},
         'areaname': {"var": 'areaname', "slice": np.s_[transect_idx]},
         'angle': {"var": 'angle', "slice": np.s_[transect_idx]},
+        'rsp_x': {"var": 'rsp_x', "slice": np.s_[transect_idx]},
+        'rsp_y': {"var": 'rsp_y', "slice": np.s_[transect_idx]},
         'rsp_lon': {"var": 'rsp_lon', "slice": np.s_[transect_idx]},
         'rsp_lat': {"var": 'rsp_lat', "slice": np.s_[transect_idx]},
     }
     data = {}
-    with netCDF4.Dataset(DATASETS['transect']) as ds:
+    with netCDF4.Dataset(DATASETS['transect']['url']) as ds:
         for var, props in variables.items():
             data[var] = ds.variables[props['var']][props['slice']]
         time_units = ds.variables['time'].units
@@ -201,6 +238,7 @@ def get_transect_data(id_=7003900):
     data['areaname'] = netCDF4.chartostring(data['areaname']).item().strip()
     data['id'] = id_
     return data
+
 
 def fill(z):
     """fill z by space and then time"""
@@ -214,7 +252,11 @@ def fill(z):
             return z_filled
 
         x = np.arange(z.shape[0])
-        F = scipy.interpolate.interp1d(x[~z.mask], z[~z.mask], bounds_error=False)
+        F = scipy.interpolate.interp1d(
+            x[~z.mask],
+            z[~z.mask],
+            bounds_error=False
+        )
         z_interp = F(x)
         z_filled = np.ma.masked_invalid(z_interp)
         return z_filled
@@ -236,16 +278,23 @@ def fill(z):
     filled_z = fill_time(filled_z)
     return filled_z
 
+
 def get_mean_water_df(id_=7003900):
     transect_idx = np.searchsorted(ids, id_)
 
     variables = {
-        'mean_high_water_cross': {"var": 'mean_high_water_cross', "slice": np.s_[:, transect_idx]},
-        'mean_low_water_cross': {"var": 'mean_low_water_cross', "slice": np.s_[:, transect_idx]},
+        'mean_high_water_cross': {
+            "var": 'mean_high_water_cross',
+            "slice": np.s_[:, transect_idx]
+        },
+        'mean_low_water_cross': {
+            "var": 'mean_low_water_cross',
+            "slice": np.s_[:, transect_idx]
+        },
         "t": {"var": 'time', "slice": np.s_[:]}
     }
     data = {}
-    with netCDF4.Dataset(DATASETS['mhw_mlw']) as ds:
+    with netCDF4.Dataset(DATASETS['MHW_MLW']['url']) as ds:
         for var, props in variables.items():
             data[var] = ds.variables[props['var']][props['slice']]
         time_units = ds.variables['time'].units
@@ -263,7 +312,7 @@ def get_dune_foot_df(id_=7003900):
         "t": {"var": 'time', "slice": np.s_[:]}
     }
     data = {}
-    with netCDF4.Dataset(DATASETS['DF']) as ds:
+    with netCDF4.Dataset(DATASETS['DF']['url']) as ds:
         for var, props in variables.items():
             data[var] = ds.variables[props['var']][props['slice']]
         time_units = ds.variables['time'].units
@@ -284,7 +333,7 @@ def get_nourishment_grid_df(id_=7003900):
     }
 
     data = {}
-    with netCDF4.Dataset(DATASETS['nourishments']) as ds:
+    with netCDF4.Dataset(DATASETS['nourishments']['url']) as ds:
         for var, props in variables.items():
             data[var] = ds.variables[props['var']][props['slice']]
         time_units = ds.variables['time'].units
@@ -334,7 +383,7 @@ def get_nourishment_df(id_=7003900):
     }
 
     data = {}
-    with netCDF4.Dataset(DATASETS['nourishments']) as ds:
+    with netCDF4.Dataset(DATASETS['nourishments']['url']) as ds:
         for var, props in variables.items():
             data[var] = ds.variables[props['var']][props['slice']]
         date_units = ds.variables["date"].units
@@ -381,7 +430,7 @@ def get_mkl_df(id_=7003900):
         'volume_MKL': {"var": 'volume_MKL', "slice": np.s_[:, transect_idx]}
     }
     data = {}
-    with netCDF4.Dataset(DATASETS['mkl']) as ds:
+    with netCDF4.Dataset(DATASETS['MKL']['url']) as ds:
         for var, props in variables.items():
             data[var] = ds.variables[props['var']][props['slice']]
         date_units = ds.variables["time_MKL"].units
@@ -404,7 +453,7 @@ def get_bkltkltnd_df(id_=7003900):
         'trend': {"var": 'trend', "slice": np.s_[:, transect_idx]}
     }
     data = {}
-    with netCDF4.Dataset(DATASETS['BKL_TKL_TND']) as ds:
+    with netCDF4.Dataset(DATASETS['BKL_TKL_TND']['url']) as ds:
         for var, props in variables.items():
             data[var] = ds.variables[props['var']][props['slice']]
         date_units = ds.variables["time"].units
