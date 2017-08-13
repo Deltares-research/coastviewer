@@ -204,13 +204,21 @@ def get_transect_data(id_=7003900):
 
 def fill(z):
     """fill z by space and then time"""
+
     def fill_space(z):
         """fill space"""
+        # if we have no data...
+        if z.mask.all():
+            # nothing to interpolate, just return missings
+            z_filled = np.ma.masked_all_like(z)
+            return z_filled
+
         x = np.arange(z.shape[0])
         F = scipy.interpolate.interp1d(x[~z.mask], z[~z.mask], bounds_error=False)
         z_interp = F(x)
         z_filled = np.ma.masked_invalid(z_interp)
         return z_filled
+
     def fill_time(z):
         """fill time"""
         z_filled = np.ma.masked_all_like(z)
@@ -304,7 +312,7 @@ def get_nourishment_grid_df(id_=7003900):
                                             ],columns=np.r_[cols_vol,cols_tstart,cols_tend,['time']])
     nourishment_grid_df['time'] = nourishment_grid_df['time'].apply(lambda x: pd.Timestamp(x)) # make it a pandas timestamp
     nourishment_grid_df = nourishment_grid_df.dropna(
-        subset=['time_start_beach', 'time_start_shoreface', 'time_start_dune', 'time_start_other'], 
+        subset=['time_start_beach', 'time_start_shoreface', 'time_start_dune', 'time_start_other'],
         how='all')
 
     return nourishment_grid_df
@@ -343,9 +351,9 @@ def get_nourishment_df(id_=7003900):
 
     data['type_flag']
     long_description = {
-        1: "strandsuppletie, strandsuppletie banket, strandsuppletie+vooroever, banket, strand (zwakke sch.), strand-duinsuppletie, strandsuppletie+duinverzwaring", 
-        2: "onderwatersuppletie, vooroever, vooroeversuppletie, geulwand, geulwandsuppletie", 
-        3: "duin, duinverzwaring, landwaartse duinverzwaring, zeewaartse duinverzwaring, dijkverzwaring, duinverzwaring en strandsuppletie, zeewaartse duinverzwaring en strandsuppletie", 
+        1: "strandsuppletie, strandsuppletie banket, strandsuppletie+vooroever, banket, strand (zwakke sch.), strand-duinsuppletie, strandsuppletie+duinverzwaring",
+        2: "onderwatersuppletie, vooroever, vooroeversuppletie, geulwand, geulwandsuppletie",
+        3: "duin, duinverzwaring, landwaartse duinverzwaring, zeewaartse duinverzwaring, dijkverzwaring, duinverzwaring en strandsuppletie, zeewaartse duinverzwaring en strandsuppletie",
         4: "other"
     }
     short_description = {
@@ -400,7 +408,7 @@ def get_bkltkltnd_df(id_=7003900):
         for var, props in variables.items():
             data[var] = ds.variables[props['var']][props['slice']]
         date_units = ds.variables["time"].units
-    
+
     data['time'] = netCDF4.num2date(data['time_num'], date_units)
 
     bkltkltnd_df = pd.DataFrame(data)
