@@ -20,6 +20,6 @@ body {
 
 /* .dataframe tr:hover {background-color: #ddd;} */
 
-.dataframe th {
-    text-align: left;
+figure img {
+    width: 100%;
 }

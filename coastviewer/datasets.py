@@ -439,7 +439,13 @@ def get_mkl_df(id_=7003900):
 
     mkl_df = pd.DataFrame(data)
     mkl_df = mkl_df.dropna()
-    mkl_df['time_MKL'] = netCDF4.num2date(mkl_df['time_MKL_num'].values, date_units)
+    if len(mkl_df):
+        mkl_df['time_MKL'] = netCDF4.num2date(
+            mkl_df['time_MKL_num'].values,
+            date_units
+        )
+    else:
+        mkl_df['time_MKL'] = []
     return mkl_df
 
 

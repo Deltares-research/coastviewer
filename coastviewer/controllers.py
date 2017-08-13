@@ -4,6 +4,7 @@ import io
 
 import flask
 import pandas as pd
+import numpy as np
 import matplotlib.cm
 import matplotlib.colors
 
@@ -56,9 +57,10 @@ def transect_info(id: int) -> str:
         lon=transect['rsp_lon'],
         lat=transect['rsp_lat']
     )
-    static_url = 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/{lon},{lat},13.25,0,60/600x300?access_token=pk.eyJ1Ijoic2lnZ3lmIiwiYSI6ImNqNmFzMTN5YjEyYzYzMXMyc2JtcTdpdDQifQ.Cxyyltmdyy1K_lvPY2MTrQ'.format(
+    static_url = 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/{lon},{lat},13.25,{angle},60/600x300?access_token=pk.eyJ1Ijoic2lnZ3lmIiwiYSI6ImNqNmFzMTN5YjEyYzYzMXMyc2JtcTdpdDQifQ.Cxyyltmdyy1K_lvPY2MTrQ'.format(
         lon=transect['rsp_lon'],
-        lat=transect['rsp_lat']
+        lat=transect['rsp_lat'],
+        angle=np.mod(transect['angle'] + 90, 360)
     )
     return flask.render_template("info.html", transect=transect_df, static_url=static_url, dir=dir, **transect)
 
