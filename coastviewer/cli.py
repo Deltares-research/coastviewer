@@ -43,7 +43,11 @@ def make_app():
 
 
 @click.command()
-@click.option('--debug/--no-debug', default=False, help='Start application in debugger mode.')
+@click.option(
+    '--debug/--no-debug',
+    default=False,
+    help='Start application in debugger mode.'
+)
 def main(debug, args=None):
     """Console script for coastviewer."""
     # configure logging

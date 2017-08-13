@@ -1,7 +1,6 @@
 import logging
 import datetime
 import io
-import json
 
 import flask
 import pandas as pd
@@ -23,6 +22,7 @@ MIMES = {
     'json': 'application/json',
     'xls': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 }
+
 
 def index(api: object) -> str:
     # can't name this index (already taken by conexxion)
@@ -56,20 +56,25 @@ def transect_kml(
     # only available on runtime
     flask.current_app.jinja_env.filters['kmldate'] = utils.kmldate
     transect = datasets.get_transect(int(id), exaggeration, lift, move)
-    return flask.render_template("transect.kml", transect=transect, extrude=int(extrude))
+    return flask.render_template(
+        "transect.kml",
+        transect=transect,
+        extrude=int(extrude)
+    )
 
 
 def transect_info(id: int) -> str:
     transect = datasets.get_transect_data(int(id))
     transect_df = pd.Series(data=transect).to_frame('transect')
-    point = 'geojson(%7B%22type%22%3A%22Point%22%2C%22coordinates%22%3A%5B{lon}%2C{lat}%5D%7D)'.format(
-        lon=transect['rsp_lon'],
-        lat=transect['rsp_lat']
-    )
-    static_url = 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/{lon},{lat},13.25,{angle},60/600x300?access_token=pk.eyJ1Ijoic2lnZ3lmIiwiYSI6ImNqNmFzMTN5YjEyYzYzMXMyc2JtcTdpdDQifQ.Cxyyltmdyy1K_lvPY2MTrQ'.format(
+    static_url = 'https://api.mapbox.com/styles/v1/mapbox/{style}/static/{lon},{lat},{zoom},{angle},{pitch}/{size}?access_token={token}'.format( # noqa E501
         lon=transect['rsp_lon'],
         lat=transect['rsp_lat'],
-        angle=np.mod(transect['angle'] + 90, 360)
+        angle=np.mod(transect['angle'] + 90, 360),
+        zoom=13.25,
+        pitch=60,
+        style='satellite-v9',
+        size="600x300",
+        token='pk.eyJ1Ijoic2lnZ3lmIiwiYSI6ImNqNmFzMTN5YjEyYzYzMXMyc2JtcTdpdDQifQ.Cxyyltmdyy1K_lvPY2MTrQ'
     )
     return flask.render_template("info.html", transect=transect_df, static_url=static_url, dir=dir, **transect)
 
@@ -126,7 +131,7 @@ def eeg(id: int, format: str='') -> str:
             df.to_csv(stream)
         if format == 'xls':
             writer = pd.ExcelWriter(stream, engine='openpyxl')
-            data.to_xls(writer)
+            df.to_excel(writer)
             writer.save()
     else:
         # we need the plot

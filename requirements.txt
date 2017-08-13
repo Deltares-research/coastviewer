@@ -8,3 +8,4 @@ pyproj
 cmocean
 scipy>=0.19
 colorcet
+openpyxl
