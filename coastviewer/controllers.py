@@ -1,6 +1,7 @@
 import logging
 import datetime
 import io
+import json
 
 import flask
 import pandas as pd
@@ -14,6 +15,14 @@ from . import plots
 
 logger = logging.getLogger(__name__)
 
+MIMES = {
+    'png': 'image/png',
+    'svg': 'image/svg+xml',
+    'pdf': 'application/pdf',
+    'csv': 'text/csv',
+    'json': 'application/json',
+    'xls': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+}
 
 def index(api: object) -> str:
     # can't name this index (already taken by conexxion)
@@ -80,12 +89,67 @@ def timestack(id: int) -> str:
     return stream.getvalue()
 
 
-def eeg(id: int) -> str:
-    data = datasets.get_transect_data(int(id))
-    fig, ax = plots.eeg(data)
+def eeg(id: int, format: str='') -> str:
+    """export eeg plot or data"""
     stream = io.BytesIO()
-    fig.savefig(stream,bbox_inches='tight',dpi=300)
-    return stream.getvalue()
+
+    plot = True
+    as_attachment = False
+
+    if format in ('csv', 'json', 'xls'):
+        plot = False
+
+    if format:
+        as_attachment = True
+
+    data = datasets.get_transect_data(int(id))
+
+    # if we only need data
+    if not plot:
+        # flatten data
+        records = []
+        for t, row in zip(data['time'], data['filled_z']):
+            for x, col in zip(data['cross_shore'], row):
+                record = {
+                    "z": col.item(),
+                    "t": t,
+                    "x": x
+                }
+                records.append(record)
+
+        df = pd.DataFrame.from_records(records)
+        if format == 'json':
+            stream = io.StringIO()
+            df.to_json(stream, orient='records')
+        if format == 'csv':
+            stream = io.StringIO()
+            df.to_csv(stream)
+        if format == 'xls':
+            writer = pd.ExcelWriter(stream, engine='openpyxl')
+            data.to_xls(writer)
+            writer.save()
+    else:
+        # we need the plot
+        fig, ax = plots.eeg(data)
+        dpi = 72
+        if format in ('pdf', 'png', 'svg'):
+            dpi = 300
+            fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
+        else:
+            fig.savefig(stream, bbox_inches='tight', dpi=dpi, format='png')
+    mimetype = MIMES.get(format, 'application/png')
+    headers = {}
+    stream.seek(0)
+    if as_attachment:
+        filename = 'eeg.{}'.format(format)
+        # this is the way to send a filename
+        headers = {"Content-Disposition": "attachment;filename={}".format(filename)}
+    response = flask.Response(
+        stream,
+        mimetype=mimetype,
+        headers=headers
+    )
+    return response
 
 
 def indicators(id: int) -> str:

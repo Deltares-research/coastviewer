@@ -220,6 +220,11 @@ paths:
         description: "identification for transect"
         required: true
         type: "integer"
+      - name: "format"
+        in: "query"
+        description: "format for file"
+        required: false
+        type: "string"
       responses:
         200:
           description: "transect"
