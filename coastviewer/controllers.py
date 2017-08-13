@@ -74,9 +74,14 @@ def transect_info(id: int) -> str:
         pitch=60,
         style='satellite-v9',
         size="600x300",
-        token='pk.eyJ1Ijoic2lnZ3lmIiwiYSI6ImNqNmFzMTN5YjEyYzYzMXMyc2JtcTdpdDQifQ.Cxyyltmdyy1K_lvPY2MTrQ'
+        token='pk.eyJ1Ijoic2lnZ3lmIiwiYSI6ImNqNmFzMTN5YjEyYzYzMXMyc2JtcTdpdDQifQ.Cxyyltmdyy1K_lvPY2MTrQ' # noqa E501
     )
-    return flask.render_template("info.html", transect=transect_df, static_url=static_url, dir=dir, **transect)
+    return flask.render_template(
+        "info.html",
+        transect=transect_df,
+        static_url=static_url,
+        **transect              # just pass along all the properties
+    )
 
 
 def transect_placemark(id: int) -> str:
@@ -86,12 +91,37 @@ def transect_placemark(id: int) -> str:
     return flask.render_template("placemark.html", transect=transect_df, id=id)
 
 
-def timestack(id: int) -> str:
+def timestack(id: int, format: str='') -> str:
+    as_attachment = False
+
+    if format:
+        as_attachment = True
+
     data = datasets.get_transect_data(int(id))
     fig, ax = plots.timestack(data)
     stream = io.BytesIO()
-    fig.savefig(stream,bbox_inches='tight',dpi=300)
-    return stream.getvalue()
+    dpi = 72
+    if format in ('pdf', 'png', 'svg'):
+        dpi = 300
+        fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
+    else:
+        fig.savefig(stream, bbox_inches='tight', dpi=dpi)
+
+    mimetype = MIMES.get(format, 'application/png')
+    headers = {}
+    stream.seek(0)
+    if as_attachment:
+        filename = 'eeg.{}'.format(format)
+        # this is the way to send a filename
+        headers = {
+            "Content-Disposition": "attachment;filename={}".format(filename)
+        }
+    response = flask.Response(
+        stream,
+        mimetype=mimetype,
+        headers=headers
+    )
+    return response
 
 
 def eeg(id: int, format: str='') -> str:
@@ -148,7 +178,9 @@ def eeg(id: int, format: str='') -> str:
     if as_attachment:
         filename = 'eeg.{}'.format(format)
         # this is the way to send a filename
-        headers = {"Content-Disposition": "attachment;filename={}".format(filename)}
+        headers = {
+            "Content-Disposition": "attachment;filename={}".format(filename)
+        }
     response = flask.Response(
         stream,
         mimetype=mimetype,
@@ -157,17 +189,53 @@ def eeg(id: int, format: str='') -> str:
     return response
 
 
-def indicators(id: int) -> str:
+def indicators(id: int, format: str='') -> str:
+    """return a plot with all the indicators"""
+    as_attachment = False
+
+    if format:
+        as_attachment = True
+
     data = datasets.get_transect_data(int(id))
     data_mkl = datasets.get_mkl_df(int(id))
     data_bkltkltnd = datasets.get_bkltkltnd_df(int(id))
     data_mean_water = datasets.get_mean_water_df(int(id))
     data_dune_foot = datasets.get_dune_foot_df(int(id))
     data_nourishment_grid = datasets.get_nourishment_grid_df(int(id))
-    fig, ax = plots.indicators(transect=data,mkl=data_mkl,bkltkltnd=data_bkltkltnd,mean_water=data_mean_water,dune_foot=data_dune_foot,nourishment=data_nourishment_grid)
+
+    # generate a plot
+    fig, ax = plots.indicators(
+        transect=data,
+        mkl=data_mkl,
+        bkltkltnd=data_bkltkltnd,
+        mean_water=data_mean_water,
+        dune_foot=data_dune_foot,
+        nourishment=data_nourishment_grid
+    )
+    # create a stream to save to
     stream = io.BytesIO()
-    fig.savefig(stream,bbox_inches='tight',dpi=300)
-    return stream.getvalue()
+
+    dpi = 72
+    if format in ('pdf', 'png', 'svg'):
+        dpi = 300
+        fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
+    else:
+        fig.savefig(stream, bbox_inches='tight', dpi=dpi)
+    mimetype = MIMES.get(format, 'application/png')
+    headers = {}
+    stream.seek(0)
+    if as_attachment:
+        filename = 'eeg.{}'.format(format)
+        # this is the way to send a filename
+        headers = {
+            "Content-Disposition": "attachment;filename={}".format(filename)
+        }
+    response = flask.Response(
+        stream,
+        mimetype=mimetype,
+        headers=headers
+    )
+    return response
 
 
 def styles(poly_alpha: float, outline: int, colormap: str) -> str:

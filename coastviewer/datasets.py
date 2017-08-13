@@ -303,12 +303,19 @@ def get_mean_water_df(id_=7003900):
     shoreline_df = pd.DataFrame(data)
     return shoreline_df
 
+
 def get_dune_foot_df(id_=7003900):
     transect_idx = np.searchsorted(ids, id_)
 
     variables = {
-        'dune_foot_upperMKL_cross': {"var": 'dune_foot_upperMKL_cross', "slice": np.s_[:, transect_idx]},
-        'dune_foot_threeNAP_cross': {"var": 'dune_foot_threeNAP_cross', "slice": np.s_[:, transect_idx]},
+        'dune_foot_upperMKL_cross': {
+            "var": 'dune_foot_upperMKL_cross',
+            "slice": np.s_[:, transect_idx]
+        },
+        'dune_foot_threeNAP_cross': {
+            "var": 'dune_foot_threeNAP_cross',
+            "slice": np.s_[:, transect_idx]
+        },
         "t": {"var": 'time', "slice": np.s_[:]}
     }
     data = {}
@@ -326,9 +333,15 @@ def get_nourishment_grid_df(id_=7003900):
     transect_idx = np.searchsorted(ids, id_)
     variables = {
         'type': {"var": 'type', "slice": np.s_[:]},
-        "volume": {"var": "volume", "slice": np.s_[transect_idx,:,:]},
-        "time_num_start": {"var": "time_start", "slice": np.s_[transect_idx,:,:]},
-        "time_num_end": {"var": "time_end", "slice": np.s_[transect_idx,:,:]},
+        "volume": {"var": "volume", "slice": np.s_[transect_idx, :, :]},
+        "time_num_start": {
+            "var": "time_start",
+            "slice": np.s_[transect_idx, :, :]
+        },
+        "time_num_end": {
+            "var": "time_end",
+            "slice": np.s_[transect_idx, :, :]
+        },
         "t": {"var": 'time', "slice": np.s_[:]}
     }
 
@@ -338,8 +351,12 @@ def get_nourishment_grid_df(id_=7003900):
             data[var] = ds.variables[props['var']][props['slice']]
         time_units = ds.variables['time'].units
         time_start_units = ds.variables['time_start'].units
-        time_end_units = ds.variables['time_start'].units # time_end had a bug
-    data["time_start"] = netCDF4.num2date(data["time_num_start"], time_start_units)
+        # time_end had a bug
+        time_end_units = ds.variables['time_start'].units
+    data["time_start"] = netCDF4.num2date(
+        data["time_num_start"],
+        time_start_units
+    )
     data["time_end"] = netCDF4.num2date(data["time_num_end"], time_end_units)
     data['time'] = netCDF4.num2date(data['t'], time_units)
 
@@ -351,23 +368,47 @@ def get_nourishment_grid_df(id_=7003900):
         }
 
     cols_vol = ['volume_'+ityp for ityp in list(short_description.values())]
-    cols_tstart = ['time_start_'+ityp for ityp in list(short_description.values())]
+    cols_tstart = [
+        'time_start_'+ityp
+        for ityp
+        in list(short_description.values())
+    ]
     cols_tend = ['time_end_'+ityp for ityp in list(short_description.values())]
     del data["type"]
-    nourishment_grid_df = pd.DataFrame(np.c_[np.array(data['volume']),
-                                             np.array(data['time_start']),
-                                             np.array(data['time_end']),
-                                             np.array(data['time'])
-                                            ],columns=np.r_[cols_vol,cols_tstart,cols_tend,['time']])
-    nourishment_grid_df['time'] = nourishment_grid_df['time'].apply(lambda x: pd.Timestamp(x)) # make it a pandas timestamp
+    nourishment_grid_df = pd.DataFrame(
+        np.c_[
+            np.array(data['volume']),
+            np.array(data['time_start']),
+            np.array(data['time_end']),
+            np.array(data['time'])
+        ],
+        columns=np.r_[
+            cols_vol,
+            cols_tstart,
+            cols_tend,
+            ['time']
+        ])
+    # make it a pandas timestamp
+    nourishment_grid_df['time'] = nourishment_grid_df['time'].apply(
+        lambda x: pd.Timestamp(x)
+    )
     nourishment_grid_df = nourishment_grid_df.dropna(
-        subset=['time_start_beach', 'time_start_shoreface', 'time_start_dune', 'time_start_other'],
-        how='all')
+        subset=[
+            'time_start_beach',
+            'time_start_shoreface',
+            'time_start_dune',
+            'time_start_other'
+        ],
+        how='all'
+    )
 
     return nourishment_grid_df
 
+
 def get_nourishment_df(id_=7003900):
+    """get nourishment information"""
     transect_idx = np.searchsorted(ids, id_)
+    # TODO: I think this queries the whole dataset
     variables = {
         'n_code': {"var": 'n_code', "slice": np.s_[:]},
         "date": {"var": "date", "slice": np.s_[:]},

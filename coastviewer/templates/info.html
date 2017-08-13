@@ -158,26 +158,6 @@
 
                   <v-card-actions>
                     <v-menu offset-y>
-                      <v-btn primary slot="activator">Download data</v-btn>
-                      <v-list>
-                        <v-list-tile onclick="">
-                          <v-list-tile-title>
-                            <a href="{{url_for('.coastviewer_controllers_timestack', id=id, format='csv')}}" download>csv</a>
-                          </v-list-tile-title>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-title>
-                            <a href="{{url_for('.coastviewer_controllers_timestack', id=id, format='json')}}" download>json</a>
-                          </v-list-tile-title>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-title>
-                            <a href="{{url_for('.coastviewer_controllers_timestack', id=id, format='xls')}}" download>xls</a>
-                          </v-list-tile-title>
-                        </v-list-tile>
-                      </v-list>
-                    </v-menu>
-                    <v-menu offset-y>
                       <v-btn primary slot="activator">Export chart</v-btn>
                       <v-list>
                         <v-list-tile>
@@ -217,26 +197,6 @@
                   </v-card-text>
 
                   <v-card-actions>
-                    <v-menu offset-y>
-                      <v-btn primary slot="activator">Download data</v-btn>
-                      <v-list>
-                        <v-list-tile onclick="">
-                          <v-list-tile-title>
-                            <a href="{{url_for('.coastviewer_controllers_indicators', id=id, format='csv')}}" download>csv</a>
-                          </v-list-tile-title>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-title>
-                            <a href="{{url_for('.coastviewer_controllers_indicators', id=id, format='json')}}" download>json</a>
-                          </v-list-tile-title>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-title>
-                            <a href="{{url_for('.coastviewer_controllers_indicators', id=id, format='xls')}}" download>xls</a>
-                          </v-list-tile-title>
-                        </v-list-tile>
-                      </v-list>
-                    </v-menu>
                     <v-menu offset-y>
                       <v-btn primary slot="activator">Export chart</v-btn>
                       <v-list>
