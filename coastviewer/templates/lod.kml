@@ -84,9 +84,6 @@
         <Placemark id="style-preloader">
             <name>Style preloader</name>
             <styleUrl>../styles#year2000</styleUrl>
-            <LineString>
-                <coordinates>0,0,0 0.1,0.1,0.1</coordinates>
-            </LineString>
         </Placemark>
     </Document>
 </kml>
