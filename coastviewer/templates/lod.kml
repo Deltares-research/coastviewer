@@ -33,6 +33,7 @@
             </Pair>
         </StyleMap>
         <Folder>
+          <name> JarKus </name>
             {% for id, line in lines.iterrows() %}
             <NetworkLink>
                 <name>Transect {{ line.id }}</name>

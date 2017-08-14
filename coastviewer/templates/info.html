@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Vuetify</title>
+    <title>B&amp;O Kust</title>
     <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
     <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet" type="text/css"></link>
     <script src="https://use.fontawesome.com/4ee6f65ee1.js"></script>
@@ -60,7 +60,7 @@
                         </v-list-tile-action>
                         <v-list-tile-content>
                           <v-list-tile-title>Identification</v-list-tile-title>
-                          <v-list-tile-sub-title>Id: {{ id }}, alongshore: {{ "%.0f" % alongshore }} m in {{ areaname }} ({{ areacode }})</v-list-tile-sub-title>
+                          <v-list-tile-sub-title>Id: {{ id }}, alongshore: {{ "%.0f" % alongshore }} m in {{ areaname[:] }} ({{ areacode }})</v-list-tile-sub-title>
                         </v-list-tile-content>
                       </v-list-tile>
                       <v-list-tile>
@@ -92,7 +92,7 @@
             <v-layout>
               <v-flex xs12 sm6 offset-sm3 >
                 <v-card class="mb-3">
-                  <v-card-text>
+                  <v-card-text> <h4>Transect over time</h4>
                     <figure>
                       <img src="{{url_for('.coastviewer_controllers_eeg', id=id)}}" >
                       <figcaption>Cross-shore profile of Transect {{ id }} over time.</figcaption>
@@ -145,7 +145,7 @@
                 </v-card>
                 <v-card class="mb-3">
 
-                  <v-card-text>
+                  <v-card-text> <h4> Transect over time </h4>
                     <figure>
                       <img src="{{url_for('.coastviewer_controllers_timestack', id=id)}}" >
                       <figcaption>
@@ -188,7 +188,7 @@
               <v-flex xs12 sm8 offset-sm2>
                 <v-card class="mb-3">
 
-                  <v-card-text>
+                  <v-card-text> <h4> Nourishments over time </h4>
                     <figure>
                       <img src="{{url_for('.coastviewer_controllers_indicators', id=id)}}">
                       <figcaption>Coastal state indicators for transect {{ id }}</figcaption>
