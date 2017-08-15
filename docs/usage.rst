@@ -11,7 +11,7 @@ Obtained data from the entire Dutch coast is converted into one standardized, un
 
 Walkthrough
 -----------
-The coastviewer is a package that allows the user to run the program locally.  In the readme file the steps to install the coastviewer locally are described. The locally run package provides a link to the kml at: 
+The coastviewer is a package that allows the user to run the program locally.  In the `readme`_ the steps to install the coastviewer locally are described. The locally run package provides a link to the kml at: 
 
 http://localhost:5000/coastviewer/1.1.0/transects/kml
 
