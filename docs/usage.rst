@@ -16,7 +16,7 @@ The coastviewer is a package that allows the user to run the program locally.  I
 http://localhost:5000/coastviewer/1.1.0/transects/kml
 
 The coastviewer should run on your computer (using the steps of the `Installation`_). Either use the link above as network link or otherwise use the network link of the online version:
-.. _Instalation: http://coastviewer.readthedocs.io/en/latest/installation.html
+
 http://dev-env.myfjvt76zf.eu-west-1.elasticbeanstalk.com/coastviewer/1.1.0/transects/kml
 
 This link can be opened in Google Earth. Within Google Earth click on Add -> Network Link.  Provide a name and paste the network link. The JarKus transects are shown along the entire Dutch coast. 
@@ -32,3 +32,5 @@ The webpage provides three tabs with information concerning the selected transec
 .. image:: ./figures/info.png
 
 The second tab 'TIMESERIES' provides two timeserie plots of the transect. The uppermost plot gives the cross-shore profile of the transect in time. The second plot does the same, but visualizes it in a topographic map and combines the mean high/low waterline contours. Both figures can be exported (png, pdf or svg format). The third tab 'NOURISHMENTS' shows three plots with indicators for the coastal state. 
+
+.. _Installation: http://coastviewer.readthedocs.io/en/latest/installation.html
