@@ -1,11 +1,11 @@
 branch-defaults:
   master:
-    environment: dev-env
+    environment: coastal-dev
     group_suffix: null
 global:
   application_name: coastviewer
   branch: null
-  default_platform: Docker 17.03.1-ce
+  default_platform: Docker 1.12.6
   default_region: eu-west-1
   include_git_submodules: true
   instance_profile: null
