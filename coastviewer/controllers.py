@@ -11,6 +11,7 @@ import matplotlib.colors
 from . import datasets
 from . import utils
 from . import plots
+from . import __version__
 
 logger = logging.getLogger(__name__)
 
@@ -80,6 +81,7 @@ def transect_info(id: int) -> str:
         "info.html",
         transect=transect_df,
         static_url=static_url,
+        __version__=__version__,
         **transect              # just pass along all the properties
     )
 
