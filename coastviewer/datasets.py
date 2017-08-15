@@ -160,8 +160,8 @@ def get_transect(id_, exaggeration=1.0, lift=0.0, move=0.0):
         'lat': {"var": 'lat', "slice": np.s_[transect_idx, :]},
         'lon': {"var": 'lon', "slice": np.s_[transect_idx, :]},
         'z': {"var": 'altitude', "slice": np.s_[:, transect_idx, :]},
-        "t": {"var": 'time', "slice": np.s_[:]}
-
+        "t": {"var": 'time', "slice": np.s_[:]},
+        'id': {"var": 'id', "slice": np.s_[transect_idx]}
     }
     data = {}
     with netCDF4.Dataset(DATASETS['transect']['url']) as ds:
@@ -197,7 +197,7 @@ def get_transect(id_, exaggeration=1.0, lift=0.0, move=0.0):
     years = pd.DataFrame.from_records(years)
     transect = {
         "years": years,
-        "id": id_
+        "id": data['id']
     }
     return transect
 
@@ -205,6 +205,7 @@ def get_transect(id_, exaggeration=1.0, lift=0.0, move=0.0):
 def get_transect_data(id_=7003900):
     transect_idx = np.searchsorted(ids, id_)
     variables = {
+        'id': {"var": 'id', "slice": np.s_[transect_idx]},
         'lat': {"var": 'lat', "slice": np.s_[transect_idx, :]},
         'lon': {"var": 'lon', "slice": np.s_[transect_idx, :]},
         'z': {"var": 'altitude', "slice": np.s_[:, transect_idx, :]},
@@ -236,7 +237,6 @@ def get_transect_data(id_=7003900):
     data['filled_z'] = fill(data['z'])
     data['time_num'] = matplotlib.dates.date2num(data['time'])
     data['areaname'] = netCDF4.chartostring(data['areaname']).item().strip()
-    data['id'] = id_
     return data
 
 
@@ -370,7 +370,7 @@ def get_nourishment_grid_df(id_=7003900):
                                             ],columns=np.r_[cols_vol,cols_tstart,cols_tend,['time']])
     nourishment_grid_df['time'] = nourishment_grid_df['time'].apply(lambda x: pd.Timestamp(x)) # make it a pandas timestamp
     #nourishment_grid_df = nourishment_grid_df.dropna(
-    #    subset=['time_start_beach', 'time_start_shoreface', 'time_start_dune', 'time_start_other'], 
+    #    subset=['time_start_beach', 'time_start_shoreface', 'time_start_dune', 'time_start_other'],
     #    how='all')
     nourishment_grid_df = nourishment_grid_df.loc[(nourishment_grid_df[['volume_beach','volume_shoreface','volume_dune','volume_other']]!=0).any(axis=1)]
 
