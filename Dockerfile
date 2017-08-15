@@ -15,8 +15,8 @@ RUN cd app/data && make
 ENV PATH /opt/conda/envs/py35/bin:$PATH
 ENV MPLBACKEND Agg
 RUN cd app && pip install -r requirements.txt && pip install -e .
-# not sure what this is
 WORKDIR app
 EXPOSE 5000
+# not sure what this is
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "coastviewer" ]

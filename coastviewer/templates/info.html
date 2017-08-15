@@ -7,6 +7,8 @@
     <title>B&amp;O Kust</title>
     <!-- polyfill for IE 11 -->
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+    <!-- create extra funcitons for IE -->
+    <script src="/static/polyfill.ie.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
     <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet" type="text/css">
     <script src="https://use.fontawesome.com/4ee6f65ee1.js"></script>
@@ -101,26 +103,6 @@
 
                   </v-card-text>
                   <v-card-actions>
-                    <v-menu offset-y>
-                      <v-btn primary slot="activator">Download data</v-btn>
-                      <v-list>
-                        <v-list-tile onclick="">
-                          <v-list-tile-title>
-                            <a href="{{url_for('.coastviewer_controllers_eeg', id=id, format='csv')}}" download>csv</a>
-                          </v-list-tile-title>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-title>
-                            <a href="{{url_for('.coastviewer_controllers_eeg', id=id, format='json')}}" download>json</a>
-                          </v-list-tile-title>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-title>
-                            <a href="{{url_for('.coastviewer_controllers_eeg', id=id, format='xls')}}" download>xls</a>
-                          </v-list-tile-title>
-                        </v-list-tile>
-                      </v-list>
-                    </v-menu>
                     <v-menu offset-y>
                       <v-btn primary slot="activator">Export chart</v-btn>
                       <v-list>

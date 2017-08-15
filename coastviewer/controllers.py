@@ -252,6 +252,7 @@ def styles(poly_alpha: float, outline: int, colormap: str) -> str:
     colormap = matplotlib.cm.cmap_d.get(colormap_name, matplotlib.cm.viridis)
     colors = {}
     current_year = datetime.datetime.now().year
+    # start of measurements in 1964
     N = matplotlib.colors.Normalize(1964, current_year + 1)
     for year in range(1964, current_year + 1):
         # call with float 0..1 (or int 0 .. 255)
