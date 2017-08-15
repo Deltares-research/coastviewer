@@ -9,17 +9,15 @@ Obtained data from the entire Dutch coast is converted into one standardized, un
 .. _Open Earth: http://openearth.deltares.nl
 .. _Google Earth: https://www.google.nl/intl/nl/earth/
 
-Walkthrough
+Information
 -----------
-The coastviewer is a package that allows the user to run the program locally.  In the readme file the steps to install the coastviewer locally are described. The locally run package provides a link to the kml at: 
+The visualization in Google Earth can be accessed in two ways, through installing the coastviewer with this package locally or by using the online version. Both methods provide a link to a KML file that can be opened in Google Earth. 
 
-http://localhost:5000/coastviewer/1.1.0/transects/kml
+- The coastviewer is a package that allows the user to run the program locally.  In the `readme`_ the steps to install the coastviewer      locally are described. The locally run package provides a link to the kml at: |br| http://localhost:5000/coastviewer/1.1.0/transects/kml
 
-The coastviewer should run on your computer (using the steps of the `Installation`_). Either use the link above as network link or otherwise use the network link of the online version:
-.. _Instalation: http://coastviewer.readthedocs.io/en/latest/installation.html
-http://dev-env.myfjvt76zf.eu-west-1.elasticbeanstalk.com/coastviewer/1.1.0/transects/kml
+-  The network link of the online version: |br| http://dev-env.myfjvt76zf.eu-west-1.elasticbeanstalk.com/coastviewer/1.1.0/transects/kml
 
-This link can be opened in Google Earth. Within Google Earth click on Add -> Network Link.  Provide a name and paste the network link. The JarKus transects are shown along the entire Dutch coast. 
+Within Google Earth click on Add -> Network Link.  Provide a name and paste the network link. The JarKus transects are shown along the entire Dutch coast. 
 
 .. image:: ./figures/overview_jarkus.png
 
@@ -32,3 +30,8 @@ The webpage provides three tabs with information concerning the selected transec
 .. image:: ./figures/info.png
 
 The second tab 'TIMESERIES' provides two timeserie plots of the transect. The uppermost plot gives the cross-shore profile of the transect in time. The second plot does the same, but visualizes it in a topographic map and combines the mean high/low waterline contours. Both figures can be exported (png, pdf or svg format). The third tab 'NOURISHMENTS' shows three plots with indicators for the coastal state. 
+
+.. _readme: https://github.com/openearth/coastviewer/blob/master/README.md
+.. |br| raw:: html
+
+   <br />
