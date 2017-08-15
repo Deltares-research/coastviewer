@@ -1,6 +1,6 @@
 FROM continuumio/miniconda3
 MAINTAINER Fedor Baart <fedor.baart@deltares.nl>
-ENV LANG=en_US LC_ALL=en_US.UTF-8
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 # update system and install wget
 RUN \
     apt-get install -y apt-utils && \
