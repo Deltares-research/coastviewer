@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placemark</title>
+    <!-- Google Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
+
+    <!-- CSS Reset -->
+    <link rel="stylesheet" href="//cdn.rawgit.com/necolas/normalize.css/master/normalize.css">
+
+    <!-- Milligram CSS minified -->
+    <link rel="stylesheet" href="//cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css">
+
+    <!-- <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet" type="text/css"></link> -->
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
+  </head>
+  <body>
+    <h2>Transect {{ id }}</h2>
+    <!-- Keep this page minimalistic. -->
+    <h3>General info</h3>
+    {% include 'info-table.html' %}
+    <h3>Transect over time</h3>
+    <p><img src="{{url_for('.coastviewer_controllers_eeg', id=id)}}" width="400" height="300"></p>
+    <h3>Transect over time</h3>
+    <p><img src="{{url_for('.coastviewer_controllers_timestack', id=id)}}" width="400" height="300"></p>
+    <!-- open in external browser -->
+    <!-- See discussion https://productforums.google.com/forum/#!topic/earth/q5X_DGQMpyo -->
+    <p><a class="button"
+          href="javascript:window.open('about:blank');"
+          onclick="window.open('{{url_for('.coastviewer_controllers_transect_info', id=id)}}');"
+          >Details</a></p>
+    <script src="/static/placemark.js"></script>
+  </body>
+</html>
+<!-- onclick="" -->

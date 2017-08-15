@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+    <Document>
+        <name>Transect Lod</name>
+        <open>1</open>
+        <Style id="thin">
+            <LineStyle>
+                <color>33ffffff</color>
+            </LineStyle>
+            <LabelStyle>
+                <scale>0</scale>
+            </LabelStyle>
+        </Style>
+        <Style id="thick">
+            <IconStyle>
+                <scale>5</scale>
+            </IconStyle>
+            <LineStyle>
+                <color>88ffffff</color>
+            </LineStyle>
+            <LabelStyle>
+                <scale>1.1</scale>
+            </LabelStyle>
+        </Style>
+        <StyleMap id="whiteline">
+            <Pair>
+                <key>normal</key>
+                <styleUrl>#thin</styleUrl>
+            </Pair>
+            <Pair>
+                <key>highlight</key>
+                <styleUrl>#thick</styleUrl>
+            </Pair>
+        </StyleMap>
+        <Folder>
+          <name> JarKus </name>
+            {% for id, line in lines.iterrows() %}
+            <NetworkLink>
+                <name>Transect {{ line.id }}</name>
+                <Region>
+                    <LatLonAltBox>
+                        <north>{{ line.bbox.north }}</north>
+                        <south>{{ line.bbox.south }}</south>
+                        <east>{{ line.bbox.east }}</east>
+                        <west>{{ line.bbox.west }}</west>
+                        <minAltitude>-20</minAltitude>
+                        {# Make 50 meters high, so you get more transects if you fly over them #}
+                        <maxAltitude>50</maxAltitude>
+                        <altitudeMode>absolute</altitudeMode>
+                    </LatLonAltBox>
+                    <Lod>
+                        {# Don't show too many lines #}
+                        {# alternate lod, so we get different transects at different levels #}
+                        <minLodPixels>{{ line.min_lod_pixels }}</minLodPixels>
+                    </Lod>
+                </Region>
+                <Link>
+                    {#
+                    Replace these query parameters in the url tag... (or extend url to match these parameters)
+                    Don't forget to escape &.
+                    #}
+                    <href>{{line.id}}/kml?lift=100&amp;move=1.0&amp;exaggeration=5.0</href>
+                    <viewRefreshMode>onRegion</viewRefreshMode>
+                </Link>
+            </NetworkLink>
+            <Placemark id="{{ line.id }}">
+                <name></name>
+                <styleUrl>#whiteline</styleUrl>
+                <LineString>
+                    <coordinates>{{ line.line_coords }}</coordinates>
+                </LineString>
+                <description>
+                    <![CDATA[
+                    <iframe src="{{ line.id }}/placemark" style="border:0; height: 600px;width:400px;"></iframe>
+                    ]]>
+                </description>
+            </Placemark>
+            {% endfor %}
+        </Folder>
+        {# ensures the style KML is preloaded, so there's no delay when all transects load #}
+        <Placemark id="style-preloader">
+            <name>Style preloader</name>
+            <styleUrl>../styles#year2000</styleUrl>
+        </Placemark>
+    </Document>
+</kml>

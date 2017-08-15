@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B&amp;O Kust</title>
+    <!-- polyfill for IE 11 -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
+    <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet" type="text/css">
+    <script src="https://use.fontawesome.com/4ee6f65ee1.js"></script>
+    <link href="/static/styles.css" rel="stylesheet" type="text/css">
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32">
+  </head>
+  <body>
+    <div id="app">
+      <v-app light>
+        <main>
+          <v-container fluid class="pa-0">
+            <info-page></info-page>
+          </v-container>
+        </main>
+        <v-footer>
+          <span><a href="https://www.rijkswaterstaat.nl/zakelijk/open-data">data</a> <a href="https://github.com/openearth/coastviewer">code</a> <a href="http://html5test.com">test</a></span> <span>@2017</span>
+        </v-footer>
+      </v-app>
+    </div>
+    <script type="x-template" id="info-page">
+      <v-layout column align-center >
+        <v-tabs dark fixed centered>
+          <v-tabs-bar slot="activators">
+            <v-tabs-slider></v-tabs-slider>
+            <v-tabs-item href="#tab-info">Info</v-tabs-item>
+            <v-tabs-item href="#tab-timeseries">Timeseries</v-tabs-item>
+            <v-tabs-item href="#tab-nourishments">Nourishments</v-tabs-item>
+          </v-tabs-bar>
+          <v-tabs-content id="tab-info" class="pa-3">
+            <v-layout>
+              <v-flex xs12 sm6 offset-sm3>
+                <v-card>
+                  <v-card-media src="{{ static_url }}" height="200px">
+                    <v-layout column class="media">
+                      <v-card-title>
+                        <v-spacer></v-spacer>
+                        <v-btn icon>
+                          <v-icon>more_vert</v-icon>
+                        </v-btn>
+                      </v-card-title>
+                      <v-spacer></v-spacer>
+                      <v-card-title class="white--text pl-5 pt-4">
+                        <div class="display-1 pl-5 pt-5">Transect {{ id }}</div>
+                      </v-card-title>
+                    </v-layout>
+                  </v-card-media>
+                  <v-card-text>
+                    <v-list two-line>
+                      <v-list-tile>
+                        <v-list-tile-action>
+                          <v-icon class="indigo--text">fa-key</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                          <v-list-tile-title>Identification</v-list-tile-title>
+                          <v-list-tile-sub-title>Id: {{ id }}, alongshore: {{ "%.0f" % alongshore }} m in {{ areaname[:] }} ({{ areacode }})</v-list-tile-sub-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                      <v-list-tile>
+                        <v-list-tile-action>
+                          <v-icon class="indigo--text">fa-globe</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                          <v-list-tile-title>Coordinates</v-list-tile-title>
+                          <v-list-tile-sub-title>{{ "%.3f" % rsp_lat }}&deg;N, {{ "%.3f" % rsp_lon }}&deg;E, {{ "%.0f" % (rsp_x, ) }} m E, {{ "%.0f" % (rsp_y, ) }} m N (EPSG:28992)</v-list-tile-sub-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                      <v-list-tile>
+                        <v-list-tile-action>
+                          <v-icon class="indigo--text">fa-ship</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                          <v-list-tile-title>Tide</v-list-tile-title>
+                          <v-list-tile-sub-title>Mean low water: {{ "%.3f" % mean_low_water }} m, mean high water {{ "%.3f" % mean_high_water }} m </v-list-tile-sub-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                    </v-list>
+                  </v-card-text>
+                </v-card>
+
+              </v-flex>
+            </v-layout>
+          </v-tabs-content>
+          <v-tabs-content id="tab-timeseries" class="pa-3">
+            <v-layout>
+              <v-flex xs12 sm6 offset-sm3 >
+                <v-card class="mb-3">
+                  <v-card-text> <h4>Transect over time</h4>
+                    <figure>
+                      <img src="{{url_for('.coastviewer_controllers_eeg', id=id)}}" >
+                      <figcaption>Cross-shore profile of Transect {{ id }} over time.</figcaption>
+                    </figure>
+
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-menu offset-y>
+                      <v-btn primary slot="activator">Download data</v-btn>
+                      <v-list>
+                        <v-list-tile onclick="">
+                          <v-list-tile-title>
+                            <a href="{{url_for('.coastviewer_controllers_eeg', id=id, format='csv')}}" download>csv</a>
+                          </v-list-tile-title>
+                        </v-list-tile>
+                        <v-list-tile>
+                          <v-list-tile-title>
+                            <a href="{{url_for('.coastviewer_controllers_eeg', id=id, format='json')}}" download>json</a>
+                          </v-list-tile-title>
+                        </v-list-tile>
+                        <v-list-tile>
+                          <v-list-tile-title>
+                            <a href="{{url_for('.coastviewer_controllers_eeg', id=id, format='xls')}}" download>xls</a>
+                          </v-list-tile-title>
+                        </v-list-tile>
+                      </v-list>
+                    </v-menu>
+                    <v-menu offset-y>
+                      <v-btn primary slot="activator">Export chart</v-btn>
+                      <v-list>
+                        <v-list-tile>
+                          <v-list-tile-title>
+                            <a href="{{url_for('.coastviewer_controllers_eeg', id=id, format='png')}}" download>png</a>
+                          </v-list-tile-title>
+                        </v-list-tile>
+                        <v-list-tile>
+                          <v-list-tile-title>
+                            <a href="{{url_for('.coastviewer_controllers_eeg', id=id, format='pdf')}}" download>pdf</a>
+                          </v-list-tile-title>
+                        </v-list-tile>
+                        <v-list-tile>
+                          <v-list-tile-title>
+                            <a href="{{url_for('.coastviewer_controllers_eeg', id=id, format='svg')}}" download>svg</a>
+                          </v-list-tile-title>
+                        </v-list-tile>
+
+                      </v-list>
+                    </v-menu>
+                  </v-card-actions>
+                </v-card>
+                <v-card class="mb-3">
+
+                  <v-card-text> <h4> Transect over time </h4>
+                    <figure>
+                      <img src="{{url_for('.coastviewer_controllers_timestack', id=id)}}" >
+                      <figcaption>
+                        Topographic map and mean high/low waterlines contour of transect {{ id }} over time.
+                        Data is in and extrapolated in space and time.
+                      </figcaption>
+                    </figure>
+
+                  </v-card-text>
+
+                  <v-card-actions>
+                    <v-menu offset-y>
+                      <v-btn primary slot="activator">Export chart</v-btn>
+                      <v-list>
+                        <v-list-tile>
+                          <v-list-tile-title>
+                            <a href="{{url_for('.coastviewer_controllers_timestack', id=id, format='png')}}" download>png</a>
+                          </v-list-tile-title>
+                        </v-list-tile>
+                        <v-list-tile>
+                          <v-list-tile-title>
+                            <a href="{{url_for('.coastviewer_controllers_timestack', id=id, format='pdf')}}" download>pdf</a>
+                          </v-list-tile-title>
+                        </v-list-tile>
+                        <v-list-tile>
+                          <v-list-tile-title>
+                            <a href="{{url_for('.coastviewer_controllers_timestack', id=id, format='svg')}}" download>svg</a>
+                          </v-list-tile-title>
+                        </v-list-tile>
+
+                      </v-list>
+                    </v-menu>
+                  </v-card-actions>
+                </v-card>
+              </v-flex>
+            </v-layout>
+          </v-tabs-content>
+          <v-tabs-content id="tab-nourishments" class="pa-3">
+            <v-layout>
+              <v-flex xs12 sm8 offset-sm2>
+                <v-card class="mb-3">
+
+                  <v-card-text> <h4> Nourishments over time </h4>
+                    <figure>
+                      <img src="{{url_for('.coastviewer_controllers_indicators', id=id)}}">
+                      <figcaption>Coastal state indicators for transect {{ id }}</figcaption>
+                    </figure>
+
+                  </v-card-text>
+
+                  <v-card-actions>
+                    <v-menu offset-y>
+                      <v-btn primary slot="activator">Export chart</v-btn>
+                      <v-list>
+                        <v-list-tile>
+                          <v-list-tile-title>
+                            <a href="{{url_for('.coastviewer_controllers_indicators', id=id, format='png')}}" download>png</a>
+                          </v-list-tile-title>
+                        </v-list-tile>
+                        <v-list-tile>
+                          <v-list-tile-title>
+                            <a href="{{url_for('.coastviewer_controllers_indicators', id=id, format='pdf')}}" download>pdf</a>
+                          </v-list-tile-title>
+                        </v-list-tile>
+                        <v-list-tile>
+                          <v-list-tile-title>
+                            <a href="{{url_for('.coastviewer_controllers_indicators', id=id, format='svg')}}" download>svg</a>
+                          </v-list-tile-title>
+                        </v-list-tile>
+
+                      </v-list>
+                    </v-menu>
+                  </v-card-actions>
+                </v-card>
+              </v-flex>
+            </v-layout>
+
+          </v-tabs-content>
+
+        </v-tabs>
+      </v-layout>
+    </script>
+
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vuetify/dist/vuetify.js"></script>
+    <script src="/static/info-page.js"></script>
+  </body>
+</html>

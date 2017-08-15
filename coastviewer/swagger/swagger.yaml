@@ -1,0 +1,327 @@
+---
+swagger: "2.0"
+info:
+  description: "This is the coastal-viewer api. It provides services to acquire data\
+    \ of coasts around the world"
+  version: "1.1.0"
+  title: "Coastal Viewer API"
+  contact:
+    email: "fedor.baart@deltares.nl"
+  license:
+    name: "GPLv3"
+    url: "https://www.gnu.org/licenses/gpl.html"
+host: "localhost:5000"
+basePath: "/coastviewer/1.1.0"
+tags:
+- name: "admins"
+  description: "Secured Admin-only calls"
+- name: "developers"
+  description: "Operations available to regular developers"
+schemes:
+- "https"
+paths:
+  /transects:
+    get:
+      tags:
+      - "developers"
+      summary: "get transect overview"
+      description: "Get a list of all transects\n"
+      operationId: "coastviewer.controllers.transect_overview"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+      x-tags:
+      - tag: "developers"
+  /transects/kml:
+    get:
+      tags:
+      - "developers"
+      summary: "get transect overview in kml format"
+      description: "Get a list of all transects\n"
+      operationId: "coastviewer.controllers.transect_overview_kml"
+      produces:
+      - "application/vnd.google-earth.kml+xml"
+      parameters: []
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+      x-tags:
+      - tag: "developers"
+  /transects/{id}:
+    get:
+      tags:
+      - "developers"
+      summary: "get information about a specific transect"
+      description: "Get information about a specific transect\n"
+      operationId: "coastviewer.controllers.transect"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "identification for transect"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+        400:
+          description: "bad input parameter"
+      x-tags:
+      - tag: "developers"
+  /transects/{id}/kml:
+    get:
+      tags:
+      - "developers"
+      summary: "get information about a specific transect in kml format"
+      description: "Get information about a specific transect\n"
+      operationId: "coastviewer.controllers.transect_kml"
+      produces:
+      - "application/vnd.google-earth.kml+xml"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "identification for transect"
+        required: true
+        type: "integer"
+      - in: query
+        name: extrude
+        description: extrude polygon
+        type: boolean
+        required: false
+        default: true
+      - in: query
+        name: exaggeration
+        description: z values are multiplied with this value
+        type: number
+        required: false
+        default: 1.0
+      - in: query
+        name: lift
+        description: z values are lifted with this value
+        type: number
+        required: false
+        default: 0.0
+      - in: query
+        name: move
+        description: move transects by factor move, multiplied by years since year
+        type: number
+        required: false
+        default: 0.0
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+        400:
+          description: "bad input parameter"
+      x-tags:
+      - tag: "developers"
+  /transects/{id}/info:
+    get:
+      tags:
+      - "developers"
+      summary: "get information about a specific transect in html format"
+      description: "Get information about a specific transect\n"
+      operationId: "coastviewer.controllers.transect_info"
+      produces:
+      - "text/html"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "identifcation for transect"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+        400:
+          description: "bad input parameter"
+      x-tags:
+      - tag: "developers"
+  /transects/{id}/placemark:
+    get:
+      tags:
+      - "developers"
+      summary: "get information about a transect in simple html (no javascript, no html5) that can be used in a placemark format"
+      description: "Get information about a specific transect in old school html so it can be used in a placemark\n"
+      operationId: "coastviewer.controllers.transect_placemark"
+      produces:
+      - "text/html"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "identifcation for transect"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+        400:
+          description: "bad input parameter"
+      x-tags:
+      - tag: "developers"
+  /transects/{id}/plot/timestack:
+    get:
+      tags:
+      - "developers"
+      summary: "get plot of profile in time and contour lines"
+      description: "Get plot of profile in time and contour lines\n"
+      operationId: "coastviewer.controllers.timestack"
+      produces:
+      - "image/png"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "identification for transect"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+        400:
+          description: "bad input parameter"
+      x-tags:
+      - tag: "developers"
+  /transects/{id}/plot/eeg:
+    get:
+      tags:
+      - "developers"
+      summary: "get profile stacked in time"
+      description: "Get profile stacked in time\n"
+      operationId: "coastviewer.controllers.eeg"
+      produces:
+      - "image/png"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "identification for transect"
+        required: true
+        type: "integer"
+      - name: "format"
+        in: "query"
+        description: "format for file"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+        400:
+          description: "bad input parameter"
+      x-tags:
+      - tag: "developers"
+  /transects/{id}/plot/indicators:
+    get:
+      tags:
+      - "developers"
+      summary: "get indicators in time"
+      description: "Get indicators in time\n"
+      operationId: "coastviewer.controllers.indicators"
+      produces:
+      - "image/png"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "identification for transect"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "transect"
+          schema:
+            type: "object"
+            properties: {}
+        400:
+          description: "bad input parameter"
+      x-tags:
+      - tag: "developers"
+  /styles:
+    get:
+      tags:
+      - "developers"
+      summary: "get style content"
+      description: "Get dynamic style information.\n"
+      operationId: "coastviewer.controllers.styles"
+      produces:
+      - "application/vnd.google-earth.kml+xml"
+      parameters:
+      - in: query
+        name: poly_alpha
+        description: alpha for polygons
+        type: number
+        required: false
+        default: 0.5
+      - in: query
+        name: outline
+        description: outline for polygon
+        type: boolean
+        required: false
+        default: false
+      - in: query
+        name: colormap
+        description: colormap used for transects
+        type: string
+        required: false
+        default: "viridis"
+      responses:
+        200:
+          description: "style"
+          schema:
+            type: "object"
+            properties: {}
+        400:
+          description: "bad input parameter"
+      x-tags:
+      - tag: "developers"
+
+definitions:
+  Feature:
+    type: "object"
+    required:
+    - "geometry"
+    - "id"
+    - "properties"
+    - "type"
+    properties:
+      id:
+        type: "string"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      type:
+        type: "string"
+        example: "Feature"
+      geometry:
+        type: "object"
+        example:
+          type: "LineString"
+          coordinates: []
+        properties: {}
+      properties:
+        type: "object"
+        example:
+          measuredTime: "2016-02-02 03:00:11Z"
+        properties: {}

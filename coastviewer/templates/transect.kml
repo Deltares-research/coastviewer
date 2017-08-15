@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+    <Document>
+        <name>{{ transect.id }}</name>
+        {% for _, row in transect.years.iterrows() %}
+        <Placemark>
+            <name>{{ row.properties.year }}</name>
+            <styleUrl>../../styles#year{{ row.properties.year }}</styleUrl>
+            {# first one without extrude #}
+            <LineString>
+                <extrude>{{ extrude }}</extrude>
+                <altitudeMode>absolute</altitudeMode>
+                <coordinates>{{ row.line_coordinates }}</coordinates>
+            </LineString>
+            <TimeSpan>
+                {# kml:dateTime #}
+                <begin>{{ row.properties.begin_date | kmldate }}</begin>
+                {# kml:dateTime #}
+                <end>{{ row.properties.end_date | kmldate}}</end>
+            </TimeSpan>
+        </Placemark>
+        {% endfor %}
+    </Document>
+</kml>

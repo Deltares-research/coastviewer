@@ -1,0 +1,11 @@
+connexion
+flask>=0.12
+matplotlib
+netCDF4>=1.2
+numpy
+pandas
+pyproj
+cmocean
+scipy>=0.19
+colorcet
+openpyxl
