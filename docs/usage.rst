@@ -9,17 +9,15 @@ Obtained data from the entire Dutch coast is converted into one standardized, un
 .. _Open Earth: http://openearth.deltares.nl
 .. _Google Earth: https://www.google.nl/intl/nl/earth/
 
-Walkthrough
+Information
 -----------
-The coastviewer is a package that allows the user to run the program locally.  In the `readme`_ the steps to install the coastviewer locally are described. The locally run package provides a link to the kml at: 
+The visualization in Google Earth can be accessed in two ways, through installing the coastviewer with this package locally or use the online version. Either provide a link to a KML file that can be opened in Google Earth. 
 
-http://localhost:5000/coastviewer/1.1.0/transects/kml
+- The coastviewer is a package that allows the user to run the program locally.  In the `readme`_ the steps to install the coastviewer      locally are described. The locally run package provides a link to the kml at: http://localhost:5000/coastviewer/1.1.0/transects/kml
 
-The coastviewer should run on your computer (using the steps of the `readme`_). Either use the link above as network link or otherwise use the network link of the online version:
+-  The network link of the online version: http://dev-env.myfjvt76zf.eu-west-1.elasticbeanstalk.com/coastviewer/1.1.0/transects/kml
 
-http://dev-env.myfjvt76zf.eu-west-1.elasticbeanstalk.com/coastviewer/1.1.0/transects/kml
-
-This link can be opened in Google Earth. Within Google Earth click on Add -> Network Link.  Provide a name and paste the network link. The JarKus transects are shown along the entire Dutch coast. 
+Within Google Earth click on Add -> Network Link.  Provide a name and paste the network link. The JarKus transects are shown along the entire Dutch coast. 
 
 .. image:: ./figures/overview_jarkus.png
 
