@@ -2,11 +2,6 @@
 Usage
 =====
 
-To use coastviewer in a project::
-
-    import coastviewer
-
-
 Introduction
 ------------
 Obtained data from the entire Dutch coast is converted into one standardized, uniform format (NetCDF) and saved according to the `Open Earth`_ philosophy in an internet database. This data can be accessed through the OGC (Open Geospatial Consortium) KML feeds (`Google Earth`_ feeds), which can be openly accessed through the internet. This coastviewer provides these feeds. Through the KML file the data can be accessed and visualized on a map (Google Earth) more detailed information is given in graphs. This usage page describes how the data in the coastviewer can be accessed. 
@@ -20,8 +15,8 @@ The coastviewer is a package that allows the user to run the program locally.  I
 
 http://localhost:5000/coastviewer/1.1.0/transects/kml
 
-The coastviewer should run on your computer (using the steps in the readme). Either use the link above as network link or otherwise use the network link of the online version:
-
+The coastviewer should run on your computer (using the steps of the `Installation`_). Either use the link above as network link or otherwise use the network link of the online version:
+.. _Instalation: http://coastviewer.readthedocs.io/en/latest/installation.html
 http://dev-env.myfjvt76zf.eu-west-1.elasticbeanstalk.com/coastviewer/1.1.0/transects/kml
 
 This link can be opened in Google Earth. Within Google Earth click on Add -> Network Link.  Provide a name and paste the network link. The JarKus transects are shown along the entire Dutch coast. 
