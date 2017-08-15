@@ -333,15 +333,9 @@ def get_nourishment_grid_df(id_=7003900):
     transect_idx = np.searchsorted(ids, id_)
     variables = {
         'type': {"var": 'type', "slice": np.s_[:]},
-        "volume": {"var": "volume", "slice": np.s_[transect_idx, :, :]},
-        "time_num_start": {
-            "var": "time_start",
-            "slice": np.s_[transect_idx, :, :]
-        },
-        "time_num_end": {
-            "var": "time_end",
-            "slice": np.s_[transect_idx, :, :]
-        },
+        "volume": {"var": "volume", "slice": np.s_[transect_idx,:,:]},
+        "time_num_start": {"var": "time_start", "slice": np.s_[transect_idx,:,:]},
+        "time_num_end": {"var": "time_end", "slice": np.s_[transect_idx,:,:]},
         "t": {"var": 'time', "slice": np.s_[:]}
     }
 
@@ -351,12 +345,10 @@ def get_nourishment_grid_df(id_=7003900):
             data[var] = ds.variables[props['var']][props['slice']]
         time_units = ds.variables['time'].units
         time_start_units = ds.variables['time_start'].units
-        # time_end had a bug
-        time_end_units = ds.variables['time_start'].units
-    data["time_start"] = netCDF4.num2date(
-        data["time_num_start"],
-        time_start_units
-    )
+        time_end_units = ds.variables['time_start'].units # time_end had a bug
+    data["time_num_start"][np.isnan(data["time_num_start"])]=0
+    data["time_num_end"][np.isnan(data["time_num_end"])]=0
+    data["time_start"] = netCDF4.num2date(data["time_num_start"], time_start_units)
     data["time_end"] = netCDF4.num2date(data["time_num_end"], time_end_units)
     data['time'] = netCDF4.num2date(data['t'], time_units)
 
@@ -368,39 +360,19 @@ def get_nourishment_grid_df(id_=7003900):
         }
 
     cols_vol = ['volume_'+ityp for ityp in list(short_description.values())]
-    cols_tstart = [
-        'time_start_'+ityp
-        for ityp
-        in list(short_description.values())
-    ]
+    cols_tstart = ['time_start_'+ityp for ityp in list(short_description.values())]
     cols_tend = ['time_end_'+ityp for ityp in list(short_description.values())]
     del data["type"]
-    nourishment_grid_df = pd.DataFrame(
-        np.c_[
-            np.array(data['volume']),
-            np.array(data['time_start']),
-            np.array(data['time_end']),
-            np.array(data['time'])
-        ],
-        columns=np.r_[
-            cols_vol,
-            cols_tstart,
-            cols_tend,
-            ['time']
-        ])
-    # make it a pandas timestamp
-    nourishment_grid_df['time'] = nourishment_grid_df['time'].apply(
-        lambda x: pd.Timestamp(x)
-    )
-    nourishment_grid_df = nourishment_grid_df.dropna(
-        subset=[
-            'time_start_beach',
-            'time_start_shoreface',
-            'time_start_dune',
-            'time_start_other'
-        ],
-        how='all'
-    )
+    nourishment_grid_df = pd.DataFrame(np.c_[np.array(data['volume']),
+                                             np.array(data['time_start']),
+                                             np.array(data['time_end']),
+                                             np.array(data['time'])
+                                            ],columns=np.r_[cols_vol,cols_tstart,cols_tend,['time']])
+    nourishment_grid_df['time'] = nourishment_grid_df['time'].apply(lambda x: pd.Timestamp(x)) # make it a pandas timestamp
+    #nourishment_grid_df = nourishment_grid_df.dropna(
+    #    subset=['time_start_beach', 'time_start_shoreface', 'time_start_dune', 'time_start_other'], 
+    #    how='all')
+    nourishment_grid_df = nourishment_grid_df.loc[(nourishment_grid_df[['volume_beach','volume_shoreface','volume_dune','volume_other']]!=0).any(axis=1)]
 
     return nourishment_grid_df
 
