@@ -1,6 +1,8 @@
 # Coastviewer
 Coast viewer server side. Serves several sources as KML and geojson.
 
+Read the documentation at http://coastviewer.readthedocs.io/
+
 # Download data
 For linux/ubuntu systems: 
 ``` shell
