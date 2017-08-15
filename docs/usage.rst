@@ -15,7 +15,7 @@ The coastviewer is a package that allows the user to run the program locally.  I
 
 http://localhost:5000/coastviewer/1.1.0/transects/kml
 
-The coastviewer should run on your computer (using the steps of the `Installation`_). Either use the link above as network link or otherwise use the network link of the online version:
+The coastviewer should run on your computer (using the steps of the `readme`_). Either use the link above as network link or otherwise use the network link of the online version:
 
 http://dev-env.myfjvt76zf.eu-west-1.elasticbeanstalk.com/coastviewer/1.1.0/transects/kml
 
@@ -33,4 +33,4 @@ The webpage provides three tabs with information concerning the selected transec
 
 The second tab 'TIMESERIES' provides two timeserie plots of the transect. The uppermost plot gives the cross-shore profile of the transect in time. The second plot does the same, but visualizes it in a topographic map and combines the mean high/low waterline contours. Both figures can be exported (png, pdf or svg format). The third tab 'NOURISHMENTS' shows three plots with indicators for the coastal state. 
 
-.. _Installation: http://coastviewer.readthedocs.io/en/latest/installation.html
+.. _readme: https://github.com/openearth/coastviewer/blob/master/README.md
