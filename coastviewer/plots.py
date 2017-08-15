@@ -86,21 +86,25 @@ def eeg(data):
     return fig, ax
 
 
-def indicators(transect,mkl,bkltkltnd,mean_water,dune_foot,nourishment):
+def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, nourishment):
 
     n_t = nourishment['time'].reset_index()
-    n_y = nourishment.drop('time', axis=1).reset_index() #[volume_beach,volume_shoreface,volume_dune,volume_other,time_start_beach,time_start_shoreface,time_start_dune,time_start_other,time_end_beach,time_end_shoreface,time_end_dune,time_end_other]
+    n_y = nourishment.drop('time', axis=1).reset_index()
 
     fig, ax = plt.subplots(3, figsize=(13, 13), sharex=True)
-    #ax[0].set_title('Coastal Indicators')
-    
-    ax[0].plot(bkltkltnd['time'], bkltkltnd['basal_coastline'],'o',color='purple',alpha=0.7,label='Basal Coastline')
-    ax[0].hold(True)
+
+    ax[0].plot(
+        bkltkltnd['time'],
+        bkltkltnd['basal_coastline'],
+        'o',
+        color='purple',
+        alpha=0.7,
+        label='Basal Coastline'
+    )
     ax[0].grid(True)
     ax[0].plot(bkltkltnd['time'], bkltkltnd['testing_coastline'],'o',color='green',alpha=0.7,label='Testing Coastline')
     ax[0].plot(mkl['time_MKL'], mkl['momentary_coastline'],'o',color='blue',alpha=0.7, label='Momentary Coastline')
     ax[1].plot(mean_water['time'], mean_water['mean_high_water_cross'],'ro',alpha=0.7,label='Mean High Water')
-    ax[1].hold(True)
     ax[1].grid(True)
     ax[1].plot(mean_water['time'], mean_water['mean_low_water_cross'],'bo',alpha=0.7,label='Mean Low Water')
     ax[1].plot(dune_foot['time'], dune_foot['dune_foot_threeNAP_cross'],'go',alpha=0.7, label='Dune Foot 3NAP')
@@ -123,7 +127,7 @@ def indicators(transect,mkl,bkltkltnd,mean_water,dune_foot,nourishment):
         boxes = [[],[],[],[]]
         ii=-150 # distance if overlapping
         for cc,ll,box in zip(color, lab, boxes):
-            ii = ii+50; 
+            ii = ii+50;
             for tt, yy in zip(n_t['time'], n_y[str('volume_'+ll)]):
                 startTime = tt.to_pydatetime()
                 start = matplotlib.dates.date2num(startTime)
@@ -144,4 +148,3 @@ def indicators(transect,mkl,bkltkltnd,mean_water,dune_foot,nourishment):
     date_formatter = matplotlib.dates.AutoDateFormatter(date_locator)
 
     return fig, ax
-
