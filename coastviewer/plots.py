@@ -102,13 +102,44 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, nourishment):
         label='Basal Coastline'
     )
     ax[0].grid(True)
-    ax[0].plot(bkltkltnd['time'], bkltkltnd['testing_coastline'],'o',color='green',alpha=0.7,label='Testing Coastline')
-    ax[0].plot(mkl['time_MKL'], mkl['momentary_coastline'],'o',color='blue',alpha=0.7, label='Momentary Coastline')
-    ax[1].plot(mean_water['time'], mean_water['mean_high_water_cross'],'ro',alpha=0.7,label='Mean High Water')
+    ax[0].plot(
+        bkltkltnd['time'],
+        bkltkltnd['testing_coastline'],
+        'o',
+        color='green',
+        alpha=0.7,
+        label='Testing Coastline'
+    )
+    ax[0].plot(
+        mkl['time_MKL'],
+        mkl['momentary_coastline'],
+        'o',
+        color='blue',
+        alpha=0.7,
+        label='Momentary Coastline'
+    )
+    ax[1].plot(
+        mean_water['time'],
+        mean_water['mean_high_water_cross'],
+        'ro',
+        alpha=0.7,
+        label='Mean High Water'
+    )
     ax[1].grid(True)
-    ax[1].plot(mean_water['time'], mean_water['mean_low_water_cross'],'bo',alpha=0.7,label='Mean Low Water')
-    ax[1].plot(dune_foot['time'], dune_foot['dune_foot_threeNAP_cross'],'go',alpha=0.7, label='Dune Foot 3NAP')
-    #ax[1].plot(df_t, dfu_y,'o',alpha=0.7, label='Dune Foot MKL')
+    ax[1].plot(
+        mean_water['time'],
+        mean_water['mean_low_water_cross'],
+        'bo',
+        alpha=0.7,
+        label='Mean Low Water'
+    )
+    ax[1].plot(
+        dune_foot['time'],
+        dune_foot['dune_foot_threeNAP_cross'],
+        'go',
+        alpha=0.7,
+        label='Dune Foot 3NAP'
+    )
     # set the x,y axis
     ax[0].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
     ax[1].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
@@ -119,26 +150,43 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, nourishment):
     ax[0].legend(loc='upper left')
     ax[1].legend(loc='upper left')
 
-    nour_max=np.max(np.max(n_y[['volume_beach','volume_shoreface','volume_dune','volume_other']]))
+    nour_max = np.max(np.max(n_y[[
+        'volume_beach',
+        'volume_shoreface',
+        'volume_dune',
+        'volume_other'
+    ]]))
 
     if nour_max!=0 and ~np.isnan(nour_max):
-        color=['yellow','blue','orange','red']
-        lab=['beach', 'shoreface','dune','other']
+        color = ['yellow', 'blue', 'orange', 'red']
+        lab = ['beach', 'shoreface', 'dune', 'other']
         boxes = [[],[],[],[]]
-        ii=-150 # distance if overlapping
-        for cc,ll,box in zip(color, lab, boxes):
-            ii = ii+50;
+        ii = -150; # distance if overlapping
+
+        for cc, ll, box in zip(color, lab, boxes):
+            ii = ii+50; # distance if overlapping
+
             for tt, yy in zip(n_t['time'], n_y[str('volume_'+ll)]):
                 startTime = tt.to_pydatetime()
                 start = matplotlib.dates.date2num(startTime)
-                r=Rectangle((start+ii,0),width=365,height=yy,facecolor=cc, edgecolor='black', alpha=0.5,label=ll)
+                r = Rectangle(
+                    (start+ii,0),
+                    width=365,
+                    height=yy,
+                    facecolor=cc,
+                    edgecolor='black',
+                    alpha=0.5,
+                    label=ll
+                )
                 box.append(r) # duration of one year
-                pc = matplotlib.collections.PatchCollection(box,facecolor=cc, edgecolor='black', alpha=0.5)
+
+                pc = matplotlib.collections.PatchCollection(box, facecolor=cc, edgecolor='black', alpha=0.5)
+
             ax[2].add_collection(pc)
 
         ax[2].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
         ax[2].set_ylim(0, nour_max+50)
-        ax[2].legend(tuple([bb[0] for bb in boxes]),tuple(lab),loc='upper left')
+        ax[2].legend(tuple([bb[0] for bb in boxes]), tuple(lab), loc='upper left')
 
     ax[2].grid(True)
     ax[2].set_ylabel('Nourishments [$m^3/m$]')
