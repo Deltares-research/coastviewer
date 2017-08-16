@@ -15,7 +15,7 @@ The visualization in Google Earth can be accessed in two ways, through installin
 
 - The coastviewer is a package that allows the user to run the program locally.  In the `readme`_ the steps to install the coastviewer      locally are described. The locally run package provides a link to the kml at: |br| http://localhost:5000/coastviewer/1.1.0/transects/kml
 
--  The network link of the online version: |br| http://dev-env.myfjvt76zf.eu-west-1.elasticbeanstalk.com/coastviewer/1.1.0/transects/kml
+-  The network link of the online version: |br| http://coastal-dev.zdcxwh5vkz.eu-west-1.elasticbeanstalk.com/coastviewer/1.1.0/transects/kml
 
 Within Google Earth click on Add -> Network Link.  Provide a name and paste the network link. The JarKus transects are shown along the entire Dutch coast. 
 
