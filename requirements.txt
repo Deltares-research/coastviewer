@@ -3,7 +3,7 @@ flask>=0.12
 matplotlib==2.0.2
 netCDF4>=1.2
 numpy==1.13.1
-pandas
+pandas==0.20.3
 pyproj
 cmocean
 scipy>=0.19
