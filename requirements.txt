@@ -1,4 +1,4 @@
-connexion
+connexion==1.1.13
 flask>=0.12
 matplotlib
 netCDF4>=1.2
