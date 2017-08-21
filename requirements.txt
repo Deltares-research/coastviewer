@@ -2,7 +2,7 @@ connexion==1.1.13
 flask>=0.12
 matplotlib==2.0.2
 netCDF4>=1.2
-numpy
+numpy==1.13.1
 pandas
 pyproj
 cmocean
