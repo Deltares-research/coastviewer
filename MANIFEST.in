@@ -11,7 +11,7 @@ include data/Makefile
 recursive-include coastviewer/templates *
 recursive-include coastviewer/swagger *
 
-recursive-include tests *
+recursive-exclude tests *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 
