@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.cm
 import matplotlib.colors
+import matplotlib.pyplot as plt
 
 from . import datasets
 from . import utils
@@ -108,7 +109,7 @@ def timestack(id: int, format: str='') -> str:
         fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
     else:
         fig.savefig(stream, bbox_inches='tight', dpi=dpi)
-
+    plt.close(fig)
     mimetype = MIMES.get(format, 'application/png')
     headers = {}
     stream.seek(0)
@@ -174,6 +175,7 @@ def eeg(id: int, format: str='') -> str:
             fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
         else:
             fig.savefig(stream, bbox_inches='tight', dpi=dpi, format='png')
+        plt.close(fig)
     mimetype = MIMES.get(format, 'application/png')
     headers = {}
     stream.seek(0)
@@ -223,6 +225,7 @@ def indicators(id: int, format: str='') -> str:
         fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
     else:
         fig.savefig(stream, bbox_inches='tight', dpi=dpi)
+    plt.close(fig)
     mimetype = MIMES.get(format, 'application/png')
     headers = {}
     stream.seek(0)
