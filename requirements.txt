@@ -1,6 +1,6 @@
 connexion==1.1.14
 flask>=0.12
-matplotlib==2.0.2
+matplotlib==2.1.0
 netCDF4>=1.2
 numpy==1.13.1
 pandas==0.20.3
