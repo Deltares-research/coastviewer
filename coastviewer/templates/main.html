@@ -1,1 +1,61 @@
-<a href="{{ api.base_path + '/ui' }}">ui</a>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B&amp;O Kust</title>
+    <!-- polyfill for IE 11 -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+    <!-- create extra funcitons for IE -->
+    <script src="/static/polyfill.ie.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
+    <link href="https://unpkg.com/vuetify@0.14.11/dist/vuetify.min.css" rel="stylesheet" type="text/css">
+    <script src="https://use.fontawesome.com/4ee6f65ee1.js"></script>
+    <link href="/static/styles.css" rel="stylesheet" type="text/css">
+    <link rel="icon" type="image/png" href="/static/favicon-32x32.png" sizes="32x32">
+  </head>
+  <body>
+    <div id="app">
+      <v-app light>
+        <main>
+          <v-container>
+            <v-layout>
+              <v-flex xs12 sm6 offset-sm3 fill-height>
+                <v-card>
+                  <v-card-title>
+                    <div class="headline">API</div>
+                  </v-card-title>
+                  <v-card-text>
+                    The <a href="{{ api.base_path + '/ui' }}">api</a> can be used to extract data programmatically.
+                  </v-card-text>
+                  <v-card-actions>
+
+                  </v-card-actions>
+                </v-card>
+                <v-card >
+                  <v-card-text>
+                    <div id="map"></div>
+                  </v-card-text>
+                </v-card>
+
+              </v-flex>
+            </v-layout>
+
+
+
+          </v-container>
+        </main>
+        <v-footer>
+          <span>Data: <a href="https://www.rijkswaterstaat.nl/zakelijk/open-data">Rijkswaterstaat</a>, Code: <a href="https://github.com/openearth/coastviewer"><i class="fa fa-github"></i></a>, Version: {{ __version__ }}</span>
+        </v-footer>
+      </v-app>
+    </div>
+    <script src="https://unpkg.com/vue@2.4.2/dist/vue.js"></script>
+    <script src="https://unpkg.com/vuetify@0.14.11/dist/vuetify.js"></script>
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.41.0/mapbox-gl.css' rel='stylesheet' />
+
+    <script src="/static/map.js"></script>
+  </body>
+</html>
