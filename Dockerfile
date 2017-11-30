@@ -15,6 +15,7 @@ ENV PATH /opt/conda/envs/py36/bin:$PATH
 ENV MPLBACKEND Agg
 RUN cd /app && pip install -r requirements.txt && pip install -e .
 # Fill the /data directory
+RUN mkdir /root/.config
 WORKDIR app
 EXPOSE 5000
 # not sure what this is
