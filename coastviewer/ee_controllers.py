@@ -1,6 +1,8 @@
 import flask
 import flask_cors
 import ee
+
+from . import palettes
 # import pycpt
 
 ee_pages = flask.Blueprint(
@@ -21,21 +23,11 @@ def vaklodingen():
     bathymetry = sorted_images.reduce(
         ee.Reducer.firstNonNull()
     ).divide(1000)
-    palette = [
-        "08306b",
-        "08519c",
-        "2171b5",
-        "4292c6",
-        "6baed6",
-        "9ecae1",
-        "c6dbef",
-        "deebf7",
-        "f7fbff"
-    ]
+    palette = palettes.pycpt2gee()
     map = bathymetry.getMapId({
-        "min":-20,
-        "max":5,
-        'palette': ",".join(palette)
+        "min": -5,
+        "max": 2,
+        'palette': palette
     })
 
     info = {
