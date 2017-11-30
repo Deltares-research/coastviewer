@@ -11,4 +11,4 @@ scipy>=0.19
 colorcet==0.9.1
 openpyxl==2.4.9
 earthengine-api==0.1.129
-pycpt==0.2.0
+git+https://github.com/j08lue/pycpt#b45f720d09da79bcd567c5cbba9a554b0a7cc1d9
