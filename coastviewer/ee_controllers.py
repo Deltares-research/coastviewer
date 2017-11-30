@@ -20,6 +20,7 @@ try:
     ee.Initialize()
 except ee.ee_exception.EEException:
     logger.exception("Couldn't authenticate. If you are running docker, make sure you authenticate using earthenginge authenticate or pass the GEE_AUTHORIZATION_CODE to the environment of the docker container.")
+    ee_available = False
 
 
 @ee_pages.route('/vaklodingen')
