@@ -1,6 +1,7 @@
 import itertools
 import logging
 import pathlib
+import urllib.parse
 
 import netCDF4
 import pandas as pd
@@ -14,49 +15,61 @@ from . import utils
 logger = logging.getLogger(__name__)
 
 # allow to use a local dataset
-local = True
+
 
 
 DATASETS = {
     'transect': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/jarkus/profiles/transect.nc', # noqa E501
-        'local': pathlib.Path('data/transect.nc')
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/jarkus/profiles/transect.nc' # noqa E501
     },
     'BKL_TKL_TND': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/BKL_TKL_TND.nc', # noqa E501
-        'local': pathlib.Path('data/BKL_TKL_TND.nc')
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/BKL_TKL_TND.nc' # noqa E501
     },
     'DF': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/DuneFoot/DF.nc', # noqa E501
-        'local': pathlib.Path('data/DF.nc')
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/DuneFoot/DF.nc' # noqa E501
     },
     'MKL': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/MKL.nc', # noqa E501
-        'local': pathlib.Path('data/MKL.nc')
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/MKL.nc' # noqa E501
     },
     'strandbreedte': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/strandbreedte/strandbreedte.nc', # noqa E501
-        'local': pathlib.Path('data/strandbreedte.nc')
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/strandbreedte/strandbreedte.nc' # noqa E501
     },
     'MHW_MLW': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/MHW_MLW/MHW_MLW.nc', # noqa E501
-        'local': pathlib.Path('data/MHW_MLW.nc')
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/MHW_MLW/MHW_MLW.nc' # noqa E501
     },
     'nourishments': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/suppleties/nourishments.nc', # noqa E501
-        'local': pathlib.Path('data/nourishments.nc')
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/suppleties/nourishments.nc' # noqa E501
     },
     'faalkans': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/faalkans_PC-Ring/faalkans.nc', # noqa E501
-        'local': pathlib.Path('data/faalkans.nc')
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/faalkans_PC-Ring/faalkans.nc' # noqa E501
     }
 }
 
+
+dataset_source = 'url'
+data_dir = pathlib.Path('.')
+if pathlib.Path('/data/transect.nc').exists():
+    dataset_source = "root"
+    data_dir = pathlib.Path('/data')
+elif pathlib.Path('data/transect.nc').exists():
+    dataset_source = 'local'
+    data_dir = pathlib.Path('data')
+
+logger.info('using %s source', dataset_source)
 for dataset in DATASETS.values():
-    if dataset['local'].exists():
-        dataset['url'] = str(dataset['local'])
+    # parse the url
+    parsed = urllib.parse.urlparse(dataset['origin'])
+    # extract the filename
+    parsed_name = pathlib.Path(parsed.path).name
+    if dataset_source == 'url':
+        dataset['url'] = dataset['origin']
+    elif dataset_source in { 'root', 'local' } :
+        # concat directory and convert to string
+        dataset['url'] = str(data_dir / parsed_name)
     else:
-        dataset['url'] = dataset['remote']
+        raise ValueError("unexpected dataset_source {}".format(dataset_source))
+
+
 
 # global variables
 with netCDF4.Dataset(DATASETS['transect']['url']) as ds:
