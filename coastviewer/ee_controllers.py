@@ -1,9 +1,13 @@
+import logging
+
 import flask
 import flask_cors
 import ee
+import ee.ee_exception
 
 from . import palettes
-# import pycpt
+
+logger = logging.getLogger(__name__)
 
 ee_pages = flask.Blueprint(
     'ee_pages',
@@ -11,7 +15,12 @@ ee_pages = flask.Blueprint(
     template_folder='templates'
 )
 
-ee.Initialize()
+ee_available = True
+try:
+    ee.Initialize()
+except ee.ee_exception.EEException:
+    logger.exception("Couldn't authenticate. If you are running docker, make sure you authenticate using earthenginge authenticate or pass the GEE_AUTHORIZATION_CODE to the environment of the docker container.")
+
 
 @ee_pages.route('/vaklodingen')
 @flask_cors.cross_origin()
