@@ -10,3 +10,5 @@ cmocean==1.1
 scipy>=0.19
 colorcet==0.9.1
 openpyxl==2.4.9
+earthengine-api==0.1.129
+pycpt==0.2.0
