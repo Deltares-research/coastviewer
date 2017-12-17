@@ -7,17 +7,24 @@ RUN \
     echo "deb http://httpredir.debian.org/debian jessie-backports main non-free" >> /etc/apt/sources.list && \
     echo "deb-src http://httpredir.debian.org/debian jessie-backports main non-free" >> /etc/apt/sources.list && \
     apt-get update --fix-missing && \
-    apt-get install -y wget unzip build-essential
-# switch to python 3.5 (no gdal in 3.6)
-RUN conda create -y -n py35 python=3.5 libgdal gdal jpeg=8d netcdf4 matplotlib pandas pyproj
+    apt-get install -y wget unzip build-essential jq
+
+# some more packages
+RUN conda config --add channels conda-forge
+# use anaconda to create an env
+RUN conda create -y -n py36 python=3.6 libgdal gdal netcdf4 matplotlib pandas pyproj
+# copy the app
 COPY ./ app/
-ENV PATH /opt/conda/envs/py35/bin:$PATH
+# manual activate env
+ENV PATH /opt/conda/envs/py36/bin:$PATH
+# disable rendering to screen
 ENV MPLBACKEND Agg
+# dependencies and ap
 RUN cd /app && pip install -r requirements.txt && pip install -e .
-# Create a run directory with
-RUN cd app/data && make
 WORKDIR app
+# this is our public port
 EXPOSE 5000
 # not sure what this is
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
-CMD [ "coastviewer" ]
+# Fill the /data directory and let's get to wrk
+CMD [ "scripts/run.sh" ]
