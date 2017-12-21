@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.cm
 import matplotlib.colors
 import matplotlib.pyplot as plt
+import geojson
 
 from . import datasets
 from . import utils
@@ -35,19 +36,25 @@ def transect(id: int) -> object:
     logger.info(flask.request)
     return {}
 
+
 @flask_cors.cross_origin()
-def transect_overview_geojson() -> str:
+def transect_overview() -> str:
     """return transect overview in geojson format"""
     df = datasets.overview()
     fc = []
     for index, row in df.iterrows():
-        fc.append(geojson.Feature(
-            id= str(row.id),
-            geometry=geojson.LineString(coordinates= [
-                    [row.lon_0, row.lat_0],
-                    [row.lon_1, row.lat_1]]
+        fc.append(
+            geojson.Feature(
+                id= str(row.id),
+                geometry=geojson.LineString(
+                    coordinates=[
+                        [row.lon_0, row.lat_0],
+                        [row.lon_1, row.lat_1]
+                    ]
                 ),
-            properties={'lod': row.min_lod_pixels}
+                properties={
+                    'lod': row.min_lod_pixels
+                }
             )
         )
     geojson_output = geojson.FeatureCollection(fc)

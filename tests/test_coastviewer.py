@@ -21,9 +21,20 @@ def response():
     # import requests
     # return requests.get('https://github.com/audreyr/cookiecutter-pypackage')
 
-def test_transect():
-    output = controllers.transect()
-    assert output.type() == 'geojson'
+@pytest.fixture
+def test_app():
+    """create a test app"""
+    app = cli.make_app()
+    with app.app.test_client() as c:
+        yield c
+
+
+def test_transect(test_app):
+    """test getting transect information"""
+    # test_app.get('/transect_overview')
+    # assert output.type() == 'geojson'
+
+
 
 def test_content(response):
     """Sample pytest test function with the pytest fixture as an argument."""

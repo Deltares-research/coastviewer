@@ -26,7 +26,7 @@ paths:
       - "developers"
       summary: "get transect overview in geojson"
       description: "Get a list of all transect in geojson\n"
-      operationId: "coastviewer.controllers.transect_overview_geojson"
+      operationId: "coastviewer.controllers.transect_overview"
       produces:
       - "application/json"
       responses:
