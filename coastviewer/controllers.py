@@ -37,9 +37,21 @@ def transect(id: int) -> object:
 
 @flask_cors.cross_origin()
 def transect_overview_geojson() -> str:
-    lines = datasets.overview()
-    output = datasets.overview_geojson()
-    return flask.jsonify(output)
+    """return transect overview in geojson format"""
+    df = datasets.overview()
+    fc = []
+    for index, row in df.iterrows():
+        fc.append(geojson.Feature(
+            id= str(row.id),
+            geometry=geojson.LineString(coordinates= [
+                    [row.lon_0, row.lat_0],
+                    [row.lon_1, row.lat_1]]
+                ),
+            properties={'lod': row.min_lod_pixels}
+            )
+        )
+    geojson_output = geojson.FeatureCollection(fc)
+    return geojson_output
 
 def transect_overview_kml() -> str:
     """create an overview of all transects"""

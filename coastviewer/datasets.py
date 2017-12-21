@@ -2,7 +2,6 @@ import itertools
 import logging
 import pathlib
 import urllib.parse
-import geojson
 
 import netCDF4
 import pandas as pd
@@ -16,7 +15,6 @@ from . import utils
 logger = logging.getLogger(__name__)
 
 # allow to use a local dataset
-
 
 
 DATASETS = {
@@ -64,12 +62,11 @@ for dataset in DATASETS.values():
     parsed_name = pathlib.Path(parsed.path).name
     if dataset_source == 'url':
         dataset['url'] = dataset['origin']
-    elif dataset_source in { 'root', 'local' } :
+    elif dataset_source in {'root', 'local'}:
         # concat directory and convert to string
         dataset['url'] = str(data_dir / parsed_name)
     else:
         raise ValueError("unexpected dataset_source {}".format(dataset_source))
-
 
 
 # global variables
@@ -135,21 +132,6 @@ def overview():
     df['min_lod_pixels'] = list(n_pixels)
     return df
 
-def overview_geojson():
-    df = overview()
-    fc = []
-    for index, row in df.iterrows():
-        fc.append(geojson.Feature(
-            id= str(row.id),
-            geometry=geojson.LineString(coordinates= [
-                    [row.lon_0, row.lat_0],
-                    [row.lon_1, row.lat_1]]
-                ),
-            properties={'lod': row.min_lod_pixels}
-            )
-        )
-    geojson_output = geojson.FeatureCollection(fc)
-    return geojson_output
 
 def move_by(lon, lat, distance):
     """
@@ -362,9 +344,15 @@ def get_nourishment_grid_df(id_=7003900):
     transect_idx = np.searchsorted(ids, id_)
     variables = {
         'type': {"var": 'type', "slice": np.s_[:]},
-        "volume": {"var": "volume", "slice": np.s_[transect_idx,:,:]},
-        "time_num_start": {"var": "time_start", "slice": np.s_[transect_idx,:,:]},
-        "time_num_end": {"var": "time_end", "slice": np.s_[transect_idx,:,:]},
+        "volume": {"var": "volume", "slice": np.s_[transect_idx, :, :]},
+        "time_num_start": {
+            "var": "time_start",
+            "slice": np.s_[transect_idx, :, :]
+        },
+        "time_num_end": {
+            "var": "time_end",
+            "slice": np.s_[transect_idx, :, :]
+        },
         "t": {"var": 'time', "slice": np.s_[:]}
     }
 
@@ -374,10 +362,14 @@ def get_nourishment_grid_df(id_=7003900):
             data[var] = ds.variables[props['var']][props['slice']]
         time_units = ds.variables['time'].units
         time_start_units = ds.variables['time_start'].units
-        time_end_units = ds.variables['time_start'].units # time_end had a bug
-    data["time_num_start"][np.isnan(data["time_num_start"])]=0
-    data["time_num_end"][np.isnan(data["time_num_end"])]=0
-    data["time_start"] = netCDF4.num2date(data["time_num_start"], time_start_units)
+        # time_end had a bug
+        time_end_units = ds.variables['time_start'].units
+    data["time_num_start"][np.isnan(data["time_num_start"])] = 0
+    data["time_num_end"][np.isnan(data["time_num_end"])] = 0
+    data["time_start"] = netCDF4.num2date(
+        data["time_num_start"],
+        time_start_units
+    )
     data["time_end"] = netCDF4.num2date(data["time_num_end"], time_end_units)
     data['time'] = netCDF4.num2date(data['t'], time_units)
 
@@ -389,26 +381,57 @@ def get_nourishment_grid_df(id_=7003900):
         }
 
     cols_vol = ['volume_'+ityp for ityp in list(short_description.values())]
-    cols_tstart = ['time_start_'+ityp for ityp in list(short_description.values())]
+    cols_tstart = [
+        'time_start_'+ityp
+        for ityp
+        in list(short_description.values())
+    ]
     cols_tend = ['time_end_'+ityp for ityp in list(short_description.values())]
     del data["type"]
-    nourishment_grid_df = pd.DataFrame(np.c_[np.array(data['volume']),
-                                             np.array(data['time_start']),
-                                             np.array(data['time_end']),
-                                             np.array(data['time'])
-                                            ],columns=np.r_[cols_vol,cols_tstart,cols_tend,['time']])
-    nourishment_grid_df['time'] = nourishment_grid_df['time'].apply(lambda x: pd.Timestamp(x)) # make it a pandas timestamp
-    #nourishment_grid_df = nourishment_grid_df.dropna(
-    #    subset=['time_start_beach', 'time_start_shoreface', 'time_start_dune', 'time_start_other'],
-    #    how='all')
-    nourishment_grid_df = nourishment_grid_df.loc[(nourishment_grid_df[['volume_beach','volume_shoreface','volume_dune','volume_other']]!=0).any(axis=1)]
+    nourishment_grid_df = pd.DataFrame(
+        np.c_[
+            np.array(data['volume']),
+            np.array(data['time_start']),
+            np.array(data['time_end']),
+            np.array(data['time'])
+        ],
+        columns=np.r_[
+            cols_vol,
+            cols_tstart,
+            cols_tend,
+            ['time']
+        ]
+    )
+    # make it a pandas timestamp
+    nourishment_grid_df['time'] = nourishment_grid_df['time'].apply(
+        lambda x: pd.Timestamp(x)
+    )
+
+    nourishment_grid_df = nourishment_grid_df.loc[
+        (
+            nourishment_grid_df[
+                [
+                    'volume_beach',
+                    'volume_shoreface',
+                    'volume_dune',
+                    'volume_other'
+                ]
+            ] !=0
+        ).any(axis=1)
+    ]
 
     return nourishment_grid_df
 
 
 def get_nourishment_df(id_=7003900):
     """get nourishment information"""
-    transect_idx = np.searchsorted(ids, id_)
+
+    # TODO: this might not work as expected, what will happen if id_ is not in ids
+    # TODO: where is transect_idx used???
+    transect_idx = np.searchsorted(
+        ids,
+        id_
+    )
     # TODO: I think this queries the whole dataset
     variables = {
         'n_code': {"var": 'n_code', "slice": np.s_[:]},
@@ -417,7 +440,10 @@ def get_nourishment_df(id_=7003900):
         "kustvak": {"var": "kustvak", "slice": np.s_[:]},
         "location": {"var": "location", "slice": np.s_[:]},
         "type_flag": {"var": "type_flag", "slice": np.s_[:]},
-        "authorizing_department": {"var": "authorizing_department", "slice": np.s_[:]},
+        "authorizing_department": {
+            "var": "authorizing_department",
+            "slice": np.s_[:]
+        },
         "purpose": {"var": "purpose", "slice": np.s_[:]},
         "coastal_defense": {"var": "coastal_defense", "slice": np.s_[:]},
         "vol": {"var": "vol", "slice": np.s_[:]},
@@ -453,12 +479,20 @@ def get_nourishment_df(id_=7003900):
         3: "dune",
         4: "other"
     }
-    data['type'] = np.fromiter((short_description[x] for x in data["type_flag"]), dtype='S10')
+    data['type'] = np.fromiter(
+        (
+            short_description[x]
+            for x
+            in data["type_flag"]
+        ),
+        dtype='S10'
+    )
     nourishment_df = pd.DataFrame(data=data)
     return nourishment_df
 
 
 def get_mkl_df(id_=7003900):
+    """read the mkl dataset"""
 
     transect_idx = np.searchsorted(ids, id_)
     variables = {
