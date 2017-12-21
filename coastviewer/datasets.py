@@ -2,6 +2,7 @@ import itertools
 import logging
 import pathlib
 import urllib.parse
+import geojson
 
 import netCDF4
 import pandas as pd
@@ -134,6 +135,21 @@ def overview():
     df['min_lod_pixels'] = list(n_pixels)
     return df
 
+def overview_geojson():
+    df = overview()
+    fc = []
+    for index, row in df.iterrows():
+        fc.append(geojson.Feature(
+            id= str(row.id),
+            geometry=geojson.LineString(coordinates= [
+                    [row.lon_0, row.lat_0],
+                    [row.lon_1, row.lat_1]]
+                ),
+            properties={'lod': row.min_lod_pixels}
+            )
+        )
+    geojson_output = geojson.FeatureCollection(fc)
+    return geojson_output
 
 def move_by(lon, lat, distance):
     """

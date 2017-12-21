@@ -3,6 +3,7 @@ import datetime
 import io
 
 import flask
+import flask_cors
 import pandas as pd
 import numpy as np
 import matplotlib.cm
@@ -25,7 +26,6 @@ MIMES = {
     'xls': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 }
 
-
 def index(api: object) -> str:
     # can't name this index (already taken by conexxion)
     return flask.render_template("main.html", api=api)
@@ -35,11 +35,11 @@ def transect(id: int) -> object:
     logger.info(flask.request)
     return {}
 
-
-def transect_overview() -> list:
-    logger.info(flask.request)
-    return []
-
+@flask_cors.cross_origin()
+def transect_overview_geojson() -> str:
+    lines = datasets.overview()
+    output = datasets.overview_geojson()
+    return flask.jsonify(output)
 
 def transect_overview_kml() -> str:
     """create an overview of all transects"""

@@ -24,12 +24,11 @@ paths:
     get:
       tags:
       - "developers"
-      summary: "get transect overview"
-      description: "Get a list of all transects\n"
-      operationId: "coastviewer.controllers.transect_overview"
+      summary: "get transect overview in geojson"
+      description: "Get a list of all transect in geojson\n"
+      operationId: "coastviewer.controllers.transect_overview_geojson"
       produces:
       - "application/json"
-      parameters: []
       responses:
         200:
           description: "transect"

@@ -10,6 +10,7 @@ from click.testing import CliRunner
 from coastviewer import coastviewer
 from coastviewer import cli
 
+from coastviewer import controllers
 
 @pytest.fixture
 def response():
@@ -20,6 +21,9 @@ def response():
     # import requests
     # return requests.get('https://github.com/audreyr/cookiecutter-pypackage')
 
+def test_transect():
+    output = controllers.transect()
+    assert output.type() == 'geojson'
 
 def test_content(response):
     """Sample pytest test function with the pytest fixture as an argument."""
