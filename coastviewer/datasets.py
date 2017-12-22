@@ -364,8 +364,16 @@ def get_nourishment_grid_df(id_=7003900):
         time_start_units = ds.variables['time_start'].units
         # time_end had a bug
         time_end_units = ds.variables['time_start'].units
-    data["time_num_start"][np.isnan(data["time_num_start"])] = 0
-    data["time_num_end"][np.isnan(data["time_num_end"])] = 0
+
+    # https://github.com/numpy/numpy/blob/master/doc/release/1.11.0-notes.rst#futurewarnings
+    data["time_num_start"]._sharedmask = False
+    data["time_num_start"][
+        np.isnan(data["time_num_start"])
+    ] = 0
+    data["time_num_end"]._sharedmask = False
+    data["time_num_end"][
+        np.isnan(data["time_num_end"])
+    ] = 0
     data["time_start"] = netCDF4.num2date(
         data["time_num_start"],
         time_start_units
@@ -374,11 +382,11 @@ def get_nourishment_grid_df(id_=7003900):
     data['time'] = netCDF4.num2date(data['t'], time_units)
 
     short_description = {
-            1: "beach",
-            2: "shoreface",
-            3: "dune",
-            4: "other"
-        }
+        1: "beach",
+        2: "shoreface",
+        3: "dune",
+        4: "other"
+    }
 
     cols_vol = ['volume_'+ityp for ityp in list(short_description.values())]
     cols_tstart = [
