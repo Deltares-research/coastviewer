@@ -22,18 +22,25 @@ def response():
     # return requests.get('https://github.com/audreyr/cookiecutter-pypackage')
 
 @pytest.fixture
-def test_app():
+def client():
     """create a test app"""
     app = cli.make_app()
-    with app.app.test_client() as c:
-        yield c
+    with app.app.test_client() as client:
+        yield client
 
 
-def test_transect(test_app):
+
+def test_main(client):
+    """test getting main page"""
+    resp = client.get('/')
+    assert resp.status_code == 200
+
+
+def test_transects(client):
     """test getting transect information"""
-    # test_app.get('/transect_overview')
-    # assert output.type() == 'geojson'
-
+    resp = client.get('/coastviewer/1.1.0/transects')
+    assert resp.status_code == 200
+    assert resp.content_type == 'application/json'
 
 
 def test_content(response):
