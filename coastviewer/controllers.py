@@ -58,7 +58,7 @@ def transect_overview() -> str:
             )
         )
     geojson_output = geojson.FeatureCollection(fc)
-    return geojson_output
+    return flask.jsonify(geojson_output)
 
 def transect_overview_kml() -> str:
     """create an overview of all transects"""
