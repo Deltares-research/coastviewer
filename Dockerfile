@@ -12,7 +12,8 @@ RUN \
 # some more packages
 RUN conda config --add channels conda-forge
 # use anaconda to create an env
-RUN conda create -y -n py36 python=3.6 libgdal gdal netcdf4 matplotlib pandas pyproj
+RUN conda create -y -n py36 python=3.6 libgdal gdal netcdf4 matplotlib pandas pyproj && \
+    conda clean --all --yes
 # copy the app
 COPY ./ app/
 # manual activate env
