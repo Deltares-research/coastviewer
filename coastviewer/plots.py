@@ -141,8 +141,9 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, nourishment):
         label='Dune Foot 3NAP'
     )
     # set the x,y axis
-    ax[0].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
-    ax[1].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
+    # TODO: fix this, this crashes
+    # ax[0].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
+    # ax[1].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
     # set axis labels
     ax[0].set_ylabel('Cross shore distance [m]')
     ax[1].set_ylabel('Cross shore distance [m]')
@@ -183,8 +184,8 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, nourishment):
                 pc = matplotlib.collections.PatchCollection(box, facecolor=cc, edgecolor='black', alpha=0.5)
 
             ax[2].add_collection(pc)
-
-        ax[2].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
+        # TODO: this is broken, fix it
+        # ax[2].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
         ax[2].set_ylim(0, nour_max+50)
         ax[2].legend(tuple([bb[0] for bb in boxes]), tuple(lab), loc='upper left')
 
