@@ -40,7 +40,7 @@ DATASETS = {
         'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/suppleties/nourishments.nc' # noqa E501
     },
     'faalkans': {
-        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/faalkans_PC-Ring/faalkans.nc' # noqa E501
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/faalkans/faalkans_PC-Ring.nc' # noqa E501
     }
 }
 

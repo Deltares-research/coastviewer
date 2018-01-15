@@ -1,4 +1,4 @@
-all: transect.nc BKL_TKL_TND.nc DF.nc MKL.nc strandbreedte.nc MHW_MLW.nc nourishments.nc faalkans.nc
+all: transect.nc BKL_TKL_TND.nc DF.nc MKL.nc strandbreedte.nc MHW_MLW.nc nourishments.nc faalkans.nc faalkans_PC-Ring.nc
 
 # local copy of netcdf file, for performance reasons
 transect.nc:
@@ -23,4 +23,7 @@ nourishments.nc:
 	wget -q -c 'http://opendap.deltares.nl/thredds/fileServer/opendap/rijkswaterstaat/suppleties/nourishments.nc'
 
 faalkans.nc:
-	wget -q -c 'http://opendap.deltares.nl/thredds/fileServer/opendap/rijkswaterstaat/faalkans_PC-Ring/faalkans.nc'
+	wget -q -c 'http://opendap.deltares.nl/thredds/fileServer/opendap/rijkswaterstaat/faalkans/faalkans.nc'
+
+faalkans_PC-Ring.nc:
+	wget -q -c 'http://opendap.deltares.nl/thredds/fileServer/opendap/rijkswaterstaat/faalkans/faalkans_PC-Ring.nc'
