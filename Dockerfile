@@ -3,10 +3,10 @@ MAINTAINER Fedor Baart <fedor.baart@deltares.nl>
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 # update system and install wget
 RUN \
+    apt-get update --fix-missing && \
     apt-get install -y apt-utils && \
     echo "deb http://httpredir.debian.org/debian jessie-backports main non-free" >> /etc/apt/sources.list && \
     echo "deb-src http://httpredir.debian.org/debian jessie-backports main non-free" >> /etc/apt/sources.list && \
-    apt-get update --fix-missing && \
     apt-get install -y wget unzip build-essential jq
 
 # some more packages
