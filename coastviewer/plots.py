@@ -150,9 +150,10 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, faalkans, nouris
     ax[2].set_yscale('log')
     ax[2].grid(True)
     # set the x,y axis
-    ax[0].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
-    ax[1].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
-    ax[2].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
+    # TODO: fix this, this crashes
+    #ax[0].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
+    #ax[1].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
+    #ax[2].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
     # set axis labels
     ax[0].set_ylabel('Cross shore distance [$m$]')
     ax[1].set_ylabel('Cross shore distance [$m$]')
@@ -193,11 +194,14 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, faalkans, nouris
 
                 pc = matplotlib.collections.PatchCollection(box, facecolor=cc, edgecolor='black', alpha=0.5)
 
+
             ax[3].add_collection(pc)
 
-        ax[3].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
+        # TODO: fix this, this crashes
+        #ax[3].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
         ax[3].set_ylim(0, nour_max+50)
         ax[3].legend(tuple([bb[0] for bb in boxes]), tuple(lab), loc='upper left')
+
 
     ax[3].grid(True)
     ax[3].set_ylabel('Nourishments [$m^3/m$]')

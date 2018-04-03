@@ -10,6 +10,7 @@ from click.testing import CliRunner
 from coastviewer import coastviewer
 from coastviewer import cli
 
+from coastviewer import controllers
 
 @pytest.fixture
 def response():
@@ -19,6 +20,27 @@ def response():
     """
     # import requests
     # return requests.get('https://github.com/audreyr/cookiecutter-pypackage')
+
+@pytest.fixture
+def client():
+    """create a test app"""
+    app = cli.make_app()
+    with app.app.test_client() as client:
+        yield client
+
+
+
+def test_main(client):
+    """test getting main page"""
+    resp = client.get('/')
+    assert resp.status_code == 200
+
+
+def test_transects(client):
+    """test getting transect information"""
+    resp = client.get('/coastviewer/1.1.0/transects')
+    assert resp.status_code == 200
+    assert resp.content_type == 'application/json'
 
 
 def test_content(response):

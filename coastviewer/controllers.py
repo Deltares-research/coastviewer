@@ -3,10 +3,13 @@ import datetime
 import io
 
 import flask
+import flask_cors
 import pandas as pd
 import numpy as np
 import matplotlib.cm
 import matplotlib.colors
+import matplotlib.pyplot as plt
+import geojson
 
 from . import datasets
 from . import utils
@@ -24,7 +27,6 @@ MIMES = {
     'xls': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 }
 
-
 def index(api: object) -> str:
     # can't name this index (already taken by conexxion)
     return flask.render_template("main.html", api=api)
@@ -35,10 +37,28 @@ def transect(id: int) -> object:
     return {}
 
 
-def transect_overview() -> list:
-    logger.info(flask.request)
-    return []
-
+@flask_cors.cross_origin()
+def transect_overview() -> str:
+    """return transect overview in geojson format"""
+    df = datasets.overview()
+    fc = []
+    for index, row in df.iterrows():
+        fc.append(
+            geojson.Feature(
+                id= str(row.id),
+                geometry=geojson.LineString(
+                    coordinates=[
+                        [row.lon_0, row.lat_0],
+                        [row.lon_1, row.lat_1]
+                    ]
+                ),
+                properties={
+                    'lod': row.min_lod_pixels
+                }
+            )
+        )
+    geojson_output = geojson.FeatureCollection(fc)
+    return flask.jsonify(geojson_output)
 
 def transect_overview_kml() -> str:
     """create an overview of all transects"""
@@ -108,7 +128,7 @@ def timestack(id: int, format: str='') -> str:
         fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
     else:
         fig.savefig(stream, bbox_inches='tight', dpi=dpi)
-
+    plt.close(fig)
     mimetype = MIMES.get(format, 'application/png')
     headers = {}
     stream.seek(0)
@@ -174,6 +194,7 @@ def eeg(id: int, format: str='') -> str:
             fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
         else:
             fig.savefig(stream, bbox_inches='tight', dpi=dpi, format='png')
+        plt.close(fig)
     mimetype = MIMES.get(format, 'application/png')
     headers = {}
     stream.seek(0)
@@ -225,6 +246,7 @@ def indicators(id: int, format: str='') -> str:
         fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
     else:
         fig.savefig(stream, bbox_inches='tight', dpi=dpi)
+    plt.close(fig)
     mimetype = MIMES.get(format, 'application/png')
     headers = {}
     stream.seek(0)

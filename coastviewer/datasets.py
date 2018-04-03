@@ -1,6 +1,7 @@
 import itertools
 import logging
 import pathlib
+import urllib.parse
 
 import netCDF4
 import pandas as pd
@@ -14,49 +15,59 @@ from . import utils
 logger = logging.getLogger(__name__)
 
 # allow to use a local dataset
-local = True
 
 
 DATASETS = {
     'transect': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/jarkus/profiles/transect.nc', # noqa E501
-        'local': pathlib.Path('data/transect.nc')
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/jarkus/profiles/transect.nc' # noqa E501
     },
     'BKL_TKL_TND': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/BKL_TKL_TND.nc', # noqa E501
-        'local': pathlib.Path('data/BKL_TKL_TND.nc')
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/BKL_TKL_TND.nc' # noqa E501
     },
     'DF': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/DuneFoot/DF.nc', # noqa E501
-        'local': pathlib.Path('data/DF.nc')
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/DuneFoot/DF.nc' # noqa E501
     },
     'MKL': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/MKL.nc', # noqa E501
-        'local': pathlib.Path('data/MKL.nc')
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/BKL_TKL_MKL/MKL.nc' # noqa E501
     },
     'strandbreedte': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/strandbreedte/strandbreedte.nc', # noqa E501
-        'local': pathlib.Path('data/strandbreedte.nc')
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/strandbreedte/strandbreedte.nc' # noqa E501
     },
     'MHW_MLW': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/MHW_MLW/MHW_MLW.nc', # noqa E501
-        'local': pathlib.Path('data/MHW_MLW.nc')
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/MHW_MLW/MHW_MLW.nc' # noqa E501
     },
     'nourishments': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/suppleties/nourishments.nc', # noqa E501
-        'local': pathlib.Path('data/nourishments.nc')
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/suppleties/nourishments.nc' # noqa E501
     },
     'faalkans': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/faalkans/faalkans.nc', # noqa E501
-        'local': pathlib.Path('data/faalkans.nc')
+        'origin': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/faalkans/faalkans.nc', # noqa E501
     }
 }
 
+
+dataset_source = 'url'
+data_dir = pathlib.Path('.')
+if pathlib.Path('/data/transect.nc').exists():
+    dataset_source = "root"
+    data_dir = pathlib.Path('/data')
+elif pathlib.Path('data/transect.nc').exists():
+    dataset_source = 'local'
+    data_dir = pathlib.Path('data')
+
+logger.info('using %s source', dataset_source)
 for dataset in DATASETS.values():
-    if dataset['local'].exists():
-        dataset['url'] = str(dataset['local'])
+    # parse the url
+    parsed = urllib.parse.urlparse(dataset['origin'])
+    # extract the filename
+    parsed_name = pathlib.Path(parsed.path).name
+    if dataset_source == 'url':
+        dataset['url'] = dataset['origin']
+    elif dataset_source in {'root', 'local'}:
+        # concat directory and convert to string
+        dataset['url'] = str(data_dir / parsed_name)
     else:
-        dataset['url'] = dataset['remote']
+        raise ValueError("unexpected dataset_source {}".format(dataset_source))
+
 
 # global variables
 with netCDF4.Dataset(DATASETS['transect']['url']) as ds:
@@ -328,6 +339,7 @@ def get_dune_foot_df(id_=7003900):
     shoreline_df = pd.DataFrame(data)
     return shoreline_df
 
+
 def get_faalkans_df(id=7003900):
     transect_idx = np.searchsorted(ids, id)
 
@@ -345,13 +357,20 @@ def get_faalkans_df(id=7003900):
     faalkans_df = pd.DataFrame(data)
     return faalkans_df
 
+
 def get_nourishment_grid_df(id_=7003900):
     transect_idx = np.searchsorted(ids, id_)
     variables = {
         'type': {"var": 'type', "slice": np.s_[:]},
-        "volume": {"var": "volume", "slice": np.s_[transect_idx,:,:]},
-        "time_num_start": {"var": "time_start", "slice": np.s_[transect_idx,:,:]},
-        "time_num_end": {"var": "time_end", "slice": np.s_[transect_idx,:,:]},
+        "volume": {"var": "volume", "slice": np.s_[transect_idx, :, :]},
+        "time_num_start": {
+            "var": "time_start",
+            "slice": np.s_[transect_idx, :, :]
+        },
+        "time_num_end": {
+            "var": "time_end",
+            "slice": np.s_[transect_idx, :, :]
+        },
         "t": {"var": 'time', "slice": np.s_[:]}
     }
 
@@ -361,41 +380,84 @@ def get_nourishment_grid_df(id_=7003900):
             data[var] = ds.variables[props['var']][props['slice']]
         time_units = ds.variables['time'].units
         time_start_units = ds.variables['time_start'].units
-        time_end_units = ds.variables['time_start'].units # time_end had a bug
-    data["time_num_start"][np.isnan(data["time_num_start"])]=0
-    data["time_num_end"][np.isnan(data["time_num_end"])]=0
-    data["time_start"] = netCDF4.num2date(data["time_num_start"], time_start_units)
+        # time_end had a bug
+        time_end_units = ds.variables['time_start'].units
+
+    # https://github.com/numpy/numpy/blob/master/doc/release/1.11.0-notes.rst#futurewarnings
+    data["time_num_start"]._sharedmask = False
+    data["time_num_start"][
+        np.isnan(data["time_num_start"])
+    ] = 0
+    data["time_num_end"]._sharedmask = False
+    data["time_num_end"][
+        np.isnan(data["time_num_end"])
+    ] = 0
+    data["time_start"] = netCDF4.num2date(
+        data["time_num_start"],
+        time_start_units
+    )
     data["time_end"] = netCDF4.num2date(data["time_num_end"], time_end_units)
     data['time'] = netCDF4.num2date(data['t'], time_units)
 
     short_description = {
-            1: "beach",
-            2: "shoreface",
-            3: "dune",
-            4: "other"
-        }
+        1: "beach",
+        2: "shoreface",
+        3: "dune",
+        4: "other"
+    }
 
     cols_vol = ['volume_'+ityp for ityp in list(short_description.values())]
-    cols_tstart = ['time_start_'+ityp for ityp in list(short_description.values())]
+    cols_tstart = [
+        'time_start_'+ityp
+        for ityp
+        in list(short_description.values())
+    ]
     cols_tend = ['time_end_'+ityp for ityp in list(short_description.values())]
     del data["type"]
-    nourishment_grid_df = pd.DataFrame(np.c_[np.array(data['volume']),
-                                             np.array(data['time_start']),
-                                             np.array(data['time_end']),
-                                             np.array(data['time'])
-                                            ],columns=np.r_[cols_vol,cols_tstart,cols_tend,['time']])
-    nourishment_grid_df['time'] = nourishment_grid_df['time'].apply(lambda x: pd.Timestamp(x)) # make it a pandas timestamp
-    #nourishment_grid_df = nourishment_grid_df.dropna(
-    #    subset=['time_start_beach', 'time_start_shoreface', 'time_start_dune', 'time_start_other'],
-    #    how='all')
-    nourishment_grid_df = nourishment_grid_df.loc[(nourishment_grid_df[['volume_beach','volume_shoreface','volume_dune','volume_other']]!=0).any(axis=1)]
+    nourishment_grid_df = pd.DataFrame(
+        np.c_[
+            np.array(data['volume']),
+            np.array(data['time_start']),
+            np.array(data['time_end']),
+            np.array(data['time'])
+        ],
+        columns=np.r_[
+            cols_vol,
+            cols_tstart,
+            cols_tend,
+            ['time']
+        ]
+    )
+    # make it a pandas timestamp
+    nourishment_grid_df['time'] = nourishment_grid_df['time'].apply(
+        lambda x: pd.Timestamp(x)
+    )
+
+    nourishment_grid_df = nourishment_grid_df.loc[
+        (
+            nourishment_grid_df[
+                [
+                    'volume_beach',
+                    'volume_shoreface',
+                    'volume_dune',
+                    'volume_other'
+                ]
+            ] !=0
+        ).any(axis=1)
+    ]
 
     return nourishment_grid_df
 
 
 def get_nourishment_df(id_=7003900):
     """get nourishment information"""
-    transect_idx = np.searchsorted(ids, id_)
+
+    # TODO: this might not work as expected, what will happen if id_ is not in ids
+    # TODO: where is transect_idx used???
+    transect_idx = np.searchsorted(
+        ids,
+        id_
+    )
     # TODO: I think this queries the whole dataset
     variables = {
         'n_code': {"var": 'n_code', "slice": np.s_[:]},
@@ -404,7 +466,10 @@ def get_nourishment_df(id_=7003900):
         "kustvak": {"var": "kustvak", "slice": np.s_[:]},
         "location": {"var": "location", "slice": np.s_[:]},
         "type_flag": {"var": "type_flag", "slice": np.s_[:]},
-        "authorizing_department": {"var": "authorizing_department", "slice": np.s_[:]},
+        "authorizing_department": {
+            "var": "authorizing_department",
+            "slice": np.s_[:]
+        },
         "purpose": {"var": "purpose", "slice": np.s_[:]},
         "coastal_defense": {"var": "coastal_defense", "slice": np.s_[:]},
         "vol": {"var": "vol", "slice": np.s_[:]},
@@ -440,12 +505,20 @@ def get_nourishment_df(id_=7003900):
         3: "dune",
         4: "other"
     }
-    data['type'] = np.fromiter((short_description[x] for x in data["type_flag"]), dtype='S10')
+    data['type'] = np.fromiter(
+        (
+            short_description[x]
+            for x
+            in data["type_flag"]
+        ),
+        dtype='S10'
+    )
     nourishment_df = pd.DataFrame(data=data)
     return nourishment_df
 
 
 def get_mkl_df(id_=7003900):
+    """read the mkl dataset"""
 
     transect_idx = np.searchsorted(ids, id_)
     variables = {
