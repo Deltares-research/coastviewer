@@ -86,12 +86,12 @@ def eeg(data):
     return fig, ax
 
 
-def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, nourishment):
+def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, faalkans, nourishment):
 
     n_t = nourishment['time'].reset_index()
     n_y = nourishment.drop('time', axis=1).reset_index()
 
-    fig, ax = plt.subplots(3, figsize=(13, 13), sharex=True)
+    fig, ax = plt.subplots(4, figsize=(13, 16), sharex=True)
 
     ax[0].plot(
         bkltkltnd['time'],
@@ -140,12 +140,23 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, nourishment):
         alpha=0.7,
         label='Dune Foot 3NAP'
     )
+    ax[2].plot(
+        faalkans['time'],
+        faalkans['probability_failure'],
+        'ko',
+        alpha=0.7,
+        label='Probability of Failure'
+    )
+    ax[2].set_yscale('log')
+    ax[2].grid(True)
     # set the x,y axis
     ax[0].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
     ax[1].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
+    ax[2].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
     # set axis labels
-    ax[0].set_ylabel('Cross shore distance [m]')
-    ax[1].set_ylabel('Cross shore distance [m]')
+    ax[0].set_ylabel('Cross shore distance [$m$]')
+    ax[1].set_ylabel('Cross shore distance [$m$]')
+    ax[2].set_ylabel('Probability of failure [$-$]')
     # set legend
     ax[0].legend(loc='upper left')
     ax[1].legend(loc='upper left')
@@ -182,15 +193,15 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, nourishment):
 
                 pc = matplotlib.collections.PatchCollection(box, facecolor=cc, edgecolor='black', alpha=0.5)
 
-            ax[2].add_collection(pc)
+            ax[3].add_collection(pc)
 
-        ax[2].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
-        ax[2].set_ylim(0, nour_max+50)
-        ax[2].legend(tuple([bb[0] for bb in boxes]), tuple(lab), loc='upper left')
+        ax[3].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
+        ax[3].set_ylim(0, nour_max+50)
+        ax[3].legend(tuple([bb[0] for bb in boxes]), tuple(lab), loc='upper left')
 
-    ax[2].grid(True)
-    ax[2].set_ylabel('Nourishments [$m^3/m$]')
-    ax[2].set_xlabel('Measurement time [y]')
+    ax[3].grid(True)
+    ax[3].set_ylabel('Nourishments [$m^3/m$]')
+    ax[3].set_xlabel('Measurement time [$y$]')
 
     date_locator = matplotlib.dates.AutoDateLocator()
     date_formatter = matplotlib.dates.AutoDateFormatter(date_locator)

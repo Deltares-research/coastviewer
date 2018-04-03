@@ -47,7 +47,7 @@ DATASETS = {
         'local': pathlib.Path('data/nourishments.nc')
     },
     'faalkans': {
-        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/faalkans_PC-Ring/faalkans.nc', # noqa E501
+        'remote': 'http://opendap.deltares.nl/thredds/dodsC/opendap/rijkswaterstaat/faalkans/faalkans.nc', # noqa E501
         'local': pathlib.Path('data/faalkans.nc')
     }
 }
@@ -328,6 +328,22 @@ def get_dune_foot_df(id_=7003900):
     shoreline_df = pd.DataFrame(data)
     return shoreline_df
 
+def get_faalkans_df(id=7003900):
+    transect_idx = np.searchsorted(ids, id)
+
+    variables = {
+        'probability_failure': {"var": 'probability_failure', "slice": np.s_[:, transect_idx]},
+        "t": {"var": 'time', "slice": np.s_[:]}
+    }
+    data = {}
+    with netCDF4.Dataset(DATASETS['faalkans']) as ds:
+        for var, props in variables.items():
+            data[var] = ds.variables[props['var']][props['slice']]
+        time_units = ds.variables['time'].units
+    data['time'] = netCDF4.num2date(data['t'], time_units)
+
+    faalkans_df = pd.DataFrame(data)
+    return faalkans_df
 
 def get_nourishment_grid_df(id_=7003900):
     transect_idx = np.searchsorted(ids, id_)

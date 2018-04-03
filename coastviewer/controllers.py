@@ -203,6 +203,7 @@ def indicators(id: int, format: str='') -> str:
     data_bkltkltnd = datasets.get_bkltkltnd_df(int(id))
     data_mean_water = datasets.get_mean_water_df(int(id))
     data_dune_foot = datasets.get_dune_foot_df(int(id))
+    data_faalkans = datasets.get_faalkans_df(int(id))
     data_nourishment_grid = datasets.get_nourishment_grid_df(int(id))
 
     # generate a plot
@@ -212,6 +213,7 @@ def indicators(id: int, format: str='') -> str:
         bkltkltnd=data_bkltkltnd,
         mean_water=data_mean_water,
         dune_foot=data_dune_foot,
+        faalkans=data_faalkans,
         nourishment=data_nourishment_grid
     )
     # create a stream to save to
