@@ -10,7 +10,7 @@ import connexion
 
 import flask
 from . import controllers
-from . import ee_controllers
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -40,7 +40,6 @@ def make_app():
     app.add_url_rule('/', 'index', index)
     static = flask.Blueprint('static', __name__, static_folder='static')
     app.app.register_blueprint(static)
-    app.app.register_blueprint(ee_controllers.ee_pages)
     return app
 
 
