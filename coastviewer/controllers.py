@@ -113,7 +113,7 @@ def transect_placemark(id: int) -> str:
     return flask.render_template("placemark.html", transect=transect_df, id=id)
 
 
-def timestack(id: int, format: str='') -> str:
+def timestack(id: int, format: str='png') -> str:
     as_attachment = False
 
     if format:
@@ -129,7 +129,7 @@ def timestack(id: int, format: str='') -> str:
     else:
         fig.savefig(stream, bbox_inches='tight', dpi=dpi)
     plt.close(fig)
-    mimetype = MIMES.get(format, 'application/png')
+    mimetype = MIMES.get(format, 'image/png')
     headers = {}
     stream.seek(0)
     if as_attachment:
@@ -195,7 +195,7 @@ def eeg(id: int, format: str='') -> str:
         else:
             fig.savefig(stream, bbox_inches='tight', dpi=dpi, format='png')
         plt.close(fig)
-    mimetype = MIMES.get(format, 'application/png')
+    mimetype = MIMES.get(format, 'image/png')
     headers = {}
     stream.seek(0)
     if as_attachment:
@@ -212,7 +212,7 @@ def eeg(id: int, format: str='') -> str:
     return response
 
 
-def indicators(id: int, format: str='') -> str:
+def indicators(id: int, format: str='png') -> str:
     """return a plot with all the indicators"""
     as_attachment = False
 
@@ -247,7 +247,7 @@ def indicators(id: int, format: str='') -> str:
     else:
         fig.savefig(stream, bbox_inches='tight', dpi=dpi)
     plt.close(fig)
-    mimetype = MIMES.get(format, 'application/png')
+    mimetype = MIMES.get(format, 'image/png')
     headers = {}
     stream.seek(0)
     if as_attachment:
