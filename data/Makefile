@@ -1,5 +1,7 @@
 all: transect.nc BKL_TKL_TND.nc DF.nc MKL.nc strandbreedte.nc MHW_MLW.nc nourishments.nc faalkans.nc faalkans_PC-Ring.nc
 
+clean:
+	rm -f *.nc
 # local copy of netcdf file, for performance reasons
 transect.nc:
 	wget -q -c http://opendap.deltares.nl/thredds/fileServer/opendap/rijkswaterstaat/jarkus/profiles/transect.nc
