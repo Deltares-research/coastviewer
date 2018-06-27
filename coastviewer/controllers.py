@@ -113,7 +113,7 @@ def transect_placemark(id: int) -> str:
     return flask.render_template("placemark.html", transect=transect_df, id=id)
 
 
-def timestack(id: int, format: str='png') -> str:
+def timestack(id: int, format: str='') -> str:
     as_attachment = False
 
     if format:
@@ -133,7 +133,7 @@ def timestack(id: int, format: str='png') -> str:
     headers = {}
     stream.seek(0)
     if as_attachment:
-        filename = 'eeg.{}'.format(format)
+        filename = 'timestack.{}'.format(format)
         # this is the way to send a filename
         headers = {
             "Content-Disposition": "attachment;filename={}".format(filename)
@@ -212,7 +212,7 @@ def eeg(id: int, format: str='') -> str:
     return response
 
 
-def indicators(id: int, format: str='png') -> str:
+def indicators(id: int, format: str='') -> str:
     """return a plot with all the indicators"""
     as_attachment = False
 
