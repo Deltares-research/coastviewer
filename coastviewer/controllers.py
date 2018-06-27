@@ -129,11 +129,11 @@ def timestack(id: int, format: str='') -> str:
     else:
         fig.savefig(stream, bbox_inches='tight', dpi=dpi)
     plt.close(fig)
-    mimetype = MIMES.get(format, 'application/png')
+    mimetype = MIMES.get(format, 'image/png')
     headers = {}
     stream.seek(0)
     if as_attachment:
-        filename = 'eeg.{}'.format(format)
+        filename = 'timestack.{}'.format(format)
         # this is the way to send a filename
         headers = {
             "Content-Disposition": "attachment;filename={}".format(filename)
@@ -195,7 +195,7 @@ def eeg(id: int, format: str='') -> str:
         else:
             fig.savefig(stream, bbox_inches='tight', dpi=dpi, format='png')
         plt.close(fig)
-    mimetype = MIMES.get(format, 'application/png')
+    mimetype = MIMES.get(format, 'image/png')
     headers = {}
     stream.seek(0)
     if as_attachment:
@@ -247,7 +247,7 @@ def indicators(id: int, format: str='') -> str:
     else:
         fig.savefig(stream, bbox_inches='tight', dpi=dpi)
     plt.close(fig)
-    mimetype = MIMES.get(format, 'application/png')
+    mimetype = MIMES.get(format, 'image/png')
     headers = {}
     stream.seek(0)
     if as_attachment:
