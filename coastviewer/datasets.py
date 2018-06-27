@@ -348,7 +348,7 @@ def get_faalkans_df(id=7003900):
         "t": {"var": 'time', "slice": np.s_[:]}
     }
     data = {}
-    with netCDF4.Dataset(DATASETS['faalkans']) as ds:
+    with netCDF4.Dataset(DATASETS['faalkans']['url']) as ds:
         for var, props in variables.items():
             data[var] = ds.variables[props['var']][props['slice']]
         time_units = ds.variables['time'].units
