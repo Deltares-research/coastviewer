@@ -1,5 +1,6 @@
 attrs==19.3.0
 certifi==2019.11.28
+cffi==1.13.2
 cftime==1.0.4.2
 chardet==3.0.4
 Click==7.0
@@ -7,6 +8,7 @@ clickclick==1.2.2
 cmocean==1.1
 colorcet==0.9.1
 connexion==1.2
+cryptography==2.8
 cycler==0.10.0
 et-xmlfile==1.0.1
 Flask==1.1.1
@@ -27,6 +29,7 @@ netCDF4==1.5.3
 numpy==1.17.1
 openpyxl==2.4.9
 pandas==0.21.1
+pycparser==2.19
 pycpt==0.2.0
 pyparsing==2.4.6
 pyproj==1.9.5.1
