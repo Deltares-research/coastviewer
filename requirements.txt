@@ -24,7 +24,7 @@ MarkupSafe==1.1.1
 matplotlib==3.1.2
 more-itertools==8.0.2
 netCDF4==1.5.3
-numpy==1.13.3
+numpy==1.17.1
 openpyxl==2.4.9
 pandas==0.21.1
 pycpt==0.2.0
