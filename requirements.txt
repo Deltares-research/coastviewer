@@ -30,7 +30,7 @@ numpy==1.17.1
 openpyxl==2.4.9
 pandas==0.21.1
 pycparser==2.19
-pycpt==0.2.0
+pycpt==git+https://github.com/j08lue/pycpt#b45f720d09da79bcd567c5cbba9a554b0a7cc1d9
 pyparsing==2.4.6
 pyproj==1.9.5.1
 pyrsistent==0.15.7
