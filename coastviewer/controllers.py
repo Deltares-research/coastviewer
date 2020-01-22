@@ -186,15 +186,15 @@ def eeg(id: int, format: str='') -> str:
             df.to_excel(writer)
             writer.save()
     else:
-        # we need the plot
-        fig, ax = plots.eeg(data)
-        dpi = 72
-        if format in ('pdf', 'png', 'svg'):
-            dpi = 300
-            fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
-        else:
-            fig.savefig(stream, bbox_inches='tight', dpi=dpi, format='png')
-        plt.close(fig)
+        # # we need the plot
+        stream = plots.eeg(data, format, stream)
+        # dpi = 72
+        # if format in ('pdf', 'png', 'svg'):
+            # dpi = 300
+            # fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
+        # else:
+            # fig.savefig(stream, bbox_inches='tight', dpi=dpi, format='png')
+        # plt.close(fig)
     mimetype = MIMES.get(format, 'image/png')
     headers = {}
     stream.seek(0)
