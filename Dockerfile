@@ -23,6 +23,9 @@ ENV MPLBACKEND Agg
 # dependencies and ap
 RUN cd /app && pip install -r requirements.txt && pip install -e .
 WORKDIR app
+
+# Data directory
+VOLUME /data
 # this is our public port
 EXPOSE 5000
 # not sure what this is
