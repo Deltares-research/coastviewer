@@ -108,25 +108,25 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, faalkans, nouris
         'o',
         color='purple',
         alpha=0.7,
-        label='Basal Coastline'
-    )
+        label='Basiskustlijn'
+    ) #'Basal Coastline'
     ax[0].grid(True)
     ax[0].plot(
-        bkltkltnd['time'],
-        bkltkltnd['testing_coastline'],
+        bkltkltnd['time'].values[-1],
+        bkltkltnd['testing_coastline'].values[-1],
         'o',
         color='green',
         alpha=0.7,
-        label='Testing Coastline'
-    )
+        label='Toetsing Kustlijn'
+    ) #'Testing Coastline'
     ax[0].plot(
         mkl['time_MKL'],
         mkl['momentary_coastline'],
         'o',
         color='blue',
         alpha=0.7,
-        label='Momentary Coastline'
-    )
+        label='Momentane Kustlijn'
+    ) #'Momentary Coastline'
     ax[1].plot(
         mean_water['time'],
         mean_water['mean_high_water_cross'],
