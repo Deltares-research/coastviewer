@@ -31,9 +31,9 @@ def timestack(data):
     cb = plt.colorbar(pc, ax=ax)
 
     # labels
-    cb.set_label('Height to NAP [m]')
-    ax.set_xlabel('Cross shore distance [m]')
-    ax.set_ylabel('Measurement time [y]')
+    cb.set_label('Height to NAP [$m$]')
+    ax.set_xlabel('Cross shore distance [$m$]')
+    ax.set_ylabel('Measurement time [$years$]')
 
     # date format
     date_locator = matplotlib.dates.AutoDateLocator()
@@ -77,8 +77,8 @@ def eeg(data, format, stream):
     # changed maximum correction days to 1000 from 730 (2 years), because
     # sometimes upper line was outside the y limits
     ax.set_ylim(t.min()-730, t.max()+1000)
-    ax.set_xlabel('Cross shore distance [m]')
-    ax.set_ylabel('Measurement time [years]')
+    ax.set_xlabel('Cross shore distance [$m$]')
+    ax.set_ylabel('Measurement time [$years$]')
 
     date_locator = matplotlib.dates.AutoDateLocator()
     date_formatter = matplotlib.dates.AutoDateFormatter(date_locator)
@@ -165,11 +165,8 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, faalkans, nouris
     #ax[2].set_xlim(np.min(mean_water['time']), np.max(mean_water['time']))
     # set axis labels
     ax[0].set_ylabel('Cross shore distance [$m$]')
-    ax[0].set_xlabel('Measurement time [$years$]')
     ax[1].set_ylabel('Cross shore distance [$m$]')
-    ax[1].set_xlabel('Measurement time [$years$]')
     ax[2].set_ylabel('Probability of failure [$-$]')
-    ax[2].set_xlabel('Measurement time [$years$]')
     # set legend
     ax[0].legend(loc='upper left')
     ax[1].legend(loc='upper left')
