@@ -100,7 +100,7 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, faalkans, nouris
     n_t = nourishment['time'].reset_index()
     n_y = nourishment.drop('time', axis=1).reset_index()
 
-    fig, ax = plt.subplots(4, figsize=(13, 16), sharex=True)
+    fig, ax = plt.subplots(4, figsize=(13, 16), sharex=False) # sharex=True 
 
     ax[0].plot(
         bkltkltnd['time'],
