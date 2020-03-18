@@ -83,15 +83,15 @@ def eeg(data, format, stream):
     date_locator = matplotlib.dates.AutoDateLocator()
     date_formatter = matplotlib.dates.AutoDateFormatter(date_locator)
     ax.yaxis.set_major_formatter(date_formatter)
-	
-	dpi = 72
-	if format in ('pdf', 'png', 'svg'):
-		dpi = 300
-		fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
-	else:
-		fig.savefig(stream, bbox_inches='tight', dpi=dpi, format='png')
-	plt.close(fig)
-	
+    
+    dpi = 72
+    if format in ('pdf', 'png', 'svg'):
+        dpi = 300
+        fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
+    else:
+        fig.savefig(stream, bbox_inches='tight', dpi=dpi, format='png')
+    plt.close(fig)
+    
     return stream #fig, ax
 
 
