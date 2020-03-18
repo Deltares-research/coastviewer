@@ -100,7 +100,7 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, faalkans, nouris
     n_t = nourishment['time'].reset_index()
     n_y = nourishment.drop('time', axis=1).reset_index()
 
-    fig, ax = plt.subplots(4, figsize=(13, 16), sharex=False) # sharex=True 
+    fig, ax = plt.subplots(4, figsize=(13, 16), sharex=True)
 
     ax[0].plot(
         bkltkltnd['time'],
@@ -215,6 +215,11 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, faalkans, nouris
     ax[3].grid(True)
     ax[3].set_ylabel('Nourishments [$m^3/m$]')
     ax[3].set_xlabel('Measurement time [$years$]')
+
+    # assign labels to other axes too
+    ax[0].xaxis.set_tick_params(labelbottom=True)
+    ax[1].xaxis.set_tick_params(labelbottom=True)
+    ax[2].xaxis.set_tick_params(labelbottom=True)
 
     date_locator = matplotlib.dates.AutoDateLocator()
     date_formatter = matplotlib.dates.AutoDateFormatter(date_locator)
