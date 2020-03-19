@@ -31,9 +31,9 @@ def timestack(data):
     cb = plt.colorbar(pc, ax=ax)
 
     # labels
-    cb.set_label('Height to NAP [m]')
-    ax.set_xlabel('Cross shore distance [m]')
-    ax.set_ylabel('Measurement time [y]')
+    cb.set_label('Height to NAP [$m$]')
+    ax.set_xlabel('Cross shore distance [$m$]')
+    ax.set_ylabel('Measurement time [$years$]')
 
     # date format
     date_locator = matplotlib.dates.AutoDateLocator()
@@ -77,21 +77,21 @@ def eeg(data, format, stream):
     # changed maximum correction days to 1000 from 730 (2 years), because
     # sometimes upper line was outside the y limits
     ax.set_ylim(t.min()-730, t.max()+1000)
-    ax.set_xlabel('Cross shore distance [m]')
-    ax.set_ylabel('Measurement time [y]')
+    ax.set_xlabel('Cross shore distance [$m$]')
+    ax.set_ylabel('Measurement time [$years$]')
 
     date_locator = matplotlib.dates.AutoDateLocator()
     date_formatter = matplotlib.dates.AutoDateFormatter(date_locator)
     ax.yaxis.set_major_formatter(date_formatter)
-	
-	dpi = 72
-	if format in ('pdf', 'png', 'svg'):
-		dpi = 300
-		fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
-	else:
-		fig.savefig(stream, bbox_inches='tight', dpi=dpi, format='png')
-	plt.close(fig)
-	
+    
+    dpi = 72
+    if format in ('pdf', 'png', 'svg'):
+        dpi = 300
+        fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
+    else:
+        fig.savefig(stream, bbox_inches='tight', dpi=dpi, format='png')
+    plt.close(fig)
+    
     return stream #fig, ax
 
 
@@ -108,25 +108,25 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, faalkans, nouris
         'o',
         color='purple',
         alpha=0.7,
-        label='Basal Coastline'
-    )
+        label='Basiskustlijn'
+    ) #'Basal Coastline'
     ax[0].grid(True)
     ax[0].plot(
-        bkltkltnd['time'],
-        bkltkltnd['testing_coastline'],
+        bkltkltnd['time'].values[-1],
+        bkltkltnd['testing_coastline'].values[-1],
         'o',
         color='green',
         alpha=0.7,
-        label='Testing Coastline'
-    )
+        label='Toetsing Kustlijn'
+    ) #'Testing Coastline'
     ax[0].plot(
         mkl['time_MKL'],
         mkl['momentary_coastline'],
         'o',
         color='blue',
         alpha=0.7,
-        label='Momentary Coastline'
-    )
+        label='Momentane Kustlijn'
+    ) #'Momentary Coastline'
     ax[1].plot(
         mean_water['time'],
         mean_water['mean_high_water_cross'],
@@ -214,7 +214,12 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, faalkans, nouris
 
     ax[3].grid(True)
     ax[3].set_ylabel('Nourishments [$m^3/m$]')
-    ax[3].set_xlabel('Measurement time [$y$]')
+    ax[3].set_xlabel('Measurement time [$years$]')
+
+    # assign labels to other axes too
+    ax[0].xaxis.set_tick_params(labelbottom=True)
+    ax[1].xaxis.set_tick_params(labelbottom=True)
+    ax[2].xaxis.set_tick_params(labelbottom=True)
 
     date_locator = matplotlib.dates.AutoDateLocator()
     date_formatter = matplotlib.dates.AutoDateFormatter(date_locator)
