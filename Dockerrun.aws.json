@@ -2,7 +2,7 @@
   "AWSEBDockerrunVersion": "1",
   "Volumes": [
     {
-      "HostDirectory": "/efs/data",
+      "HostDirectory": "/efs/data/rijkswaterstaat",
       "ContainerDirectory": "/data"
     }
   ]
