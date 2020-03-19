@@ -7,7 +7,7 @@ RUN \
     apt-get install -y apt-utils && \
     echo "deb http://httpredir.debian.org/debian jessie-backports main non-free" >> /etc/apt/sources.list && \
     echo "deb-src http://httpredir.debian.org/debian jessie-backports main non-free" >> /etc/apt/sources.list && \
-    apt-get install -y wget unzip build-essential jq sudo
+    apt-get install -y wget unzip build-essential jq sudo tini
 
 # some more packages
 RUN conda config --add channels conda-forge
