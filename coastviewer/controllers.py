@@ -145,9 +145,10 @@ def timestack(id: int, format: str='') -> str:
     )
     return response
 
+# old eeg endpoint
 
-def eeg(id: int, format: str='') -> str:
-    """export eeg plot or data"""
+""" def eeg(id: int, format: str='') -> str:
+    
     stream = io.BytesIO()
 
     plot = True
@@ -209,7 +210,21 @@ def eeg(id: int, format: str='') -> str:
         mimetype=mimetype,
         headers=headers
     )
-    return response
+    return response """
+# new eeg
+def eeg(id):
+    print ('id', id)
+    data = datasets.get_transect_data(int(id))
+    print ('data', data)
+    output = plots.eeg(data)
+    print ('plot_data', output)
+
+    response = {
+        "data": output
+    }
+    print ('response', response)
+    return flask.jsonify(response)
+
 
 
 def indicators(id: int, format: str='') -> str:
