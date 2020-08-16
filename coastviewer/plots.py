@@ -1,10 +1,13 @@
 import pathlib
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.cm
 from matplotlib.patches import Rectangle
 import numpy as np
 import cmocean
 import scipy.interpolate
+import pandas as pd
 
 
 import coastviewer.extra_cm
@@ -41,8 +44,10 @@ def timestack(data):
     ax.yaxis.set_major_formatter(date_formatter)
     return fig, ax
 
-
-def eeg(data, format, stream):
+#old eeg that return as stream the img of the plot
+""" def eeg(data, format, stream):
+    print ('eeg function is called')
+    print ('parameters', data, format, stream)
     t = data['time_num']
     x = data['cross_shore']
     # and data
@@ -92,7 +97,37 @@ def eeg(data, format, stream):
         fig.savefig(stream, bbox_inches='tight', dpi=dpi, format='png')
     plt.close(fig)
     
-    return stream #fig, ax
+    return stream #fig, ax """
+""" 
+#new eeg that returns a json of the data in order to create
+#an echart in the front end
+""" 
+    
+def eeg(data):
+    
+    #print ('data', data)
+    #extract the years from the data
+    years = [str(x.year) for x in data['time'].tolist()]
+    #create a dataframe with the data z
+    df = pd.DataFrame(data = data['z'])
+    df.insert(0,column = '',value=years)
+
+    #store indexes of nan values in a list
+    NaN_indexes = df.columns[df.isna().all()].tolist()
+    #delete elements of cross_shore with nan_indexes list
+    data['cross_shore']  = np.delete(data['cross_shore'], NaN_indexes)
+    #cross_shore from numpy to list
+    cross_shore = ['cross_shore']+ data['cross_shore'].tolist()
+
+    #drop columns where nan values
+    df.dropna(axis = 1, how='all', inplace=True)
+    #add cross shore to first row of dataframe
+    df.loc[-1] = cross_shore
+    df.index = df.index +1 
+    df = df.sort_index()
+    response = df.to_json(orient='values')
+    
+    return response 
 
 
 def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, faalkans, nourishment):
