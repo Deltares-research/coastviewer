@@ -14,13 +14,16 @@
     <script src="https://use.fontawesome.com/4ee6f65ee1.js"></script>
     <link href="/static/styles.css" rel="stylesheet" type="text/css">
     <link rel="icon" type="image/png" href="/static/favicon-32x32.png" sizes="32x32">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@4.8.0/dist/echarts.js"></script>
   </head>
   <body>
     <div id="app">
       <v-app light>
         <main>
           <v-container fluid class="pa-0">
-            <info-page></info-page>
+            <info-page
+            :id= "{{ id }}"
+            ></info-page>
           </v-container>
         </main>
         <v-footer>
@@ -94,18 +97,20 @@
           <v-tabs-content id="tab-timeseries" class="pa-3">
             <v-layout>
               <v-flex xs12 sm6 offset-sm3 >
-                <v-card class="mb-3">
+                <v-card class="mb-3" id ="transect-charts">
                   <v-card-text> <h4>Transect over time</h4>
-                    <figure>
+                    <div id = "echart-container" :style="{width: '1000px', height: '1000px'}">                      
+                    </div>
+                    <!-- <figure>
                       <img src="{{url_for('.coastviewer_controllers_eeg', id=id)}}" >
                       <figcaption>Cross-shore profile of Transect {{ id }} over time.</figcaption>
-                    </figure>
+                    </figure> -->
 
                   </v-card-text>
                   <v-card-actions>
-                    <v-menu offset-y>
-                      <v-btn primary slot="activator">Export chart</v-btn>
-                      <v-list>
+                    <!-- <v-menu offset-y> -->
+                    <v-btn v-on="on" @click="exportGraph" primary slot="activator">Export chart</v-btn>
+                    <!--   <v-list>
                         <v-list-tile>
                           <v-list-tile-title>
                             <a href="{{url_for('.coastviewer_controllers_eeg', id=id, format='png')}}" download>png</a>
@@ -122,11 +127,11 @@
                           </v-list-tile-title>
                         </v-list-tile>
 
-                      </v-list>
+                      </v-list> -->
                     </v-menu>
                   </v-card-actions>
                 </v-card>
-                <v-card class="mb-3">
+                <v-card class="mb-3" id ="transect-charts">
 
                   <v-card-text> <h4> Transect over time </h4>
                     <figure>
