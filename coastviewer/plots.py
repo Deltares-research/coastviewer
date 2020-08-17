@@ -1,6 +1,9 @@
 import pathlib
+import os
 import matplotlib
-matplotlib.use('Agg')
+if os.environ.get('DISPLAY','') == '':
+    print('no display found. Using non-interactive Agg backend')
+    matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.cm
 from matplotlib.patches import Rectangle
@@ -42,70 +45,13 @@ def timestack(data):
     date_locator = matplotlib.dates.AutoDateLocator()
     date_formatter = matplotlib.dates.AutoDateFormatter(date_locator)
     ax.yaxis.set_major_formatter(date_formatter)
+    print ('fig',fig,ax)
     return fig, ax
 
-#old eeg that return as stream the img of the plot
-""" def eeg(data, format, stream):
-    print ('eeg function is called')
-    print ('parameters', data, format, stream)
-    t = data['time_num']
-    x = data['cross_shore']
-    # and data
-    z = data['z']
-    nrows, nsamples = z.shape
-
-    # create a line for each timeseries
-    segs = []
-    ticklocs = []
-    for i, row in enumerate(z):
-        # add a line, scale it by the y axis each plot has a range of the
-        # elevation divided by 7.5 (~2 years up and down)
-        pts = np.c_[
-            x[~z[i, :].mask],
-            z[i, ~z[i, :].mask].filled()*365.0/7.5
-        ]
-
-        segs.append(pts)
-
-        ticklocs.append(t[i])   # use date for yloc
-    # create an offset for each line
-    offsets = np.zeros((nrows, 2), dtype=float)
-    offsets[:, 1] = ticklocs
-    # create the lines
-    lines = matplotlib.collections.LineCollection(segs, offsets=offsets)
-    # create a new figure
-    fig, ax = plt.subplots(figsize=(10, 6))
-    ax.add_collection(lines)
-    # set the x axis
-    ax.set_xlim(x.min(), x.max())
-    # set the y axis (add a bit of room cause the wiggles go over a few years)
-    # changed maximum correction days to 1000 from 730 (2 years), because
-    # sometimes upper line was outside the y limits
-    ax.set_ylim(t.min()-730, t.max()+1000)
-    ax.set_xlabel('Cross shore distance [$m$]')
-    ax.set_ylabel('Measurement time [$years$]')
-
-    date_locator = matplotlib.dates.AutoDateLocator()
-    date_formatter = matplotlib.dates.AutoDateFormatter(date_locator)
-    ax.yaxis.set_major_formatter(date_formatter)
-    
-    dpi = 72
-    if format in ('pdf', 'png', 'svg'):
-        dpi = 300
-        fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
-    else:
-        fig.savefig(stream, bbox_inches='tight', dpi=dpi, format='png')
-    plt.close(fig)
-    
-    return stream #fig, ax """
-""" 
-#new eeg that returns a json of the data in order to create
-#an echart in the front end
-""" 
     
 def eeg(data):
     
-    #print ('data', data)
+    
     #extract the years from the data
     years = [str(x.year) for x in data['time'].tolist()]
     #create a dataframe with the data z
