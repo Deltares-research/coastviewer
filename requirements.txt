@@ -5,7 +5,7 @@ cftime==1.0.4.2
 chardet==3.0.4
 Click==7.0
 clickclick==1.2.2
-cmocean==1.1
+cmocean==2.0
 colorcet==0.9.1
 connexion==1.2
 cryptography==2.8
