@@ -1,7 +1,7 @@
 Vue.component('info-page', {
   props:["id"],
   data () {
-     return { 
+     return {
        graph: null
      }
   },
@@ -11,7 +11,7 @@ Vue.component('info-page', {
     this.updateGraph()
   },
   methods: {
-    exportGraph(){ 
+    exportGraph(){
       let src = this.graph.getDataURL({
         pixelRatio: 2,
         backgroundColor: '#fff'
@@ -24,12 +24,12 @@ Vue.component('info-page', {
     createGraph(){
       var dom = document.getElementById("echart-container")
       this.graph = echarts.init(dom)
-      
+
     },
     updateGraph(){
       const transect_id = this.id
-      fetch(`http://localhost:5000/coastviewer/1.1.0/transects/${transect_id}/plot/eeg`, {
-    
+      fetch(`/coastviewer/1.1.0/transects/${transect_id}/plot/eeg`, {
+
       })
       .then(response => {
         const result = response.json()
@@ -37,23 +37,23 @@ Vue.component('info-page', {
       })
       .then(json => {
         const data = JSON.parse(json.data)
-        
+
         const series_object = {type: 'line', smooth: true, seriesLayoutBy: 'row'}
         const series = []
         const selected = {}
-        
+
         console.log (typeof data)
         console.log ('length', data.length)
         data.forEach(row => {
           if (row[0]!=='cross_shore') {
             series.push(series_object)
-            selected[row[0].toString()] = false 
+            selected[row[0].toString()] = false
           }
         })
         console.log('series', series)
         console.log('selected', selected["1965"])
      /*    for (var i = 0; i< (data.length-1); i++) {
-          
+
           series.push(series_object)
         }
  */
@@ -83,24 +83,24 @@ Vue.component('info-page', {
           xAxis: {type: 'category',
                   name: 'Cross shore',
                   interval: 5,
-                  nameTextStyle:{ 
+                  nameTextStyle:{
                     fontWeight: "bold",
-                    fontSize: 13  
-                } 
+                    fontSize: 13
+                }
           },
           yAxis: {gridIndex: 0,
                   name: 'z',
                   nameLocation: "start",
-                  nameTextStyle:{ 
+                  nameTextStyle:{
                     fontWeight: "bold",
                     fontSize: 16
-                } 
+                }
           },
           series: series
-        } 
+        }
         this.graph.clear()
         console.log('options', options)
-        this.graph.setOption(options)  
+        this.graph.setOption(options)
       })
 
     }
