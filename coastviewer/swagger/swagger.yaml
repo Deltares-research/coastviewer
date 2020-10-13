@@ -212,7 +212,7 @@ paths:
       description: "Get profile stacked in time\n"
       operationId: "coastviewer.controllers.eeg"
       produces:
-      - "image/png"
+      - "application/json"
       parameters:
       - name: "id"
         in: "path"

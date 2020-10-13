@@ -99,35 +99,12 @@
               <v-flex xs12 sm6 offset-sm3 >
                 <v-card class="mb-3" id ="transect-charts">
                   <v-card-text> <h4>Transect over time</h4>
-                    <div id = "echart-container" :style="{width: '1000px', height: '1000px'}">                      
+                    <div id = "echart-container" :style="{width: '1000px', height: '620px'}">                      
                     </div>
-                    <!-- <figure>
-                      <img src="{{url_for('.coastviewer_controllers_eeg', id=id)}}" >
-                      <figcaption>Cross-shore profile of Transect {{ id }} over time.</figcaption>
-                    </figure> -->
 
                   </v-card-text>
                   <v-card-actions>
-                    <!-- <v-menu offset-y> -->
                     <v-btn v-on="on" @click="exportGraph" primary slot="activator">Export chart</v-btn>
-                    <!--   <v-list>
-                        <v-list-tile>
-                          <v-list-tile-title>
-                            <a href="{{url_for('.coastviewer_controllers_eeg', id=id, format='png')}}" download>png</a>
-                          </v-list-tile-title>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-title>
-                            <a href="{{url_for('.coastviewer_controllers_eeg', id=id, format='pdf')}}" download>pdf</a>
-                          </v-list-tile-title>
-                        </v-list-tile>
-                        <v-list-tile>
-                          <v-list-tile-title>
-                            <a href="{{url_for('.coastviewer_controllers_eeg', id=id, format='svg')}}" download>svg</a>
-                          </v-list-tile-title>
-                        </v-list-tile>
-
-                      </v-list> -->
                     </v-menu>
                   </v-card-actions>
                 </v-card>

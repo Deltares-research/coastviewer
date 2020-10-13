@@ -6,7 +6,6 @@ Vue.component('info-page', {
      }
   },
   mounted() {
-    console.log('id',this.id)
     this.createGraph()
     this.updateGraph()
   },
@@ -31,34 +30,23 @@ Vue.component('info-page', {
       fetch(`/coastviewer/1.1.0/transects/${transect_id}/plot/eeg`, {
 
       })
-      .then(response => {
-        const result = response.json()
-        return result
-      })
-      .then(json => {
-        const data = JSON.parse(json.data)
-
+      .then(response => { 
+        const resp_json =  response.json()
+        return resp_json
+      }).then(resp_json => {
         const series_object = {type: 'line', smooth: true, seriesLayoutBy: 'row'}
         const series = []
         const selected = {}
+        
 
-        console.log (typeof data)
-        console.log ('length', data.length)
-        data.forEach(row => {
-          if (row[0]!=='cross_shore') {
+        Object.keys(resp_json.data).forEach(row => {
+          if (resp_json.data[row][0]!=='cross_shore') {
             series.push(series_object)
-            selected[row[0].toString()] = false
+            selected[resp_json.data[row][0].toString()] = false
           }
         })
-        console.log('series', series)
-        console.log('selected', selected["1965"])
-     /*    for (var i = 0; i< (data.length-1); i++) {
 
-          series.push(series_object)
-        }
- */
         let options = {
-
           legend: {
             padding: [0, 0, 0, 0],
             itemGap: 2,
@@ -78,7 +66,7 @@ Vue.component('info-page', {
             trigger: 'axis'
           },
           dataset: {
-             source: data
+            source: resp_json.data //data
           },
           xAxis: {type: 'category',
                   name: 'Cross shore',
@@ -98,11 +86,11 @@ Vue.component('info-page', {
           },
           series: series
         }
-        this.graph.clear()
-        console.log('options', options)
-        this.graph.setOption(options)
-      })
 
+        this.graph.clear()
+        this.graph.setOption(options)
+      
+      })
     }
   },
   template: '#info-page'

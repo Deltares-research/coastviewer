@@ -8,7 +8,7 @@ import numpy as np
 import cmocean
 import scipy.interpolate
 import pandas as pd
-
+import json
 
 import coastviewer.extra_cm
 
@@ -42,13 +42,11 @@ def timestack(data):
     date_locator = matplotlib.dates.AutoDateLocator()
     date_formatter = matplotlib.dates.AutoDateFormatter(date_locator)
     ax.yaxis.set_major_formatter(date_formatter)
-    print ('fig',fig,ax)
     return fig, ax
 
     
 def eeg(data):
-    
-    
+    """Transforms the raw data representing the Jarkus raaien for every year in a JSON"""
     #extract the years from the data
     years = [str(x.year) for x in data['time'].tolist()]
     #create a dataframe with the data z
@@ -68,9 +66,11 @@ def eeg(data):
     df.loc[-1] = cross_shore
     df.index = df.index +1 
     df = df.sort_index()
-    response = df.to_json(orient='values')
-    
-    return response 
+
+    response = df.to_json(orient='values') 
+    parsed = json.loads(response)
+    #print(parsed)
+    return parsed
 
 
 def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, faalkans, nourishment):

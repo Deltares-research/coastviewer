@@ -147,7 +147,8 @@ def timestack(id: int, format: str='') -> str:
 
 
 # new eeg
-def eeg(id):
+def eeg(id: int) -> str:
+    """Creates and returns a JSON which represents the eeg lines for a transect"""
     data = datasets.get_transect_data(int(id))
     output = plots.eeg(data)
 
