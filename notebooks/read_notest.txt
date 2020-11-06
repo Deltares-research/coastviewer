@@ -1,3 +1,0 @@
-The plots_original is a copy of the plots. 
-The functions that I created are in the profile-plot.
-The functions that I created are replacing the eeg function. the first plot. 

@@ -34,10 +34,25 @@ Vue.component('info-page', {
         const resp_json =  response.json()
         return resp_json
       }).then(resp_json => {
-        const series_object = {type: 'line', smooth: true, seriesLayoutBy: 'row'}
+        const series_object = {type: 'line', smooth: true, seriesLayoutBy: 'row',
+        markLine: {
+          symbol: 'none',
+          label: {
+            position: 'start',
+            // normal: {
+            //   show: false
+            //   //name:'RSP'
+            // },
+            // emphasis: {show: false}
+          },
+          data: [ { name: 'RSP Lijn', xAxis: 173, label:{
+            formatter: '{b}',
+            position: 'insideEndTop'
+          }} ] //around the 0 value on the x-Axis
+          }
+        }
         const series = []
         const selected = {}
-        
 
         Object.keys(resp_json.data).forEach(row => {
           if (resp_json.data[row][0]!=='cross_shore') {
@@ -45,20 +60,22 @@ Vue.component('info-page', {
             selected[resp_json.data[row][0].toString()] = false
           }
         })
-
+        
+        //series.push({})
         let options = {
           legend: {
             padding: [0, 0, 0, 0],
             itemGap: 2,
             selector: [
               {
-                type: 'all',
+                type: 'all or inverse',
                 // can be any title you like
                 title: 'All'
-            }
+            },
           ],
+            
             selectorPosition: 'start',
-            selectorItemGap: 0.1,
+            selectorItemGap: 0.5,
             selectorButtonGap: 2,
             selected: selected
           },
@@ -69,26 +86,36 @@ Vue.component('info-page', {
             source: resp_json.data //data
           },
           xAxis: {type: 'category',
-                  name: 'Cross shore',
+                  name: 'Cross shore [m]',
                   interval: 5,
                   nameTextStyle:{
                     fontWeight: "bold",
-                    fontSize: 13
-                }
+                    fontSize: 11
+                },
           },
           yAxis: {gridIndex: 0,
-                  name: 'z',
-                  nameLocation: "start",
+                  name: 'z [m]',
+                  nameLocation: "middle",
                   nameTextStyle:{
                     fontWeight: "bold",
-                    fontSize: 16
-                }
+                    fontSize: 11,
+                    align: "right",
+                    padding: [0,8,0,0]
+                  }
           },
+          // markLine: {
+          //   data: [ { name: 'RSP', xAxis: 0 } ]
+          // },
           series: series
         }
 
         this.graph.clear()
         this.graph.setOption(options)
+        this.graph.dispatchAction({
+          type: 'brush',
+          command: 'clear',
+          areas: [],
+        });
       
       })
     }

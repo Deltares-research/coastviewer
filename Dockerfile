@@ -31,5 +31,5 @@ EXPOSE 5000
 # not sure what this is
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 # Fill the /data directory and let's get to wrk
-#RUN dos2unix /app/scripts/run.sh #uncomment this line when building the docker on Windows
+RUN dos2unix /app/scripts/run.sh #uncomment this line when building the docker on Windows
 CMD [ "/app/scripts/run.sh" ]
