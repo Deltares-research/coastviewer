@@ -8,7 +8,7 @@ clickclick==1.2.2
 cmocean==1.1
 colorcet==0.9.1
 connexion==1.2
-cryptography==2.8
+cryptography==3.2.1
 cycler==0.10.0
 et-xmlfile==1.0.1
 Flask==1.1.1
