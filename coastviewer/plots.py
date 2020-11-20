@@ -44,7 +44,6 @@ def timestack(data):
     ax.yaxis.set_major_formatter(date_formatter)
     return fig, ax
 
-    
 def eeg(data):
     """Transforms the raw data representing the Jarkus raaien for every year in a JSON"""
     #extract the years from the data
@@ -54,9 +53,9 @@ def eeg(data):
     df.insert(0,column = '',value=years)
 
     #store indexes of nan values in a list
-    NaN_indexes = df.columns[df.isna().all()].tolist()
+    NaN_columns = df.columns[df.isna().all()].tolist()
     #delete elements of cross_shore with nan_indexes list
-    data['cross_shore']  = np.delete(data['cross_shore'], NaN_indexes)
+    data['cross_shore']  = np.delete(data['cross_shore'], NaN_columns)
     #cross_shore from numpy to list
     cross_shore = ['cross_shore']+ data['cross_shore'].tolist()
 
@@ -67,9 +66,17 @@ def eeg(data):
     df.index = df.index +1 
     df = df.sort_index()
 
-    response = df.to_json(orient='values') 
+    # this will make sure it is numeric (float32) before applying the interpolation
+    # can't say if that is needed, but it should not harm.
+    s = df.iloc[1:,1:].apply(lambda x: pd.to_numeric(x, downcast='float', errors='coerce'))
+    # s.info # checks that it is indeed float32
+
+    # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.interpolate.html
+    df.iloc[1:,1:] = s.interpolate(method='linear', limit_area='inside', limit=5, axis=1)
+
+    response = df.to_json(orient='values')
     parsed = json.loads(response)
-    #print(parsed)
+
     return parsed
 
 
