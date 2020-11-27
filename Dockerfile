@@ -12,6 +12,8 @@ RUN \
 # some more packages
 RUN conda config --add channels conda-forge
 # use anaconda to create an env
+
+RUN conda update -n base -c defaults conda
 RUN conda create -y -n py36 python=3.6 libgdal gdal netcdf4 pyproj && \
     conda clean --all --yes
 # copy the app
