@@ -1,11 +1,14 @@
 import pathlib
+import os
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.cm
 from matplotlib.patches import Rectangle
 import numpy as np
 import cmocean
 import scipy.interpolate
-
+import pandas as pd
+import json
 
 import coastviewer.extra_cm
 
@@ -41,58 +44,40 @@ def timestack(data):
     ax.yaxis.set_major_formatter(date_formatter)
     return fig, ax
 
+def eeg(data):
+    """Transforms the raw data representing the Jarkus raaien for every year in a JSON"""
+    #extract the years from the data
+    years = [str(x.year) for x in data['time'].tolist()]
+    #create a dataframe with the data z
+    df = pd.DataFrame(data = data['z'])
+    df.insert(0,column = '',value=years)
 
-def eeg(data, format, stream):
-    t = data['time_num']
-    x = data['cross_shore']
-    # and data
-    z = data['z']
-    nrows, nsamples = z.shape
+    #store indexes of nan values in a list
+    NaN_columns = df.columns[df.isna().all()].tolist()
+    #delete elements of cross_shore with nan_indexes list
+    data['cross_shore']  = np.delete(data['cross_shore'], NaN_columns)
+    #cross_shore from numpy to list
+    cross_shore = ['cross_shore']+ data['cross_shore'].tolist()
 
-    # create a line for each timeseries
-    segs = []
-    ticklocs = []
-    for i, row in enumerate(z):
-        # add a line, scale it by the y axis each plot has a range of the
-        # elevation divided by 7.5 (~2 years up and down)
-        pts = np.c_[
-            x[~z[i, :].mask],
-            z[i, ~z[i, :].mask].filled()*365.0/7.5
-        ]
+    #drop columns where nan values
+    df.dropna(axis = 1, how='all', inplace=True)
+    #add cross shore to first row of dataframe
+    df.loc[-1] = cross_shore
+    df.index = df.index +1 
+    df = df.sort_index()
 
-        segs.append(pts)
+    # this will make sure it is numeric (float32) before applying the interpolation
+    # can't say if that is needed, but it should not harm.
+    s = df.iloc[1:,1:].apply(lambda x: pd.to_numeric(x, downcast='float', errors='coerce'))
+    # s.info # checks that it is indeed float32
 
-        ticklocs.append(t[i])   # use date for yloc
-    # create an offset for each line
-    offsets = np.zeros((nrows, 2), dtype=float)
-    offsets[:, 1] = ticklocs
-    # create the lines
-    lines = matplotlib.collections.LineCollection(segs, offsets=offsets)
-    # create a new figure
-    fig, ax = plt.subplots(figsize=(10, 6))
-    ax.add_collection(lines)
-    # set the x axis
-    ax.set_xlim(x.min(), x.max())
-    # set the y axis (add a bit of room cause the wiggles go over a few years)
-    # changed maximum correction days to 1000 from 730 (2 years), because
-    # sometimes upper line was outside the y limits
-    ax.set_ylim(t.min()-730, t.max()+1000)
-    ax.set_xlabel('Cross shore distance [$m$]')
-    ax.set_ylabel('Measurement time [$years$]')
+    # https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.interpolate.html
+    df.iloc[1:,1:] = s.interpolate(method='linear', limit_area='inside', limit=5, axis=1)
 
-    date_locator = matplotlib.dates.AutoDateLocator()
-    date_formatter = matplotlib.dates.AutoDateFormatter(date_locator)
-    ax.yaxis.set_major_formatter(date_formatter)
-    
-    dpi = 72
-    if format in ('pdf', 'png', 'svg'):
-        dpi = 300
-        fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
-    else:
-        fig.savefig(stream, bbox_inches='tight', dpi=dpi, format='png')
-    plt.close(fig)
-    
-    return stream #fig, ax
+    response = df.to_json(orient='values')
+    parsed = json.loads(response)
+
+    return parsed
 
 
 def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, faalkans, nourishment):

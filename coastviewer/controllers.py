@@ -146,70 +146,17 @@ def timestack(id: int, format: str='') -> str:
     return response
 
 
-def eeg(id: int, format: str='') -> str:
-    """export eeg plot or data"""
-    stream = io.BytesIO()
-
-    plot = True
-    as_attachment = False
-
-    if format in ('csv', 'json', 'xls'):
-        plot = False
-
-    if format:
-        as_attachment = True
-
+# new eeg
+def eeg(id: int) -> str:
+    """Creates and returns a JSON which represents the eeg lines for a transect"""
     data = datasets.get_transect_data(int(id))
+    output = plots.eeg(data)
 
-    # if we only need data
-    if not plot:
-        # flatten data
-        records = []
-        for t, row in zip(data['time'], data['filled_z']):
-            for x, col in zip(data['cross_shore'], row):
-                record = {
-                    "z": col.item(),
-                    "t": t,
-                    "x": x
-                }
-                records.append(record)
+    response = {
+        "data": output
+    }
+    return flask.jsonify(response)
 
-        df = pd.DataFrame.from_records(records)
-        if format == 'json':
-            stream = io.StringIO()
-            df.to_json(stream, orient='records')
-        if format == 'csv':
-            stream = io.StringIO()
-            df.to_csv(stream)
-        if format == 'xls':
-            writer = pd.ExcelWriter(stream, engine='openpyxl')
-            df.to_excel(writer)
-            writer.save()
-    else:
-        # # we need the plot
-        stream = plots.eeg(data, format, stream)
-        # dpi = 72
-        # if format in ('pdf', 'png', 'svg'):
-            # dpi = 300
-            # fig.savefig(stream, bbox_inches='tight', dpi=dpi, format=format)
-        # else:
-            # fig.savefig(stream, bbox_inches='tight', dpi=dpi, format='png')
-        # plt.close(fig)
-    mimetype = MIMES.get(format, 'image/png')
-    headers = {}
-    stream.seek(0)
-    if as_attachment:
-        filename = 'eeg.{}'.format(format)
-        # this is the way to send a filename
-        headers = {
-            "Content-Disposition": "attachment;filename={}".format(filename)
-        }
-    response = flask.Response(
-        stream,
-        mimetype=mimetype,
-        headers=headers
-    )
-    return response
 
 
 def indicators(id: int, format: str='') -> str:
