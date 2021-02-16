@@ -7,7 +7,7 @@ coverage==4.4.2
 flake8==3.5.0
 Sphinx==3.3.1
 coverage==4.4.2
-cryptography==3.3.1
+cryptography==3.4.5
 PyYAML==5.3.1
 pytest-runner==3.0
 pytest==3.3.1
