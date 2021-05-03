@@ -86,7 +86,7 @@ Vue.component('info-page', {
             source: resp_json.data //data
           },
           xAxis: {type: 'category',
-                  name: 'Cross shore [m]',
+                  name: 'x [m]',
                   interval: 5,
                   nameTextStyle:{
                     fontWeight: "bold",
