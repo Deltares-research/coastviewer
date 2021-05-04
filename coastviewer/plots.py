@@ -84,6 +84,13 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, faalkans, nouris
 
     n_t = nourishment['time'].reset_index()
     n_y = nourishment.drop('time', axis=1).reset_index()
+    
+    if bkltkltnd['time'].empty:
+        tkltimelast = np.NaN
+        tkllast = np.NaN
+    else:
+        tkltimelast = bkltkltnd['time'].values[-1]
+        tkllast = bkltkltnd['testing_coastline'].values[-1]
 
     fig, ax = plt.subplots(4, figsize=(13, 16), sharex=True)
 
@@ -97,8 +104,8 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, faalkans, nouris
     ) #'Basal Coastline'
     ax[0].grid(True)
     ax[0].plot(
-        bkltkltnd['time'].values[-1],
-        bkltkltnd['testing_coastline'].values[-1],
+        tkltimelast,
+        tkllast,
         'o',
         color='green',
         alpha=0.7,

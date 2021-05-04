@@ -45,7 +45,9 @@ Vue.component('info-page', {
             // },
             // emphasis: {show: false}
           },
-          data: [ { name: 'RSP Lijn', xAxis: 173, label:{
+          data: [ { name: 'RSP Lijn', 
+                    xAxis: resp_json.data[0].slice(1).findIndex(rsp => rsp === 0)+1, 
+                    label: {
             formatter: '{b}',
             position: 'insideEndTop'
           }} ] //around the 0 value on the x-Axis
