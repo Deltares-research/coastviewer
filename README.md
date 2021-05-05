@@ -65,11 +65,16 @@ docker run -e EFS=.... scripts/udpate-data.sh
 coastviewer
 ```
 
+# Deploy the server (aws)
+Make sure you have elastic Bean Stalk command line tool `eb`, working on either Windows or Unix based systems. 
+Follow instructions in [here](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-install.html#eb-cli3-install.scripts).
+Create an environment in eb if not there yet: `eb create coastal-prod-green -i t3.medium -p docker` . You may check all environments using `eb list -a`.
+If you have already an environment running, do terminate it with `eb terminate coastal-prod-green`.
 
 # Use
-Load the link [http://localhost:5000/coastviewer/1.1.0/transects/kml](transects/kml) in Google Earth (add network link).
+Load the link [transects/kml](http://localhost:5000/coastviewer/1.1.0/transects/kml) in Google Earth (add network link).
 
 # Test
-Load the [http://localhost:5000/coastviewer/1.1.0/ui](test ui) in your browser. for the integration tests.
+Load the [test ui](http://localhost:5000/coastviewer/1.1.0/ui) in your browser. for the integration tests.
 Run `make test` for the unit tests.
 Run `make lint` for code formatting checks.
