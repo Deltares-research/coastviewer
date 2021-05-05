@@ -66,9 +66,10 @@ coastviewer
 ```
 
 # Deploy the server (aws)
-Make sure you have elastic Bean Stalk command line tool `eb`, working on either Windows or Unix based systems. 
+Make sure you have Elastic Beanstalk command line tool `eb`, working on either Windows or Unix-based systems. 
 Follow instructions in [here](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-install.html#eb-cli3-install.scripts).
-Create an environment in eb if not there yet: `eb create coastal-prod-green -i t3.medium -p docker` . You may check all environments using `eb list -a`.
+Create an environment in eb if not there yet: `eb create coastal-prod-green -i t3.medium -p docker`. 
+You may check all environments using `eb list -a`.
 If you have already an environment running, do terminate it with `eb terminate coastal-prod-green`.
 
 # Use
