@@ -14,7 +14,11 @@
     <script src="https://use.fontawesome.com/4ee6f65ee1.js"></script>
     <link href="/static/styles.css" rel="stylesheet" type="text/css">
     <link rel="icon" type="image/png" href="/static/favicon-32x32.png" sizes="32x32">
-    <script src="https://cdn.jsdelivr.net/npm/echarts@4.8.0/dist/echarts.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/echarts@4.8.0/dist/echarts.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.1.1/echarts.min.js"></script>
+    
+
+
   </head>
   <body>
     <div id="app">
@@ -99,7 +103,7 @@
               <v-flex xs12 sm6 offset-sm2 >
                 <v-card class="mb-3" id ="transect-charts">
                   <v-card-text> <h4>Transect over time</h4>
-                    <div id = "echart-container" :style="{width: '1000px', height: '620px'}">                      
+                    <div id = "echart-container" :style="{width: '1000px', height: '620px'}">
                     </div>
 
                   </v-card-text>
