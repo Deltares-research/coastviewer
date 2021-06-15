@@ -39,6 +39,7 @@ Vue.component('info-page', {
 
         function createJetColormap (nshades) {
             // from https://github.com/bpostlethwaite/colormap/blob/master/index.js
+            // You could also invert this colormap
             // const jeti = [{"index":0,"rgb":[0,0,131]},{"index":0.125,"rgb":[0,60,170]},{"index":0.375,"rgb":[5,255,255]},{"index":0.625,"rgb":[255,255,0]},{"index":0.875,"rgb":[250,0,0]},{"index":1,"rgb":[128,0,0]}];
             const jet = [{"index":0,"rgb":[128,0,0]},{"index":0.125,"rgb":[250,0,0]},{"index":0.375,"rgb":[255,255,0]},{"index":0.625,"rgb":[5,255,255]},{"index":0.875,"rgb":[0,60,170]},{"index":1,"rgb":[0,0,131]}];
 
