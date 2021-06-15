@@ -72,6 +72,8 @@ Create an environment in eb if not there yet: `eb create coastal-prod-green -i t
 You may check all environments using `eb list -a`.
 If you have already an environment running, do terminate it with `eb terminate coastal-prod-green`.
 
+If you want to update data on the server (on EBS). You can login to a running version with `eb ssh`.  Make sure you set it up with ssh before  you do so (e.g. `eb ssh --setup coastal-prod-blue`)
+
 # Use
 Load the link [transects/kml](http://localhost:5000/coastviewer/1.1.0/transects/kml) in Google Earth (add network link).
 
