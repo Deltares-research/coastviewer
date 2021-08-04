@@ -128,6 +128,7 @@ Vue.component('info-page', {
           //color: ["#313695", "#4575b4", "#74add1", "#abd9e9", "#e0f3f8", "#ffffbf", "#fee090", "#fdae61", "#f46d43", "#d73027", "#a50026"],
           color: createJetColormap (resp_json.data.length-1),
           legend: {
+            y: 'bottom',
             padding: [0, 0, 0, 0],
             itemGap: 2,
             selector: [
@@ -135,27 +136,38 @@ Vue.component('info-page', {
                 type: 'all or inverse',
                 // can be any title you like
                 title: 'All'
-            },
-          ],
-
+              },
+            ],
             selectorPosition: 'start',
             selectorItemGap: 0.5,
             selectorButtonGap: 2,
             selected: selected
           },
+          toolbox: {
+            feature: {
+              dataZoom: {
+                  yAxisIndex: 'none'
+              },
+              restore: {},
+              saveAsImage: {}
+            }
+          },
+
           tooltip: {
             trigger: 'axis'
           },
           dataset: {
             source: resp_json.data //data
           },
-          xAxis: {type: 'category',
-                  name: 'x [m]',
-                  interval: 5,
-                  nameTextStyle:{
-                    fontWeight: "bold",
-                    fontSize: 11
-                },
+          xAxis: {
+            type: 'category',
+            name: 'x [m]',
+            interval: 5,
+            nameTextStyle:{
+              fontWeight: "bold",
+              fontSize: 11
+            },
+            position: 'top'
           },
           yAxis: {gridIndex: 0,
                   name: 'z [m]',
