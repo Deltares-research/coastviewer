@@ -89,7 +89,6 @@ Vue.component('info-page', {
 
 
         const series_object = {type: 'line', smooth: true, seriesLayoutBy: 'row',
-        silent: true,
         markLine: {
           symbol: 'none',
           lineStyle: {
