@@ -89,6 +89,7 @@ Vue.component('info-page', {
 
 
         const series_object = {type: 'line', smooth: true, seriesLayoutBy: 'row',
+        silent: true,
         markLine: {
           symbol: 'none',
           lineStyle: {
@@ -152,10 +153,9 @@ Vue.component('info-page', {
               saveAsImage: {}
             }
           },
-
-          tooltip: {
-            trigger: 'axis'
-          },
+          //tooltip: {
+          //  trigger: 'axis'
+          //},
           dataset: {
             source: resp_json.data //data
           },
@@ -166,6 +166,9 @@ Vue.component('info-page', {
             nameTextStyle:{
               fontWeight: "bold",
               fontSize: 11
+            },
+            splitLine: {
+                show: true
             },
             position: 'top'
           },
