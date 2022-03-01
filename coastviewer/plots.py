@@ -89,8 +89,8 @@ def indicators(transect, mkl, bkltkltnd, mean_water, dune_foot, faalkans, nouris
         tkltimelast = np.NaN
         tkllast = np.NaN
     else:
-        tkltimelast = bkltkltnd['time'].values[-1]
-        tkllast = bkltkltnd['testing_coastline'].values[-1]
+        tkltimelast = bkltkltnd['time'].values[-5:]
+        tkllast = bkltkltnd['testing_coastline'].values[-5:]
 
     fig, ax = plt.subplots(4, figsize=(13, 16), sharex=True)
 
