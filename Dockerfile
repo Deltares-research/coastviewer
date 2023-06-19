@@ -7,7 +7,8 @@ RUN \
     apt-get install -y apt-utils && \
     # echo "deb http://httpredir.debian.org/debian jessie-backports main non-free" >> /etc/apt/sources.list && \
     # echo "deb-src http://httpredir.debian.org/debian jessie-backports main non-free" >> /etc/apt/sources.list && \
-    apt-get install -y wget unzip build-essential jq sudo tini dos2unix
+    apt-get install -y wget unzip build-essential jq sudo tini dos2unix && \
+    apt-get clean
 
 RUN conda install mamba -n base -c conda-forge
 # use anaconda to create an env
