@@ -16,7 +16,12 @@ USER $MAMBA_USER
 COPY --chown=$MAMBA_USER:$MAMBA_USER env.yaml /tmp/env.yaml
 RUN micromamba install --yes --file /tmp/env.yaml && \
     micromamba clean --all --yes
-ARG MAMBA_DOCKERFILE_ACTIVATE=1  # (otherwise python will not be found)
+
+# Make sure that mamba will be activated from here on.
+# (otherwise python will not be found)
+# see _dockerfile_shell.sh in mamba dockerfile
+ARG MAMBA_DOCKERFILE_ACTIVATE=1
+
 # update system and install wget
 
 # copy the app
