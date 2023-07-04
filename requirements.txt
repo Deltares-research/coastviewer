@@ -28,7 +28,7 @@ more-itertools==8.0.2
 netCDF4==1.5.3
 numpy==1.25.0
 openpyxl==2.4.9
-pandas==0.21.1
+pandas==2.0.3
 pycparser==2.19
 -e git+https://github.com/j08lue/pycpt@b45f720d09da79bcd567c5cbba9a554b0a7cc1d9#egg=pycpt
 pyparsing==2.4.6
